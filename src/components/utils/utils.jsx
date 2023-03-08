@@ -3,7 +3,7 @@
        return regex.test(email)
 };
 
- const validateInput = ({ firstRef,secondRef=undefined,thirdRef,setError,Error})=>{
+ const validateInput = ({ firstRef,secondRef,thirdRef,setError,Error})=>{
   
   let firstVal = firstRef?.current.value
   let secondVal = secondRef?.current.value
@@ -29,17 +29,14 @@
     if(!thirdVal ){
       thirdRef.current.classList.add('error')
       err.push(`${Errors.CANNOT_BE_EMPTY}PW`)
-    }else if (secondRef !== undefined && secondVal !== '' && validatePassword(thirdVal, secondVal) !== 'valid'){
+    }else if (secondRef && secondVal !== '' && validatePassword(thirdVal, secondVal) !== 'valid'){
       let currentErr = validatePassword(thirdVal,secondVal)
-      console.log(currentErr)
         secondRef.current.classList.add('error')
         setError(...Error, `${currentErr}`)
         
         err.push(currentErr)
 
     }
-    console.log(err)
-    console.log(err.length)
     if(err.length > 0) {
      setError(err)
       return false

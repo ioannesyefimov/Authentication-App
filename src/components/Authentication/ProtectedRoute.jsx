@@ -2,18 +2,30 @@ import React, {useEffect} from 'react'
 import { Outlet, useLocation, Navigate} from 'react-router-dom'
 import { useAuthentication } from './Authentication'
 import useFetch from './useFetch'
+import useGithub from './useGithub/useGithub'
 const ProtectedRoute =  () => {
-    const {User, setUser,setError} =  useAuthentication()
-    const {cookies, GHgetUserData, Loading, setLoading, getUserData} = useFetch()
+    const {User,Loading, setUser,cookies} =  useAuthentication();
+    const { getUserData,checkQueryString,checkAccessToken} = useFetch();
+    const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
 
+    
+  
+    useEffect(() => {
+    console.log(`rerendered`);
+    
+      let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
+      let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
+
+      
+      checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
+      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken: cookies.accessToken, getUserData, getUserDataGH,handleGithubRegister})
+    }, [])
+
+
+    
 
     const location = useLocation()
 
-    useEffect(
-       ()=>{
-  
-
-      }, [])
 
       if(Loading){
         return <h1 className='loading'>Loading...</h1>

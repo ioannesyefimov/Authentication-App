@@ -7,7 +7,7 @@ import ThemeToggler from './Authentication/ThemeProvider/ThemeToggler'
 
 import useFetch from "./Authentication/useFetch";
 
-import SocialLoginBtns from "./Authentication/SocialLoginBtns";
+import SocialLoginBtns from "./Authentication/SocialLoginBtns/SocialLoginBtns";
 import AuthForm from "./LoginForm/AuthForm";
 
 import ProtectedRoute from "./Authentication/ProtectedRoute";

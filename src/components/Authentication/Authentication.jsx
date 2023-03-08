@@ -16,71 +16,19 @@ export const useAuthentication = ()=>{
 }
 
 export const AuthenticationProvider = ({children}) => {
-
+    const [cookies, setCookie, removeCookie] = useCookies(['user'])
+    const [Loading, setLoading] = useState(false)
     const [User, setUser] = useState({})
     const [Error, setError] = useState({})
 
-    const {cookies, getUserDataGH,getUserData,getGithubAccessToken, removeCookie} = useFetch('', setError)
-    useEffect(() => {
+    useEffect(()=>{
       const isLoggedUser = cookies.user
-      console.log(isLoggedUser)
       if(isLoggedUser?.fullName ){
         setUser(isLoggedUser)
       } 
+    },[cookies.user])
 
-    }, [cookies?.user])
-
-    useEffect(() => {
-    
-      let LOGIN_TYPE = window.localStorage.getItem('LOGIN_TYPE')
-      let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-      const searchToken = async()=>{
-        if(cookies.accessToken !== undefined && LOGGED_THROUGH !== null){
-            console.log(`token changed`);
-            console.log('searching token')
-            console.log(cookies.accessToken)
-            console.log(LOGGED_THROUGH)
-              switch(LOGGED_THROUGH){
-                case 'Github': return await getUserDataGH()
-                case 'Google': return await getUserData(cookies.accessToken, LOGGED_THROUGH)
-                case 'Internal': return await getUserData(cookies.accessToken, LOGGED_THROUGH)
-                case 'Facebook': return await getUserData(cookies.accessToken, LOGGED_THROUGH)
-                case 'Twitter': return await getUserData(cookies.accessToken, LOGGED_THROUGH)
-                default: return console.log('not found')
-              }
-          } else {
-            return console.log(`NOT_FOUND`)
-          }
-
-       }
-      //  searchToken()
-       
-         
-
-    }, [cookies?.accessToken])
-    
-
-    
-    useEffect(() => {
-      
-      let LOGIN_TYPE = window.localStorage.getItem('LOGIN_TYPE')
-      let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-      const queryString = window.location.search
-
-      const urlParams = new URLSearchParams(queryString)
-      const codeParam = urlParams.get('code')
-
-      return ()=>{
-        if(codeParam && LOGGED_THROUGH == 'Github' ) {
-          getGithubAccessToken(codeParam, LOGIN_TYPE)
-          console.log(getGithubAccessToken)
-        } 
-      }
-  
-      }, [])
-    
     const logout = () => {
-      console.log(removeCookie)
       console.log('CLEARNING STATE')
       setUser({})
       setError({})
@@ -96,9 +44,9 @@ export const AuthenticationProvider = ({children}) => {
     
     const value = useMemo(
         () => ({
-            User,Error ,setError, setUser,logout
+            User,cookies, Error, Loading, setLoading,setCookie,removeCookie,setError, setUser,logout
         }),
-         [User,Error ]
+         [User,Error,cookies,Loading]
     )
 
 

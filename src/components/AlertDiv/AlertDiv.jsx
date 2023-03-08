@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthentication } from '../Authentication/Authentication'
-import SocialLoginBtns from '../Authentication/SocialLoginBtns'
+import SocialLoginBtns from '../Authentication/SocialLoginBtns/SocialLoginBtns'
 import { Errors, validateInput } from '../utils/utils'
 import { Link } from 'react-router-dom'
 import './AlertDiv.scss'
@@ -123,7 +123,7 @@ const AlertDiv = ({error, socialType, setError, email,pw,}) => {
     )
     
   }
-  if(error?.message == Errors.NOT_SIGNED_UP){
+  if(error?.message == Errors.NOT_SIGNED_UP || Errors.NOT_FOUND){
     return (
       <div className='alert-div-component'>
             <p className="error-type">You have yet to sign up to our Application</p>  
@@ -133,7 +133,7 @@ const AlertDiv = ({error, socialType, setError, email,pw,}) => {
                 logout()
                 navigate('/auth/register')
                 
-              }} className="alert-btn" type="button">Sign up</button>
+              }} className="alert-btn" type="button">Sign up new</button>
               <button onClick={logout} className="alert-btn" type="button">Sign in with different accont</button>
             </div>
         </div>

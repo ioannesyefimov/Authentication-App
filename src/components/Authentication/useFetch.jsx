@@ -1,98 +1,113 @@
-import React, {useMemo, useState} from 'react'
 import { useAuthentication } from './Authentication'
-import { useCookies } from 'react-cookie';
+import useGithub from './useGithub/useGithub'
+// 
+const useFetch = () => {
 
-import {Navigate } from 'react-router-dom';
-import AlertDiv from '../AlertDiv/AlertDiv';
-import { Errors } from '../utils/utils';
-const useFetch = (type, setError,) => {
-    const [Loading, setLoading] = useState(false)
-    const [cookies, setCookie, removeCookie] = useCookies(['user'])
-
+    const {setCookie, setError,setLoading,removeCookie} = useAuthentication()
+    // const {getGithubAccessToken} = useGithub()
     const url = `http://localhost:5050/api/auth/`
-
     let newURL = location.href.split("?")[0];
 
-    const handleGoogleSignin = async(response) =>{
-        setLoading(true)
-        response = await   fetch(`${url}signin`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({credential: response.credential, loggedThrough: 'Google'}),
-            })
-        
-        const data = await response.json()
-
-        if(!data?.success){
-            setError({message: data.message, loggedThrough: data?.loggedThrough})
-            return console.log(data?.message)
-
+    
+    const checkQueryString = async({LOGIN_TYPE, LOGGED_THROUGH,getGithubAccessToken}) => {
+        const queryString = window.location.search
+        const urlParams = new URLSearchParams(queryString)
+        const codeParam = urlParams.get('code')
+  
+          if(codeParam && LOGGED_THROUGH == 'Github' ) {
+           await getGithubAccessToken(codeParam, LOGIN_TYPE)
+        } else {
+          return console.log('query is empty')
         }
-
-        console.log(typeof data)
-        if(data?.success){
-            console.log(data)
-            let dbResponse = data.data
-          const userData = await fetch(`${url}user`, {
-            method: "POST",
-            headers:{
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({accessToken: dbResponse.accessToken})
-          })
-
-          const userResponse = await userData.json()
-
-          if(!userResponse.success){
-            return setError({message:userResponse?.message, loggedThrough:userResponse?.loggedThrough})
-          }
-          if(userResponse?.data?.user){
-
-              setCookie("accessToken", userResponse?.data?.accessToken,  {path: '/'});
-              setCookie('user', userResponse?.data.user, {path:'/'})
-          }
-            localStorage.setItem('LOGGED_THROUGH', dbResponse?.loggedThrough)
-            // setCookie('user', user, )
-            console.log(`GETTING GOOGLE USER `)
-
+      }
+      const checkAccessToken = async({LOGIN_TYPE, LOGGED_THROUGH, accessToken,handleGithubRegister,getUserData,getUserDataGH})=>{
+        console.log(LOGIN_TYPE)
+        console.log(LOGGED_THROUGH)
+        console.log(accessToken)
+        if(accessToken && LOGGED_THROUGH ){
             
+              switch(LOGGED_THROUGH){
+                // check whether user is trying to register github account or signin
+                case 'Github': return LOGIN_TYPE=='register' ? await handleGithubRegister(accessToken,'register') : await getUserDataGH()
+                case 'Google': return  await getUserData(accessToken, LOGGED_THROUGH)
+                case 'Internal': return await getUserData(accessToken, LOGGED_THROUGH)
+                case 'Facebook': return await getUserData(accessToken, LOGGED_THROUGH)
+                case 'Twitter': return await getUserData(accessToken, LOGGED_THROUGH)
+                default: return console.log('not found')
+              }
+          } else {
+            return console.log(`NOT_FOUND`)
+          }
         }
-        setLoading(false)
+
+    const fetchRegister = async (fullNameRef,passwordRef,emailRef) => {
+        setLoading(true)
+
+        const APICALL = await fetch('http://localhost:5050/api/auth/register', {
+      method: "POST",
+      headers:{
+        'Content-Type': "application/json"
+      },
+      body: JSON.stringify({
+        fullName: fullNameRef.current.value,
+        password: passwordRef.current.value,
+        email: emailRef.current.value,
+        loggedThrough: 'Internal'
+      })})
+    
+    const response = await APICALL.json()
+
+    console.log(response)
+
+    if(!response.success ) {
+      if(response?.loggedThrough ){
+        return setError({message:response.message, loggedThrough: response?.loggedThrough})
+      } 
+    } 
+      setCookie('accessToken', response.data.accessToken, {path: '/'})
+      setCookie('refreshToken', response.data.refreshToken, {path: '/'})
+
+      localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
+    (response.data?.loggedThrough)
+
+    window.location.reload()
+    
+    setLoading(false)
     }
 
-    const handleGoogleRegister = async (response) => {
+    const fetchSignin = async (emailRef,passwordRef) => {
         setLoading(true)
-            response = await   fetch(`${url}google/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({credential: response.credential}),
-            }
-            )
 
-        const data = await response.json()
 
-        if(!data?.success && data?.message){
-            console.log(data)
-            return setError({message:data.message, loggedThrough: data?.loggedThrough})
-        }
+        const USER = await fetch(`${url}/auth/signin`, {
+            method: "POST",
+            headers:{
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: emailRef.current.value,
+              password: passwordRef.current.value,
+              loggedThrough: 'Internal'
+            })    
+          })
+          console.log(USER)
+          const response = await USER.json()
+      
+          if(!response.success ) {
+              return setError({message:response.message, loggedThrough: response?.loggedThrough})
+          } else if(response.success){
+            setUser(response.data.user)
+            setCookie('accessToken', response.data.accessToken, {path: '/'})
+            localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
+          }
+        window.location.reload()
 
-        console.log(data)
-            let dbResponse = data.data
-        
-            setCookie('refreshToken', dbResponse?.refreshToken)
-            
-            setCookie("accessToken", dbResponse?.accessToken,  {path: '/'});
-            localStorage.setItem('LOGGED_THROUGH', dbResponse?.loggedThrough)
-            
-        setLoading(false)
+          setLoading(false)
 
     }
 
    const getUserData= async(accessToken, loggedThrough) =>{
+    setLoading(true)
 
        const dbResponse = await fetch(`${url}signin`, {
         method: "POST",
@@ -121,106 +136,22 @@ const useFetch = (type, setError,) => {
             localStorage.setItem('LOGGED_THROUGH', response?.loggedThrough)
             console.log(`GETTING USER `)
             setCookie('user',user , {path:'/'})
-            window.localStorage.clear()
             removeCookie('accessToken', {path:'/'})
+            
+            window.localStorage.clear()
         }
-
-   }
-    const handleGitHub = (type) => {
-        window.location.assign(`https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_APP_GITHUB_APP_ID}`)
-        console.log('GHHH')
-        window.localStorage.setItem('LOGGED_THROUGH', 'Github')
-        window.localStorage.setItem('LOGIN_TYPE', type)
-    }
-
-    const handleGithubRegister = async(accessToken, type) => {
-        console.log(accessToken)
-        const registerUser = await fetch(`${url}github/register`, {
-            method:"POST",
-            headers: {
-                "Content-Type": 'application/json' // Bearer ACCESSTOKEN
-            },
-            body: JSON.stringify({accessToken: accessToken})
-        })
-        const response = await registerUser.json()
-        console.log(response)
-        if(!response.success){
-            return setError({message: response?.message, loggedThrough:response?.loggedThrough})
-        }
-
-        if(response.user){
-            setCookie('user',response.user, {path:'/'})
-            localStorage.clear()
-        }
-    
-    
-      
-    }
-
-    const getGithubAccessToken= async(codeParam,type) => {
-        console.log(url)
-        const accessTokenGH = await fetch(`${url}github/getAccessToken?code=${codeParam}`, {
-            method: 'GET'
-        })
-
-        const responseGH = await accessTokenGH.json()
-        if(!responseGH.success){
-            setError({message: responseGH?.message})
-        }
-        await console.log(responseGH)
-        setCookie('accessToken', responseGH.data.accessToken)
-        console.log(type)
-        window.history.pushState(null, document.title, newURL);
-
-        window.location.replace(`auth/${type}`)
 
         setLoading(false)
-    }
-    const getUserDataGH = async()=>{
 
-        await fetch(`${url}github/getUserToken`, {
-          method: "GET",
-          headers: {
-            "Authorization": cookies?.accessTokenGH // Bearer ACCESSTOKEN
-          }
-        }).then(response=>{
-          return response.json()
-        }).then( data=>{
-            let response = data.data
-            if(data.message){
-                console.log(data.message)
-                console.log(data.loggedThrough)
-                setError({message: data.message, loggedThrough: data.loggedThrough})
-            
-            }
-            getUserData(response?.accessToken, 'Github')
-            localStorage.clear()
-            removeCookie('accessToken', {path:'/'})
-           
-        }).catch(err=>{
-            return setError(err)
-        })
-    }
+   }
 
-    const handleFacebook = () => {
-
-    }
-
-    const handleTwitter = ( ) => {
-
-    }
-
-    const value = useMemo(
-        () => ({
-            Loading, cookies, setLoading, setCookie,getUserData, 
-            handleFacebook, handleTwitter, handleGoogleRegister, 
-            handleGoogleSignin,handleGitHub,removeCookie,getGithubAccessToken,
-            handleGithubRegister,getUserDataGH
-        }), [Loading,cookies])
+   
+  
 
    
 
-   return value
+   return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString
+    }
 }
 
 export default useFetch
