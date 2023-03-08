@@ -1,0 +1,47 @@
+
+body[theme='light'] {
+    background-color: white;
+
+    .Home {
+        
+        color:#242424
+    }
+    .loading {
+        color: #242424;
+    }
+    .authentication-component {
+        background-color: transparent;
+        color: #242424;
+
+        .text-wrapper {
+        }
+        .social-btns {
+            span {
+                font-size: 1rem;
+                color: gray;
+            }
+        }
+    }
+    .alert-div-component {
+    background-color: rgb(255, 255, 255);
+
+    }
+
+}
+
+body[theme="dark"] {
+    background-color: #242424;  
+    .Home {
+        
+        color: #ffffff
+    }
+    .loading {
+        color: #ffffff
+        }
+
+    .alert-div-component {
+        background-color: #3e3e3e
+    
+        }
+}
+  

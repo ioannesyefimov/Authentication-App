@@ -1,0 +1,52 @@
+
+.authentication-component {
+    position: relative;
+}
+.alert-div-component {
+    box-shadow: 0 0 5px 1px  red;
+    position: absolute;
+    padding: 1.5rem;
+    display: grid;
+    place-content: center;
+    gap:1.5rem;
+    width: 75%;
+    height: 65%;
+    margin: auto;
+    inset: 0;
+    z-index: 4;
+
+    .alert-btn {
+        font-size: .7rem;
+    }
+
+    .error-type{
+        font-size: 1.3rem;
+        font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-weight: 600;
+        color:red
+    }
+
+    
+    .wrapper {
+        display: inline-flex !important;
+        gap:.5rem;
+        button {
+        transition: 300ms all ease-in-out;
+            padding: .4rem;
+            border-radius: 15px;
+            flex:1;
+        }
+        & > button:hover {
+            background-color: aquamarine;
+        }     
+    }
+    .social-wrapper{
+        display: flex;
+        margin: 0 auto;
+    }
+    .hide {
+        position: absolute;
+        bottom:10px;
+        right: 10px;
+    }
+}

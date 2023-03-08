@@ -1,0 +1,84 @@
+@import '../utils/utils.scss';
+#root {
+    @include respond-to(small){
+        display: grid;
+        width: 100%;
+
+         .authentication-component {
+            @include respond-to(small){
+                height: 100%;
+            }
+            display: flex;
+            
+            gap:2rem;
+
+
+            box-shadow: none;
+            padding:2rem 2rem;
+            .social-btns {
+                align-self: center;
+            }
+         }
+    }
+    @include respond-to(medium){
+        display: grid;
+        place-content: center;
+
+    }
+        .authentication-component {
+        
+            @include respond-to(medium){ 
+                min-width: 450px;
+                padding: 2.8rem clamp(2.7rem, 1.057rem + 4.381vw, 3rem)
+        
+            }  
+            
+            display: flex;
+            flex-direction: column;
+            gap:2rem;
+        
+            padding: 2rem;
+            border-radius: 15px;
+            align-items: flex-start;
+            box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.586);
+        
+            .social-btns {
+                display: grid;
+                gap:1rem;
+                color:gray;
+                margin: 0 auto;
+                margin-bottom: 2.5rem;
+            }
+        
+            .wrapper {
+                display: grid;
+                gap:1.8rem;
+        
+                .text-wrapper {
+                    margin-right: auto;
+                    text-align: flex-start;
+                    gap:.7rem;
+                    display: grid;
+                    h2 {
+                        font-size: clamp(1rem, 0.859rem + 0.601vw, 1.1rem);           
+                        text-align: left;
+                        max-width: 30ch;
+                        line-height: 1.2;
+                        
+                    }
+                    p {
+                        text-align: left;
+                        font-size: .75rem;
+                        font-weight:  weights(regular);
+                        max-width:40ch;
+
+        
+                    }
+                    span.inner {
+                        font-size: 1.3rem;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+}

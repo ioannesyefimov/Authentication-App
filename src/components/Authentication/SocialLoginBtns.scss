@@ -1,0 +1,67 @@
+
+.social-wrapper {
+    display: flex;
+    margin: 0 auto;
+    gap:.3rem;
+    flex-wrap: wrap;
+   
+    .hint {
+        position: absolute;
+        bottom: 10px;
+        margin: 0 auto;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+    }
+
+    
+    
+
+    
+
+
+    #GG-btn{
+        position: relative;
+        z-index: 1;
+        
+        img{
+            position: absolute;
+            cursor: pointer
+        };
+        button {
+            opacity: 0;
+            z-index: 1;
+
+        }
+    }
+
+    .social-btn-container{
+        display: flex;
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        
+        img{
+            position: absolute;
+            cursor: pointer
+        };
+        button {
+            opacity: 0;
+            z-index: 1;
+            width: 55px;
+        }
+         
+    
+        .social-btn {
+            border-radius: 50%;
+            background: transparent;
+            &:hover{
+                cursor: pointer;
+            }
+        
+           
+        }
+       
+     }
+
+    }
