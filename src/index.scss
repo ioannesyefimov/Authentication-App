@@ -1,3 +1,5 @@
+@use './components/utils/utils.scss' as * ;
+ 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,7 +15,9 @@
   -webkit-text-size-adjust: 100%;
 }
 
-
+#root{
+  display: inline-block;
+}
 a {
   font-weight: 500;
   color: #646cff;
@@ -25,7 +29,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  display: grid;
   min-width: 320px;
   min-height: 100dvh;
 }
@@ -47,6 +51,9 @@ button {
   /* transition: border-color 0.25s; */
 }
 
+.box-shadow{
+  box-shadow: 0 0 3px 1px rgba(128, 128, 128, 0.5);
+}
 
 /* @media (prefers-color-scheme: light) {
   :root {

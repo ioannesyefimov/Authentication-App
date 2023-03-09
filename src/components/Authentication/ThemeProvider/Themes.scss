@@ -2,7 +2,7 @@
 body[theme='light'] {
     background-color: white;
 
-    .Home {
+    .Profile {
         
         color:#242424
     }
@@ -27,11 +27,34 @@ body[theme='light'] {
 
     }
 
+    .App{
+        
+        .navbar, .Profile{
+            color:#242424
+        }
+        .navbar {
+            button {
+                color:#242424
+            }
+        }
+    }
+
 }
 
 body[theme="dark"] {
     background-color: #242424;  
-    .Home {
+    .App{
+        
+        .navbar, .Profile{
+            color:white
+        }
+        .navbar {
+            button {
+                color:white
+            }
+        }
+    }
+    .Profile {
         
         color: #ffffff
     }

@@ -1,0 +1,6 @@
+@use '../utils/utils.scss' as *;
+.Profile {
+  @include respond-to(large);
+  padding:0 .5rem;
+
+}

@@ -32,8 +32,8 @@ const ProtectedRoute =  () => {
       }
       if(User?.fullName && !Loading) {
           switch(location.pathname){
-            case '/': return <Navigate to='/home' replace />
-            case '/home': return <Outlet/>
+            case '/': return <Navigate to='/profile' replace />
+            case '/profile': return <Outlet/>
             case '/auth/register': return <Navigate to='/'  replace />
             case '/auth/signin': return <Navigate to='/'  replace />
           }
@@ -41,7 +41,7 @@ const ProtectedRoute =  () => {
           if(location.search) return 
           switch(location.pathname){
               case '/': return <Navigate to='/auth/signin'  replace />
-              case '/home': return <Navigate to='/auth/signin'  replace />
+              case '/profile': return <Navigate to='/auth/signin'  replace />
               case '/auth/register': return <Outlet/>
               case '/auth/signin': return <Outlet/>
               

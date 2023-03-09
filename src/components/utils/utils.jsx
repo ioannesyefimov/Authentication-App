@@ -127,3 +127,14 @@
 export {
     Errors, validateEmail,validatePassword,validateInput
 }
+
+export const getUrlWithQueryParams = (baseUrl, params) =>{
+  const query = Object.entries(params)
+    .map(([key,value])=> `${key}=${encodeURIComponent(value)}`)
+    .join(`&`)
+    return `${baseUrl}?${query}`
+}
+
+export const assertEnvVar = (name)=> {
+  return `${import.meta.env}.VITE_${name}`
+}

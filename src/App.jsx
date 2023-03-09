@@ -1,7 +1,8 @@
 import React from 'react'
-import {ProtectedRoute, SingIn, Register, Home} from './components/index'
+import {ProtectedRoute, SingIn, Register, Profile} from './components/index'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.scss'
+import ChangeInfo from './components/Home/ChangeInfo/ChangeInfo'
 
 const router = createBrowserRouter([
     {
@@ -10,8 +11,9 @@ const router = createBrowserRouter([
           path:'/',
           children:[
             {
-              element: <Home />,
-              path: '/home',
+              element: <Profile />,
+              path: '/profile',
+             
             },
             {
               element: <SingIn/>,

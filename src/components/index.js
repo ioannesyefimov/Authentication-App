@@ -1,4 +1,4 @@
-import Home from "./Home/Home";
+import Profile from "./Home/Profile";
 import Register from "./Authentication/Register/Register";
 import SingIn from "./Authentication/SignIn/SingIn";
 
@@ -13,7 +13,7 @@ import AuthForm from "./LoginForm/AuthForm";
 import ProtectedRoute from "./Authentication/ProtectedRoute";
 
 export {
-    Home,
+    Profile,
     Register,
     SingIn,
     ThemeProvider,

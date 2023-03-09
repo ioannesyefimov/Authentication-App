@@ -8,7 +8,9 @@ import TwitterIco from './Twitter.svg'
 import GoogleIco from './Google.svg'
 import mailIco from './mail.svg'
 import lockerIco from './locker.svg'
-
+import logoutIco from './logoutIco.svg'
+import groupIco from './groupIco.svg'
+import triangleIco from './triangleIco.svg'
 export {
-    devchall_dark, devchall_light, devchall_png, facebookIco, GithubIco, GoogleIco, TwitterIco, mailIco, lockerIco,profileIco
+    triangleIco, logoutIco,   groupIco,devchall_dark, devchall_light, devchall_png, facebookIco, GithubIco, GoogleIco, TwitterIco, mailIco, lockerIco,profileIco
 }
