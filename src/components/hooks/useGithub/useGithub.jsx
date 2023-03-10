@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuthentication } from '../Authentication';
+import { useAuthentication } from '../../Authentication/Authentication';
 import useFetch from '../useFetch';
 
 const useGithub = () => {

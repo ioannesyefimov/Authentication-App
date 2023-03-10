@@ -138,3 +138,7 @@ export const getUrlWithQueryParams = (baseUrl, params) =>{
 export const assertEnvVar = (name)=> {
   return `${import.meta.env}.VITE_${name}`
 }
+
+export const timeout = (delay)=>{
+  return new Promise(res=>setTimeout(res,delay));
+}

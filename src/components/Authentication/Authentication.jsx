@@ -1,10 +1,6 @@
 import React, {useState, useEffect,useMemo} from 'react'
-import Register from './Register/Register'
-import SingIn from './SignIn/SingIn'
-import useFetch from './useFetch'
-import { Errors } from '../utils/utils'
 
-import {Outlet, useLocation, Navigate} from 'react-router-dom'
+import {Outlet, useLocation} from 'react-router-dom'
 import { useCookies } from 'react-cookie'
   
 
@@ -59,22 +55,5 @@ export const AuthenticationProvider = ({children}) => {
 
 
 
-const Authentication = () => {
-  const {User, setUser} = useAuthentication() 
-  const location = useLocation()
 
-  
-
-
-
-
-  return (
-   <>
-    <div className="authentication-component">
-        <Outlet />
-    </div>
-    </>
-  )
-}
-
-export default Authentication
+export default AuthenticationProvider

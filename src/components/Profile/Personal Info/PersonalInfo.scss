@@ -1,0 +1,157 @@
+@use '../../utils/utils.scss' as *;
+
+.personal-info-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // outline: 1px solid aquamarine;
+    margin: 0 auto;
+
+    .box-shadow{
+        @include respond-to(small){
+            box-shadow: none;
+        }
+    }
+    .wrapper {
+        @include respond-to(small){
+            margin-bottom: 1rem;
+
+        }
+        
+        text-align: center;
+        h2 {
+            font-size: 2.1rem;
+        }
+    }
+
+    .wrapper2 {
+        @include respond-to(medium){
+            
+    
+            padding: 1rem 2rem 0;
+            margin-top: 3rem;
+            width: 55%;
+            min-width: 400px;
+
+        }
+        display: grid;
+        width: 100%;
+        gap:1rem;
+        border-radius: 8px;
+
+
+        .title-wrapper {
+            @include respond-to(medium){
+                max-width: none;
+            }
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+              h4 {
+                  font-size: 1.5rem;
+                  line-height: 1.1;
+              }
+              div{
+                p{
+                     @include respond-to(small){
+                         max-width: 20ch
+                }      
+                };
+             
+              }
+              .edit-btn {
+                  padding: 0.3rem 1rem;
+                  background: transparent;
+                  color:gray;
+                  border:gray 1px solid
+              }
+        }
+
+        .inner-wrapper2 {
+            display: flex;
+            // gap:.1rem;
+            flex-direction: column;
+
+            & > * {
+                flex:1;
+            }
+
+            .info-wrapper {
+                @include respond-to(medium){
+                 grid-template-columns: 30% 1fr;
+                 display: grid;
+
+                }
+                position: relative;
+                padding: .8rem .2rem;
+                display: flex;
+                // outline: 1px red solid;
+                align-items: center;
+
+                &:first-child{
+                    &::before{
+                        @include respond-to(medium){
+                            width: calc(100% + 4rem);
+    
+                        }
+                        height: 1px;
+                        width: calc(100% + 10vw);
+                        position: absolute;
+                        left: -2rem;
+                        background-color: gray;
+                        content: '';
+                        top:0;
+                    }
+
+                }
+
+                &::after{
+                    @include respond-to(medium){
+                        width: calc(100% + 4rem);
+
+                    }
+                    height: 1px;
+                    width: calc(100% + 10vw);
+
+                    position: absolute;
+                    left: -2rem;
+                    bottom: 0;
+                    background-color: gray;
+                    content: '';
+
+                }
+                &:last-child {
+                    &::after{
+                        @include respond-to(medium){
+
+                            display: none;
+                        }
+                    }
+                }
+
+                .info-name{
+                    text-transform: uppercase;
+                    
+                }
+                .user-input {
+                    @include respond-to(medium){
+                        margin: 0;
+                    }
+                    margin-left: auto;
+                    font-weight: 500;
+
+                }
+                .profile-img {
+                    @include respond-to(medium){
+                        margin: 0;
+                    }
+                    margin-left: auto;
+                    max-width: 55px;
+                    border-radius: 10px;
+                }
+            }
+
+        }
+    }
+}

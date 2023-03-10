@@ -1,6 +1,6 @@
 import React from 'react'
 import { assertEnvVar, getUrlWithQueryParams } from '../../utils/utils';
-import { useAuthentication } from '../Authentication';
+import { useAuthentication } from '../../Authentication/Authentication';
 
 
 const useTwitter = () => {

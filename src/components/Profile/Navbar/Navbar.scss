@@ -5,7 +5,7 @@ body {
     .navbar {
         display: flex;
         justify-content: space-between;
-        padding: .5rem clamp(2rem, 1.296rem + 3.005vw, 4rem);
+        padding: .5rem clamp(1rem, -0.056rem + 4.507vw, 4rem);
         button{
             background: transparent;
             border:none;           
@@ -71,11 +71,18 @@ body {
                 gap:.5rem;
                 align-items: center;
                 justify-content: center;
-                p {
+                .user-fullName {
+                    @include respond-to(small){
+                        display: none;
+                    }
                     font-weight: weights(bold);
                 }
                 img{
-                    max-width:3vw;
+                    @include respond-to(small){
+                    order: 1;
+
+                    }
+                    max-width:34px;
                     border-radius: 10px;
                 }
                 button{

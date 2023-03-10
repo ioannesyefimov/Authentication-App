@@ -27,6 +27,7 @@ body[theme='light'] {
 
     }
 
+
     .App{
         
         .navbar, .Profile{
@@ -37,7 +38,19 @@ body[theme='light'] {
                 color:#242424
             }
         }
+
+        p.gray{
+            color:gray
+        }
+        .title{
+            color:#242424;
+        }
+
+        .label-color{
+            color: #242424;
+        }
     }
+
 
 }
 
@@ -65,6 +78,15 @@ body[theme="dark"] {
     .alert-div-component {
         background-color: #3e3e3e
     
+        }
+        p.gray{
+            color:rgb(173, 173, 173)
+        }
+        .title{
+            color:#ffffff;
+        }
+        .label-color{
+            color: #ffffff;
         }
 }
   

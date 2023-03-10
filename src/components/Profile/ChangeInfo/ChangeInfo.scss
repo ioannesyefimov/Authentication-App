@@ -1,0 +1,94 @@
+.change-info-component {
+    position: relative;
+    display: grid;
+    padding: 1rem;
+    // place-content: center;
+    width: 100%;
+    min-width: none;
+    outline: 1px solid red;
+    margin: 0 auto;
+    .back-btn {
+        position: absolute;
+        top:5px;
+        left:5px;
+        background-color: transparent;
+        color:#00ffff;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        img{
+            max-width: clamp(1rem, 0.912rem + 0.376vw, 1.25rem);
+
+        }
+    }
+    .wrapper{
+      
+        display: grid;
+        gap: 1rem;
+        margin-top: 2rem;
+    } 
+    .wrapper2{
+
+        
+        .form-wrapper {
+            
+            .inner-wrapper {
+                display: grid;
+
+                &:first-child{
+                    display: flex;
+                    gap:1.8rem;
+                    align-items: center;
+                    p {
+                        margin-right: auto;
+                    }
+                }
+
+
+                .img-wrapper {
+                    position: relative;
+                    .file-input{
+                        display: flex;
+                      
+                      width: 100%;
+                    height: 100%;
+                    input[type='file'] {
+                        position: absolute;
+                        z-index: 5;
+                        opacity: 0;
+                        margin-right: auto;
+                        width: 100%;
+                        height: 100%;
+                        }
+                    }
+                    
+                    .profile-img {
+                        max-width: 70px;
+                        border-radius: 10px;
+                    }
+                    .camera-img {
+                        position: absolute;
+                        top: 0;
+                        width: 100%;
+
+                        transform: scale(.4);
+                    }
+
+                }
+                label {
+                    text-transform: capitalize;
+                }
+                input {
+                    background-color: transparent;
+                    padding: .85rem 1rem;
+                    border: 1px solid gray;
+                    border-radius: 12px;
+                }
+                #bio {
+                    padding-bottom: 3rem;
+
+                }
+            }
+        }
+    }
+}

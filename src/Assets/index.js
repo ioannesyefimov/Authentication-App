@@ -11,6 +11,13 @@ import lockerIco from './locker.svg'
 import logoutIco from './logoutIco.svg'
 import groupIco from './groupIco.svg'
 import triangleIco from './triangleIco.svg'
+import backIco from './backIco.svg'
+import cameraIco from './cameraIco.svg'
+import correctUploadIco from './correctUploadIco.svg'
+
 export {
-    triangleIco, logoutIco,   groupIco,devchall_dark, devchall_light, devchall_png, facebookIco, GithubIco, GoogleIco, TwitterIco, mailIco, lockerIco,profileIco
+    triangleIco, logoutIco, backIco,cameraIco,correctUploadIco,
+      groupIco,devchall_dark, devchall_light,
+       devchall_png, facebookIco, GithubIco, GoogleIco,
+        TwitterIco, mailIco, lockerIco,profileIco
 }

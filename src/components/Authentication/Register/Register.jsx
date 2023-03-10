@@ -1,7 +1,7 @@
 import React, { useEffect , useState} from 'react'
 import {devchall_light, devchall_dark} from '../../../Assets'
 import FormInput from '../../LoginForm/AuthForm'
-import useFetch from '../useFetch'
+import useFetch from '../../hooks/useFetch'
 import { useTheme } from '../ThemeProvider/ThemeProvider'
 import './Register.scss'
 import SocialLoginBtns from '../SocialLoginBtns/SocialLoginBtns'

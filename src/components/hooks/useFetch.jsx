@@ -1,5 +1,4 @@
-import { useAuthentication } from './Authentication'
-import useGithub from './useGithub/useGithub'
+import { useAuthentication } from '../Authentication/Authentication'
 // 
 const useFetch = () => {
 

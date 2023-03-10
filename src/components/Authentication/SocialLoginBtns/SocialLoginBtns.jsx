@@ -1,13 +1,11 @@
 import React, {useEffect} from 'react'
 import './SocialLoginBtns.scss'
 import { GoogleIco, facebookIco, TwitterIco, GithubIco } from '../../../Assets'
-import useFetch from '../useFetch'
 import { useAuthentication } from '../Authentication'
-import { Link } from 'react-router-dom'
-import useGoogle from '../useGoogle/useGoogle'
-import useGithub from '../useGithub/useGithub'
-import useFacebook from '../useFacebook/useFacebook'
-import useTwitter from '../useTwitter/useTwitter'
+import useGoogle from '../../hooks/useGoogle/useGoogle'
+import useGithub from '../../hooks/useGithub/useGithub'
+import useFacebook from '../../hooks/useFacebook/useFacebook'
+import useTwitter from '../../hooks/useTwitter/useTwitter'
 import SocialBtn from './SocialBtn'
 
 const SocialLoginBtns = ({type}) => {

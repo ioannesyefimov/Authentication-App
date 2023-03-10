@@ -1,7 +1,8 @@
 @use './components/utils/utils.scss' as * ;
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,700&family=Oswald:wght@400;700&display=swap');
  
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family:'Crimson Text', serif;;
   line-height: 1.5;
   font-weight: 400;
 

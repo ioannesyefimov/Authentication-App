@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import './Navbar.scss'
-import { devchall_dark,devchall_light ,groupIco,logoutIco,profileIco, triangleIco} from '../../../Assets'
+import { 
+    devchall_dark,devchall_light 
+    ,groupIco,logoutIco,profileIco, 
+    triangleIco} from '../../../Assets'
 import { useAuthentication } from '../../Authentication/Authentication'
 import { useTheme } from '../../Authentication/ThemeProvider/ThemeProvider'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
     const {theme} = useTheme()
@@ -11,11 +15,11 @@ const Navbar = () => {
 
   return (
     <div className='navbar'>
-        <img src={theme==='light' ? devchall_dark : devchall_light  } alt="" />
+        <img onClick={()=>window.location.replace('/profile')} src={theme==='light' ? devchall_dark : devchall_light  } alt="" />
         <div className='wrapper'>
             <div className='credentials_wrapper'>
                 <img src={User?.picture ? User?.picture :  profileIco} alt="profile image" />
-                <p>{User?.fullName}</p>
+                <p className='user-fullName'>{User?.fullName}</p>
                 <button  onClick={()=> setIsDropped(isDropped=>!isDropped)}><img  style={isDropped ?  { transform: "rotate(180deg)"} : (null)} src={triangleIco} alt="triangle icon" /></button>
             </div>
             {isDropped ? (

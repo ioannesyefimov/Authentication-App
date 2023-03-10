@@ -1,10 +1,8 @@
-import { useEffect, useState , FC, useContext} from 'react'
+import React from 'react'
 
 import './Profile.scss'
 import  {  useAuthentication } from '../Authentication/Authentication'
-import useFetch from '../Authentication/useFetch'
 import Navbar from './Navbar/Navbar'
-import ChangeInfo from './ChangeInfo/ChangeInfo'
 import PersonalInfo from './Personal Info/PersonalInfo'
 const Profile = () => {
   const {User, logout} = useAuthentication()
@@ -12,10 +10,8 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar />
       <div className="Profile">
-        <ChangeInfo />
-        <PersonalInfo/>
+        
     </div>
     </>
   )
