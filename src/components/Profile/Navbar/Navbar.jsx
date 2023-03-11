@@ -18,14 +18,14 @@ const Navbar = () => {
         <img onClick={()=>window.location.replace('/profile')} src={theme==='light' ? devchall_dark : devchall_light  } alt="" />
         <div className='wrapper'>
             <div className='credentials_wrapper'>
-                <img src={User?.picture ? User?.picture :  profileIco} alt="profile image" />
+                <img className='profile-img' src={User?.picture ? User?.picture :  profileIco} alt="profile image" />
                 <p className='user-fullName'>{User?.fullName}</p>
                 <button  onClick={()=> setIsDropped(isDropped=>!isDropped)}><img  style={isDropped ?  { transform: "rotate(180deg)"} : (null)} src={triangleIco} alt="triangle icon" /></button>
             </div>
             {isDropped ? (
                 <div className='drop-menu box-shadow' >
                     <div className="wrapper">
-                        <img src={profileIco} alt="profile icon" />
+                        <img className='profile-img' src={profileIco} alt="profile icon" />
                         <p>My profile</p>
                     </div>
                     <div className="wrapper">

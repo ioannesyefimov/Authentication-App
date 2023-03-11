@@ -83,6 +83,16 @@
                  display: grid;
 
                 }
+                .profile-img{
+                    width: 90px;
+                    height: 60px;
+                    object-fit: cover;
+                    object-position: 50% 50%;
+                    // max-width:35px;
+                    // aspect-ratio: 6/6;
+                    // max-height: 35px;
+                    border-radius: 10px;
+                }
                 position: relative;
                 padding: .8rem .2rem;
                 display: flex;

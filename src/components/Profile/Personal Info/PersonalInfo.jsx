@@ -17,7 +17,7 @@ const PersonalInfo = () => {
         <div className="wrapper2 box-shadow">
           <div className="title-wrapper">
             <div className=''>
-              <h4>Profile</h4>
+              <h4 className='title'>Profile</h4>
               <p className='gray'>Some info may be visible to other people</p>
             </div>
             <button onClick={()=>navigate('/profile/change')} className='edit-btn'>
@@ -31,23 +31,23 @@ const PersonalInfo = () => {
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">Name</p>
-              <span className="user-input">{User?.fullName}</span>
+              <span className="user-input title">{User?.fullName}</span>
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">BIO</p>
-              <span className="user-input">{User?.Bio ? User?.Bio : 'empty'}</span>
+              <span className="user-input title">{User?.Bio ? User?.Bio : 'empty'}</span>
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">Phone</p>
-              <span className="user-input">{User?.phone ? User?.phone : 'empty'}</span>
+              <span className="user-input title">{User?.phone ? User?.phone : 'empty'}</span>
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">Email</p>
-              <span className="user-input">{User?.email ? User?.email : 'empty'}</span>
+              <span className="user-input title">{User?.email ? User?.email : 'empty'}</span>
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">Password</p>
-              <span className="user-input">{User?.password ? User?.password : '**********'}</span>
+              <span className="user-input title">{User?.password ? User?.password : '**********'}</span>
             </div>
           </div>
         </div>

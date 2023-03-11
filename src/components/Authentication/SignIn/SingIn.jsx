@@ -39,7 +39,7 @@ const SingIn = () => {
   return (
     <div className='authentication-component'>
       { Error?.message  ? 
-      (<AlertDiv socialType={Error?.social} error={Error} setError={setError}  />)  : (null)
+      (<AlertDiv socialType={Error?.social} message={Error} setMessage={setError}  />)  : (null)
       }
      <div className='wrapper'>
         <img src={theme == 'light' ?  (devchall_dark) : (devchall_light)} alt="logo" />

@@ -65,7 +65,7 @@ const Register = () => {
   return (
     <div className='authentication-component'>
      { Error?.message  ? 
-      (<AlertDiv socialType={Error?.loggedThrough} error={Error} setError={setError}  />)  : (null)
+      (<AlertDiv socialType={Error?.loggedThrough} message={Error} setMessage={setError}  />)  : (null)
       }
       <div className='wrapper'>
           <img src={theme == 'light' ? (devchall_dark) : (devchall_light)  } alt="logo" />

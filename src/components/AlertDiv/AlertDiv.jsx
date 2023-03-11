@@ -6,7 +6,7 @@ import { Errors, validateInput } from '../utils/utils'
 import { Link } from 'react-router-dom'
 import './AlertDiv.scss'
 
-const AlertDiv = ({error, socialType, setError, email,pw,}) => {
+const AlertDiv = ({message, success, setMessage}) => {
 
 
   const {authenticationErrors, logout} = useAuthentication()
@@ -26,56 +26,27 @@ const AlertDiv = ({error, socialType, setError, email,pw,}) => {
     return setIsClicked(isClicked => !isClicked)
   }
 
-  // if(error?.message == Errors.SIGNED_UP_DIFFERENTLY){
-  //   return (
-  //     <div className='alert-div-component'>
-  //       {error.loggedThrough == 'Internal' ? (
-  //         <>
-  //         <p className="error-type">Such account already exists</p>
-  //         <div className="wrapper">
-  //           <button onClick={()=>{
-  //             logout()
-  //             navigate('/auth/register')
-              
-  //           }}>Register new?</button>
-  //           <button onClick={()=>{
-  //             logout()
-  //             navigate('/auth/signin')
-  //             }}>Sign in </button>
-  //         </div>
-  //         </>
-  //       ) : (
-  //         <>
-  //         <p className="error-type">Such account has already been signed through {error.loggedThrough} </p>
-  //         <div className="wrapper">
-  //         <button onClick={()=>{
-  //           logout()
-  //           navigate('/auth/register')
-            
-  //         }}>Register new?</button>
-  //         <button onClick={()=>{
-  //           logout()
-  //           navigate('/auth/signin')
-  //           }}>Sign in with {error.loggedThrough}</button>
-  //       </div>
-  //         </>
-  //       )}
-            
-        
-         
-  //     </div>
-  //   )
-  // }
-
-  if(error?.message == Errors.ALREADY_EXISTS || error.message === Errors.SIGNED_UP_DIFFERENTLY){
+  if(message ){
     return (
       <div className='alert-div-component'>
-        {error?.loggedThrough === 'Internal' ? (
-          <p className="error-type">Such account has already been signed up</p>  
+      <p className="alert-type">{message}</p>  
+      <div className="wrapper">
+     
+        <button onClick={setMessage('')} className="alert-btn" type="button">Continue</button>
+      </div>
+  </div>
+    )
+  }
+
+  if(message?.message == Errors.ALREADY_EXISTS || message.message === Errors.SIGNED_UP_DIFFERENTLY){
+    return (
+      <div className='alert-div-component'>
+        {message?.loggedThrough === 'Internal' ? (
+          <p className="alert-type">Such account has already been signed up</p>  
 
         ) : (
 
-          <p className="error-type">Such account has already been signed up through {error.loggedThrough}</p>  
+          <p className="alert-type">Such account has already been signed up through {message.loggedThrough}</p>  
         )}
           <span></span>
           <div className="wrapper">
@@ -88,7 +59,7 @@ const AlertDiv = ({error, socialType, setError, email,pw,}) => {
                type="button">
                 Sign up new 
               </button>
-            {error.loggedThrough === 'Internal' ? (
+            {message.loggedThrough === 'Internal' ? (
             <button 
               onClick={async() =>{ 
                 await logout();
@@ -108,25 +79,25 @@ const AlertDiv = ({error, socialType, setError, email,pw,}) => {
                 }
                 className="alert-btn" 
                 type="button">
-                  Sign in with {error?.loggedThrough}
+                  Sign in with {message?.loggedThrough}
               </button>
             )}
              
           </div>
             {isClicked ? (
               <div style={{margin:'0 auto'}}>
-                <SocialLoginBtns url={`http://localhost:5050/api/auth/`} type={`signin`} social={error.loggedThrough}/>
+                <SocialLoginBtns url={`http://localhost:5050/api/auth/`} type={`signin`} social={message.loggedThrough}/>
               </div>
             ) : null}
-            <button onClick={()=>setError('')} className='hide' >hide</button>
+            <button onClick={()=>setMessage('')} className='hide' >hide</button>
       </div>
     )
     
   }
-  if(error?.message == Errors.NOT_SIGNED_UP || Errors.NOT_FOUND){
+  if(message?.message == Errors.NOT_SIGNED_UP || Errors.NOT_FOUND){
     return (
       <div className='alert-div-component'>
-            <p className="error-type">You have yet to sign up to our Application</p>  
+            <p className="alert-type">You have yet to sign up to our Application</p>  
             <span></span>
             <div className="wrapper">
               <button onClick={()=> {
