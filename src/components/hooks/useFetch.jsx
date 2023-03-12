@@ -2,7 +2,7 @@ import { useAuthentication } from '../Authentication/Authentication'
 // 
 const useFetch = () => {
 
-    const {setCookie, setError,setLoading,removeCookie} = useAuthentication()
+    const {setCookie, setError,setLoading,removeCookie,setIsLogged} = useAuthentication()
     // const {getGithubAccessToken} = useGithub()
     const url = `http://localhost:5050/api/auth/`
     let newURL = location.href.split("?")[0];
@@ -20,9 +20,6 @@ const useFetch = () => {
         }
       }
       const checkAccessToken = async({LOGIN_TYPE, LOGGED_THROUGH, accessToken,handleGithubRegister,getUserData,getUserDataGH})=>{
-        console.log(LOGIN_TYPE)
-        console.log(LOGGED_THROUGH)
-        console.log(accessToken)
         if(accessToken && LOGGED_THROUGH ){
             
               switch(LOGGED_THROUGH){
@@ -42,7 +39,7 @@ const useFetch = () => {
     const fetchRegister = async (fullNameRef,passwordRef,emailRef) => {
         setLoading(true)
 
-        const APICALL = await fetch('http://localhost:5050/api/auth/register', {
+        const APICALL = await fetch(`${url}register`, {
       method: "POST",
       headers:{
         'Content-Type': "application/json"
@@ -63,13 +60,12 @@ const useFetch = () => {
         return setError({message:response.message, loggedThrough: response?.loggedThrough})
       } 
     } 
-      setCookie('accessToken', response.data.accessToken, {path: '/'})
-      setCookie('refreshToken', response.data.refreshToken, {path: '/'})
+      setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: '2000'})
+      setCookie('refreshToken', response.data.refreshToken, {path: '/', maxAge: '2000'})
 
       localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
     (response.data?.loggedThrough)
 
-    window.location.reload()
     
     setLoading(false)
     }
@@ -78,7 +74,7 @@ const useFetch = () => {
         setLoading(true)
 
 
-        const USER = await fetch(`${url}/auth/signin`, {
+        const USER = await fetch(`${url}signin`, {
             method: "POST",
             headers:{
               "Content-Type": "application/json"
@@ -93,13 +89,15 @@ const useFetch = () => {
           const response = await USER.json()
       
           if(!response.success ) {
-              return setError({message:response.message, loggedThrough: response?.loggedThrough})
+             setLoading(false)
+              return setError({message:response?.message, loggedThrough: response?.loggedThrough})
           } else if(response.success){
-            setUser(response.data.user)
-            setCookie('accessToken', response.data.accessToken, {path: '/'})
+            // setCookie('user',response.data.user, {path: '/', maxAge: '2000'})
+            setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: '2000'})
             localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
+            window.location.reload()
           }
-        window.location.reload()
+        // window.location.reload()
 
           setLoading(false)
 
@@ -129,14 +127,17 @@ const useFetch = () => {
                 fullName: response?.data.user.fullName,
                 email: response?.data.user.email,
                 picture: response?.data.user.picture,
+                bio: response?.data.user?.bio,
+                phone: response?.data.user?.phone,
             }
 
             console.log(response)
             localStorage.setItem('LOGGED_THROUGH', response?.loggedThrough)
             console.log(`GETTING USER `)
-            setCookie('user',user , {path:'/'})
-            removeCookie('accessToken', {path:'/'})
-            
+            setCookie('user',user ,{path: '/', maxAge: '2000'})
+            // removeCookie('accessToken', {path:'/'})
+//             removeCookie('accessToken', {path:'/auth'})
+            setIsLogged(true)
             window.localStorage.clear()
         }
 

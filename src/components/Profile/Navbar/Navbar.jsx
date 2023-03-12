@@ -10,8 +10,10 @@ import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
     const {theme} = useTheme()
-    const {User} = useAuthentication()
+    const {User,logout} = useAuthentication()
     const [isDropped, setIsDropped] = useState(false)
+    const navigate = useNavigate()
+    
 
   return (
     <div className='navbar'>
@@ -22,25 +24,28 @@ const Navbar = () => {
                 <p className='user-fullName'>{User?.fullName}</p>
                 <button  onClick={()=> setIsDropped(isDropped=>!isDropped)}><img  style={isDropped ?  { transform: "rotate(180deg)"} : (null)} src={triangleIco} alt="triangle icon" /></button>
             </div>
-            {isDropped ? (
-                <div className='drop-menu box-shadow' >
-                    <div className="wrapper">
-                        <img className='profile-img' src={profileIco} alt="profile icon" />
-                        <p>My profile</p>
+            
+                <div style={isDropped ? 
+                    {transform: "translate(0%, 0%)"}
+                    : {visibility: 'hidden'}} 
+                    className='drop-menu box-shadow' 
+                >
+                    <div  className="wrapper">
+                        <img  src={profileIco} alt="profile icon" />
+                        <button onClick={()=>navigate('/profile')} >My profile</button>
                     </div>
                     <div className="wrapper">
                         <img src={groupIco} alt="group icon" />
-                        <p>Group Chat</p>
+                        <button onClick={()=>navigate('/groupchat')} >Group Chat</button>
+
                     </div>
                     <div className="wrapper">
                        <img src={logoutIco} alt="logout icon" />
-                        <button className='logout-btn'>Logout
+                        <button onClick={logout} className='logout-btn'>Logout
                        </button>
                     </div>
                 </div>
-            ) : (
-                <></>
-            )}
+          
        
         </div>
     </div>

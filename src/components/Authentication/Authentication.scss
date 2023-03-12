@@ -24,23 +24,35 @@
     //     place-content: center;
 
     // }
+
+#root:has(.authentication-component){
+    .box-shadow{
+        @include respond-to(small){
+            box-shadow: none;
+        }
+    }
+    display: grid;
+    align-items: center;
+    
+}
+    
         .authentication-component {
-        
             @include respond-to(medium){ 
                 min-width: 450px;
                 max-width: 0;
-                padding: 2.8rem clamp(2.7rem, 1.057rem + 4.381vw, 3rem)
+                padding: 2.8rem clamp(2.7rem, 1.057rem + 4.381vw, 3rem);
+                margin: 5rem auto;
+            
         
             }  
             display: flex;
-            margin: auto;
             flex-direction: column;
             gap:2rem;
         
             padding: 2rem;
             border-radius: 15px;
             align-items: flex-start;
-            box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.586);
+            // box-shadow: 0 0 2px 1px rgba(128, 128, 128, 0.586);
         
             .social-btns {
                 display: grid;

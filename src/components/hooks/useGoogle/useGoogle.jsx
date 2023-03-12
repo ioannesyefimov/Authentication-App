@@ -24,7 +24,8 @@ const useGoogle = () => {
             return console.log(data?.message)
 
         }
-            setCookie("accessToken", data?.data?.accessToken,  {path: '/'});
+        
+            setCookie("accessToken", data?.data?.accessToken,  [{path: '/'}, {maxAge : "1200"}] );
             // setCookie('user', userResponse?.data.user, {path:'/'})
             // localStorage.setItem('LOGGED_THROUGH', data?.data?.loggedThrough)
             localStorage.setItem('LOGIN_TYPE', 'signin')
@@ -61,9 +62,9 @@ const useGoogle = () => {
         console.log(data)
             let dbResponse = data.data
         
-            setCookie('refreshToken', dbResponse?.refreshToken)
+            setCookie('refreshToken', dbResponse?.refreshToken,  [{path: '/'}, {maxAge : "1200"}])
             
-            setCookie("accessToken", dbResponse?.accessToken,  {path: '/'});
+            setCookie("accessToken", dbResponse?.accessToken,  [{path: '/'}, {maxAge : "1200"}]);
             localStorage.setItem('LOGGED_THROUGH', 'Google')
             localStorage.setItem('LOGIN_TYPE', 'register')
         setLoading(false)

@@ -26,10 +26,10 @@ const AlertDiv = ({message, success, setMessage}) => {
     return setIsClicked(isClicked => !isClicked)
   }
 
-  if(message ){
+  if( message?.message.includes('CHANGED') && success ){
     return (
       <div className='alert-div-component'>
-      <p className="alert-type">{message}</p>  
+      <p className="alert-type">{message?.message}</p>  
       <div className="wrapper">
      
         <button onClick={setMessage('')} className="alert-btn" type="button">Continue</button>
@@ -38,7 +38,7 @@ const AlertDiv = ({message, success, setMessage}) => {
     )
   }
 
-  if(message?.message == Errors.ALREADY_EXISTS || message.message === Errors.SIGNED_UP_DIFFERENTLY){
+  if(message?.message == Errors.ALREADY_EXISTS || message?.message === Errors.SIGNED_UP_DIFFERENTLY){
     return (
       <div className='alert-div-component'>
         {message?.loggedThrough === 'Internal' ? (
@@ -46,7 +46,7 @@ const AlertDiv = ({message, success, setMessage}) => {
 
         ) : (
 
-          <p className="alert-type">Such account has already been signed up through {message.loggedThrough}</p>  
+          <p className="alert-type">Such account has already been signed up through {message?.loggedThrough}</p>  
         )}
           <span></span>
           <div className="wrapper">
@@ -59,7 +59,7 @@ const AlertDiv = ({message, success, setMessage}) => {
                type="button">
                 Sign up new 
               </button>
-            {message.loggedThrough === 'Internal' ? (
+            {message?.loggedThrough === 'Internal' ? (
             <button 
               onClick={async() =>{ 
                 await logout();
@@ -73,8 +73,8 @@ const AlertDiv = ({message, success, setMessage}) => {
             ) : (
               <button 
                 onClick={async() =>{ 
-                  await logout();
-                  navigate('/auth/signin') 
+                  // await logout();
+                  setIsClicked(true)
                 }
                 }
                 className="alert-btn" 
@@ -85,8 +85,8 @@ const AlertDiv = ({message, success, setMessage}) => {
              
           </div>
             {isClicked ? (
-              <div style={{margin:'0 auto'}}>
-                <SocialLoginBtns url={`http://localhost:5050/api/auth/`} type={`signin`} social={message.loggedThrough}/>
+              <div className='social-wrapper' style={{margin:'0 auto'}}>
+                <SocialLoginBtns  type={`signin`} loggedThroughBtn={{social: message?.loggedThrough}}/>
               </div>
             ) : null}
             <button onClick={()=>setMessage('')} className='hide' >hide</button>

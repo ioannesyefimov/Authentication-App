@@ -8,18 +8,18 @@ import './ChangeInfo.scss'
 import UploadInput from './UploadInput'
 const ChangeInfo = () => {
   const {User} = useAuthentication()
-  const [nameValue, setNameValue] = useState('')
-  const [bioValue, setBioValue] = useState('')
-  const [phoneValue, setPhoneValue] = useState('')
-  const [emailValue, setEmailValue] = useState('')
-  const [passwordValue, setPasswordValue] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
   
   const navigate = useNavigate()
   
  const handleSubmit = (e)=>{
   e.preventDefault()
-  const data = new FormData(formRef.current)
+  
+  const nameVal = nameRef.current.value
+  const bioVal = bioRef.current.value
+  const phoneVal = phoneRef.current.value
+  const emailVal = emailRef.current.value
+  const passwordVal = passwordRef.current.value
 
   // console.log(formRef.current)
   console.log(data.get('email'))

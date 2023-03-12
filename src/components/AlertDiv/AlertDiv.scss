@@ -1,25 +1,24 @@
 
 .authentication-component {
-    position: relative;
+    // position: absolute;
 }
 .alert-div-component {
+    position: relative;
     box-shadow: 0 0 5px 1px  red;
-    position: absolute;
     padding: 1.5rem;
+    height: 270px;
     display: grid;
     place-content: center;
     gap:1.5rem;
-    width: 75%;
-    height: 65%;
     margin: auto;
     inset: 0;
-    z-index: 4;
-
+    border-radius: 12px;
     .alert-btn {
         font-size: .7rem;
     }
 
     .alert-type{
+        text-align: center;
         font-size: 1.3rem;
         font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         font-weight: 600;

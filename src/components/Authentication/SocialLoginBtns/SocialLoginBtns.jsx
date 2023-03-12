@@ -8,7 +8,7 @@ import useFacebook from '../../hooks/useFacebook/useFacebook'
 import useTwitter from '../../hooks/useTwitter/useTwitter'
 import SocialBtn from './SocialBtn'
 
-const SocialLoginBtns = ({type}) => {
+const SocialLoginBtns = ({type, loggedThroughBtn=null}) => {
   const {setUser, setRerender,setLoading, setError} = useAuthentication()
   const {handleTwitter} = useTwitter()
   const {handleFacebook} = useFacebook(  )
@@ -30,6 +30,15 @@ const SocialLoginBtns = ({type}) => {
     // google.accounts.id.prompt()
     
   }, [type==='register' ? handleGoogleRegister : handleGoogleSignin])
+  if(loggedThroughBtn?.social){
+    switch(loggedThroughBtn?.social){
+      case 'Google':   return <SocialBtn icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />
+      case 'Github':   return <SocialBtn icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`} execFunc={handleGitHub} />
+      case 'Twitter':  return <SocialBtn icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  execFunc={handleTwitter}/>
+      case 'Facebook': return <SocialBtn icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}  execFunc={handleFacebook} />
+  } 
+}
+    
   
   return (
     <div className='social-wrapper'>

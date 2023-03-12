@@ -37,23 +37,26 @@ const SingIn = () => {
 
 
   return (
-    <div className='authentication-component'>
+    <div className='authentication-component box-shadow'>
       { Error?.message  ? 
-      (<AlertDiv socialType={Error?.social} message={Error} setMessage={setError}  />)  : (null)
-      }
-     <div className='wrapper'>
-        <img src={theme == 'light' ?  (devchall_dark) : (devchall_light)} alt="logo" />
-        <div className="text-wrapper">
-        <span className='inner'>Login</span>
-        </div>
-      </div> 
-      <FormInput Error={Error} btnText={'Login'}  emailRef={emailRef} passwordRef={passwordRef}  onSubmit={onSignInSubmit}/>
-
-      <div className="social-btns">
-        <span>or continue with these social profile</span>
-        <SocialLoginBtns url={"http://localhost:5050/api/auth/"}  type="signin"/>
-      </div>
+      (<AlertDiv  message={Error} setMessage={setError}  />)  : (
+        <>
+          <div className='wrapper'>
+            <img src={theme == 'light' ?  (devchall_dark) : (devchall_light)} alt="logo" />
+            <div className="text-wrapper">
+            <span className='inner'>Login</span>
+            </div>
+          </div> 
+          <FormInput Error={Error} btnText={'Login'}  emailRef={emailRef} passwordRef={passwordRef}  onSubmit={onSignInSubmit}/>
+          <div className="social-btns">
+            <span>or continue with these social profile</span>
+            <SocialLoginBtns url={"http://localhost:5050/api/auth/"}  type="signin"/>
+          </div>
+        </>
+      )
+    }
     </div>
+     
   )
 }
 

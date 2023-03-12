@@ -3,7 +3,7 @@ import { useAuthentication } from '../../Authentication/Authentication';
 import useFetch from '../useFetch';
 
 const useGithub = () => {
-    const {setCookie, cookies,setError, setLoading} = useAuthentication()
+    const {setCookie, cookies,setError, setLoading,setIsLogged} = useAuthentication()
     const {getUserData} = useFetch()
     const url = `http://localhost:5050/api/auth/`
 
@@ -31,7 +31,7 @@ const useGithub = () => {
         if(!response.success){
             return setError({message: response?.message, loggedThrough:response?.loggedThrough})
         }
-        setCookie('accessToken', response?.data?.accessToken)
+        setCookie('accessToken', response?.data?.accessToken, {path: '/', maxAge: '2000'})
         window.location.reload()
 
 
@@ -52,11 +52,11 @@ const useGithub = () => {
             setError({message: responseGH?.message})
         }
          console.log(responseGH)
-        setCookie('accessToken', responseGH.data.accessToken)
+        setCookie('accessToken', responseGH.data.accessToken, {path: '/', maxAge: '2000'})
         console.log(type)
         window.history.pushState(null, document.title, newURL);
 
-        window.location.replace(`auth/${type}`)
+        // window.location.replace(`auth/${type}`)
 
         setLoading(false)
     }
@@ -82,6 +82,8 @@ const useGithub = () => {
             localStorage.clear()
             // removeCookie('accessToken', {path:'/'})
             setLoading(false)
+            setIsLogged(true)
+
 
            
         }).catch(err=>{
