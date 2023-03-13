@@ -3,7 +3,7 @@
        return regex.test(email)
 };
 
- const validateInput = ({ firstRef,secondRef,thirdRef,setError,Error})=>{
+ const validateInput = ({ firstRef,secondRef,thirdRef,setMessage,Message})=>{
   
   let firstVal = firstRef?.current.value
   let secondVal = secondRef?.current.value
@@ -32,13 +32,13 @@
     }else if (secondRef && secondVal !== '' && validatePassword(thirdVal, secondVal) !== 'valid'){
       let currentErr = validatePassword(thirdVal,secondVal)
         secondRef.current.classList.add('error')
-        setError(...Error, `${currentErr}`)
+        setMessage(Message, `${currentErr}`)
         
         err.push(currentErr)
 
     }
     if(err.length > 0) {
-     setError(err)
+     setMessage(Message)
       return false
     } else {
       firstRef.current.classList.remove('error')
@@ -155,4 +155,25 @@ export const convertBase64 = (file) => {
       reject(err)
     }
   })
+}
+
+export const APIFetch = async({url,method, body}) => {
+  console.log(body);
+ return method?.toLowerCase().includes('post')? (
+  await fetch(url, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body)
+  }).then(response=>response.json())
+ ) : (
+  await fetch(url, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(response=>response.json())
+ )
+
 }

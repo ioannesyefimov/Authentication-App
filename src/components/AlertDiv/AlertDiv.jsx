@@ -26,6 +26,17 @@ const AlertDiv = ({message, success, setMessage}) => {
     return setIsClicked(isClicked => !isClicked)
   }
 
+  if(message?.message?.includes('jwt')){
+    return (
+      <div className='alert-div-component'>
+        <p className="alert-type">You need to sign in again </p>  
+       <div className="wrapper">
+          <button onClick={()=>{logout(); navigate('/auth/signin')}} className="alert-btn" type="button">Sign in </button>
+        </div>
+      </div>
+    )
+  }
+
   if( message?.message.includes('CHANGED') && success ){
     return (
       <div className='alert-div-component'>
@@ -94,7 +105,7 @@ const AlertDiv = ({message, success, setMessage}) => {
     )
     
   }
-  if(message?.message == Errors.NOT_SIGNED_UP || Errors.NOT_FOUND){
+  if(message?.message == (Errors.NOT_SIGNED_UP || Errors.NOT_FOUND)){
     return (
       <div className='alert-div-component'>
             <p className="alert-type">You have yet to sign up to our Application</p>  
@@ -110,8 +121,10 @@ const AlertDiv = ({message, success, setMessage}) => {
         </div>
     )
   }
+  else {
+    return console.log(`not found`);
+  }
 
-  
 }
 
 export default AlertDiv

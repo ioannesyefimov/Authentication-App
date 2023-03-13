@@ -7,7 +7,7 @@ const ChangeForm =  React.forwardRef((props,ref) => (
     <label className='label-color' htmlFor={props.name}>
       {props.name}
     </label>
-    <input placeholder={props.placeholder} type={props.type} ref={ref} name={`${props.name} input`} id={props.name} aria-label={`${props.name} input`} />
+    <input placeholder={props.placeholder} type={props.type} ref={ref} name={props.name} id={props.name} aria-label={`${props.name} `} />
 
   </div>
   

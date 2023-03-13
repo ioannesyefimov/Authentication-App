@@ -39,7 +39,7 @@ body[theme='light'] {
             }
         }
 
-        p.gray{
+        p.gray, label.gray{
             color:gray
         }
         .title{
@@ -79,7 +79,7 @@ body[theme="dark"] {
         background-color: #3e3e3e
     
         }
-        p.gray{
+        p.gray, label.gray{
             color:rgb(173, 173, 173)
         }
         .title{

@@ -15,7 +15,6 @@ import App from './App'
 const router = createBrowserRouter([
   {
     element:<ProtectedRoute/>,
-    path:'/',
     children:[
       {
         element: <App/>,
@@ -35,7 +34,7 @@ const router = createBrowserRouter([
   },
   {
     element: <Authentication />,
-    // path: '/',
+    path: '/',
     children: [
       {
         element: <SingIn/>,

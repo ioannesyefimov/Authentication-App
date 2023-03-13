@@ -3,7 +3,7 @@ import { useAuthentication } from '../../Authentication/Authentication';
 import useFetch from '../useFetch';
 
 const useGithub = () => {
-    const {setCookie, cookies,setError, setLoading,setIsLogged} = useAuthentication()
+    const {setCookie, cookies,setMessage, setLoading,setIsLogged} = useAuthentication()
     const {getUserData} = useFetch()
     const url = `http://localhost:5050/api/auth/`
 
@@ -29,7 +29,7 @@ const useGithub = () => {
         const response = await registerUser.json()
         console.log(response)
         if(!response.success){
-            return setError({message: response?.message, loggedThrough:response?.loggedThrough})
+            return setMessage({message: response?.message, loggedThrough:response?.loggedThrough})
         }
         setCookie('accessToken', response?.data?.accessToken, {path: '/', maxAge: '2000'})
         window.location.reload()
@@ -49,7 +49,7 @@ const useGithub = () => {
 
         const responseGH = await accessTokenGH.json()
         if(!responseGH.success){
-            setError({message: responseGH?.message})
+            setMessage({message: responseGH?.message})
         }
          console.log(responseGH)
         setCookie('accessToken', responseGH.data.accessToken, {path: '/', maxAge: '2000'})
@@ -75,7 +75,7 @@ const useGithub = () => {
             if(data.message){
                 console.log(data.message)
                 console.log(data.loggedThrough)
-                setError({message: data.message, loggedThrough: data.loggedThrough})
+                setMessage({message: data.message, loggedThrough: data.loggedThrough})
             
             }
             getUserData(response?.accessToken, 'Github')
@@ -87,7 +87,7 @@ const useGithub = () => {
 
            
         }).catch(err=>{
-            return setError(err)
+            return setMessage(err)
         })
     }
   

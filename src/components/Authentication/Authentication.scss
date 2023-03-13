@@ -60,6 +60,18 @@
                 color:gray;
                 margin: 0 auto;
                 margin-bottom: 2.5rem;
+                position: relative;
+                    .hint-btn{
+                        position: absolute;
+                        bottom: -50%;
+                        left: 0 ;
+                        right: 0;
+                        color:gray;
+                        font-size: 1.1rem;
+                        text-align: center;
+                        margin: 0 auto;
+                        background: transparent;
+                    }
             }
         
             .wrapper {

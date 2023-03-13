@@ -3,7 +3,9 @@
     // position: absolute;
 }
 .alert-div-component {
-    position: relative;
+    position: absolute;
+    z-index: 5;
+    max-width: 350px;
     box-shadow: 0 0 5px 1px  red;
     padding: 1.5rem;
     height: 270px;

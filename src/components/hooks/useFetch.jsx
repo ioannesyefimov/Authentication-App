@@ -1,10 +1,11 @@
 import { useAuthentication } from '../Authentication/Authentication'
+import { APIFetch } from '../utils/utils';
 // 
 const useFetch = () => {
 
-    const {setCookie, setError,setLoading,removeCookie,setIsLogged} = useAuthentication()
+    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged} = useAuthentication()
     // const {getGithubAccessToken} = useGithub()
-    const url = `http://localhost:5050/api/auth/`
+    const url = `http://localhost:5050/api/`
     let newURL = location.href.split("?")[0];
 
     
@@ -39,29 +40,28 @@ const useFetch = () => {
     const fetchRegister = async (fullNameRef,passwordRef,emailRef) => {
         setLoading(true)
 
-        const APICALL = await fetch(`${url}register`, {
-      method: "POST",
-      headers:{
-        'Content-Type': "application/json"
-      },
-      body: JSON.stringify({
-        fullName: fullNameRef.current.value,
-        password: passwordRef.current.value,
-        email: emailRef.current.value,
-        loggedThrough: 'Internal'
-      })})
+        const response = await APIFetch({
+          url:`${url}auth/register`, 
+          method:'POST',
+          body: { 
+          fullName: fullNameRef.current.value,
+          password: passwordRef.current.value,
+          email: emailRef.current.value,
+          loggedThrough: 'Internal'
+        }})
+      
+       
     
-    const response = await APICALL.json()
 
     console.log(response)
 
     if(!response.success ) {
       if(response?.loggedThrough ){
-        return setError({message:response.message, loggedThrough: response?.loggedThrough})
+         setMessage({message:response.message, loggedThrough: response?.loggedThrough})
       } 
     } 
-      setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: '2000'})
-      setCookie('refreshToken', response.data.refreshToken, {path: '/', maxAge: '2000'})
+      setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
+      setCookie('refreshToken', response.data.refreshToken, {path: '/', maxAge: 2000})
 
       localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
     (response.data?.loggedThrough)
@@ -74,26 +74,23 @@ const useFetch = () => {
         setLoading(true)
 
 
-        const USER = await fetch(`${url}signin`, {
-            method: "POST",
-            headers:{
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              email: emailRef.current.value,
-              password: passwordRef.current.value,
-              loggedThrough: 'Internal'
-            })    
-          })
-          console.log(USER)
-          const response = await USER.json()
+        const response = await APIFetch({
+
+         url: `${url}auth/signin`, 
+         method: 'POST', 
+         body: {
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+          loggedThrough: 'Internal'
+        }}) 
+           
       
           if(!response.success ) {
              setLoading(false)
-              return setError({message:response?.message, loggedThrough: response?.loggedThrough})
+               setMessage({message:response?.message, loggedThrough: response?.loggedThrough})
           } else if(response.success){
             // setCookie('user',response.data.user, {path: '/', maxAge: '2000'})
-            setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: '2000'})
+            setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
             localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
             window.location.reload()
           }
@@ -106,21 +103,18 @@ const useFetch = () => {
    const getUserData= async(accessToken, loggedThrough) =>{
     setLoading(true)
 
-       const dbResponse = await fetch(`${url}signin`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            accessToken: accessToken,
-            loggedThrough: loggedThrough
-        }),
-        })
-        const response = await dbResponse.json()
+       const response = await APIFetch({
+        url: `${url}auth/signin`,
+        method: 'POST', 
+        body: {
+        accessToken: accessToken,
+        loggedThrough: loggedThrough
+        }})
 
         if(!response?.success && response.message){
-            return setError({message:response.message, loggedThrough:response?.loggedThrough})
+             setMessage({message:response.message, loggedThrough:response?.loggedThrough})
         }
+        console.log(response)
         if(response?.data.user){
 
             const user = {
@@ -134,7 +128,7 @@ const useFetch = () => {
             console.log(response)
             localStorage.setItem('LOGGED_THROUGH', response?.loggedThrough)
             console.log(`GETTING USER `)
-            setCookie('user',user ,{path: '/', maxAge: '2000'})
+            setCookie('user',user ,{path: '/', maxAge: 2000})
             // removeCookie('accessToken', {path:'/'})
 //             removeCookie('accessToken', {path:'/auth'})
             setIsLogged(true)
@@ -145,12 +139,77 @@ const useFetch = () => {
 
    }
 
+   const handleFetchType = async(updatedParam, email, token, urlParam) =>{
+    let response = await APIFetch({
+      url:`${url}change/${urlParam}`, 
+      method: 'POST',
+      body:{email: email, updatedParam: updatedParam, accessToken: token}
+    })
+    console.log(`email changing`);
+    if(!response?.success){
+       setMessage({...message, message:response?.message})
+       
+    } 
+    
+  }
+   const handleChangeFetch = async ({data,user, accessToken}) => {
+    setLoading(true)
+    // console.log(user);
+    let email = data?.get('email')
+    let name = data?.get('name')
+    let bio = data?.get('bio')
+    let phone = data?.get('phone')
+    let password = data?.get('password')
+    let changesArr=[]
+
+    if(email) changesArr.push(`email`)
+    if(name) changesArr.push(`name`)
+    if(bio) changesArr.push(`bio`)
+    if(phone) changesArr.push(`phone`)
+    if(password) changesArr.push(`password`)
+
+    let haveMatched = true
+    for (let key in changesArr){
+      switch(changesArr[key]){
+        case 'email': 
+          handleFetchType(email, user?.email, accessToken, 'email');
+          console.log(changesArr[key]);
+          continue
+        case 'name': 
+          handleFetchType(name, user?.email, accessToken, 'name') ;
+          console.log(changesArr[key]);
+          continue
+        case 'phone': 
+          handleFetchType(phone, user?.email, accessToken, 'phone') ;
+          console.log(changesArr[key]);
+          continue
+        case 'bio':
+           handleFetchType(bio, user?.email, accessToken, 'bio') ;
+           console.log(changesArr[key]);
+           continue
+        case 'password': 
+          handleFetchType(password, user?.email, accessToken, 'password') ;
+          break
+          default: 
+            haveMatched = false
+      }
+    if(haveMatched){
+      return getUserData(accessToken)
+      // window.location.reload()
+    }else {
+      return setMessage({message: `MISSING ARGUMENTS`})
+    }
+  }
+
+    
+   }
+
    
   
 
    
 
-   return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString
+   return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString,handleChangeFetch,
     }
 }
 

@@ -4,9 +4,11 @@ import { useAuthentication } from './Authentication'
 import useFetch from '../hooks/useFetch'
 import useGithub from '../hooks/useGithub/useGithub'
 import { timeout } from '../utils/utils'
+import { useNavigate } from 'react-router-dom'
 const ProtectedRoute =  () => {
     const {Loading,isLogged} =  useAuthentication();
    
+    const navigate = useNavigate()
  
 
     const location = useLocation()
@@ -21,7 +23,9 @@ const ProtectedRoute =  () => {
         case '/profile': return <Outlet/>
         case '/profile/change': return <Outlet />
       }
-    }   
+    }   else {
+     return<Navigate to='/auth/signin' replace />
+    }
 
 }
 

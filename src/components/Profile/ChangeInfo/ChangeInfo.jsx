@@ -7,19 +7,17 @@ import ChangeForm from '../../LoginForm/ChangeForm'
 import './ChangeInfo.scss'
 import UploadInput from './UploadInput'
 const ChangeInfo = () => {
-  const {User} = useAuthentication()
+  const {User, cookies} = useAuthentication()
   const [selectedFile, setSelectedFile] = useState(null)
-  
+  const {handleChangeFetch} = useFetch()
   const navigate = useNavigate()
   
  const handleSubmit = (e)=>{
   e.preventDefault()
-  
-  const nameVal = nameRef.current.value
-  const bioVal = bioRef.current.value
-  const phoneVal = phoneRef.current.value
-  const emailVal = emailRef.current.value
-  const passwordVal = passwordRef.current.value
+  const data = new FormData(formRef.current)
+  console.log(data);
+   handleChangeFetch({data, user:User, accessToken: cookies?.accessToken})
+
 
   // console.log(formRef.current)
   console.log(data.get('email'))
@@ -110,13 +108,13 @@ const ChangeInfo = () => {
                         <img className='profile-img' src={User?.picture ? User.picture : profileIco} alt="profile image" />
                       </UploadInput>
                     </div>
-                    <p className="gray">CHANGE PHOTO</p>
+                    <label className="gray">CHANGE PHOTO</label>
                   </div>
                   <ChangeForm type="text" placeholder={'Enter your name...'} ref={nameRef} name='name' />
                   <ChangeForm type="text" placeholder={'Enter your bio...'} ref={bioRef} name='bio' />
                   <ChangeForm type="text" placeholder={'Enter your phone...'} ref={phoneRef} name='phone' />
                   <ChangeForm type="text" placeholder={'Enter your email...'} ref={emailRef} name='email' />
-                  <ChangeForm type="text" placeholder={'Enter your password...'} ref={passwordRef} name='pasword' />
+                  <ChangeForm type="text" placeholder={'Enter your password...'} ref={passwordRef} name='password' />
                   <button type="submit" className='save-btn'>Save</button>
                 </form>
               </div>

@@ -17,8 +17,7 @@ export const AuthenticationProvider = ({children}) => {
     const [Loading, setLoading] = useState(false)
     const [User, setUser] = useState({})
     const [isLogged, setIsLogged] = useState(false)
-
-    const [Error, setError] = useState({})
+    const [Message, setMessage] = useState({})
 
     useEffect(()=>{
       const isLoggedUser = cookies.user
@@ -34,7 +33,7 @@ export const AuthenticationProvider = ({children}) => {
     const logout = () => {
       console.log('CLEARNING STATE')
       setUser({})
-      setError({})
+      setMessage({})
       removeCookie('accessToken', {path:'/'})
       removeCookie('refreshToken', {path:'/'})
       window.localStorage.clear()
@@ -48,9 +47,9 @@ export const AuthenticationProvider = ({children}) => {
     
     const value = useMemo(
         () => ({
-            User,cookies,isLogged, Error, Loading,setIsLogged, setLoading,setCookie,removeCookie,setError, setUser,logout
+            User,cookies,isLogged, Message, Loading,setIsLogged, setLoading,setCookie,removeCookie,setMessage, setUser,logout
         }),
-         [User,isLogged,Error,cookies,Loading]
+         [User,isLogged,Message,cookies,Loading]
     )
 
 
@@ -65,7 +64,6 @@ export const Authentication = ()=>{
   const {cookies,removeCookie,setIsLogged,isLogged,User, setUser, Loading, setLoading} = useAuthentication()
   const { getUserData,checkQueryString,checkAccessToken} = useFetch();
   const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
-  const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
