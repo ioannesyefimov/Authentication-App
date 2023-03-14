@@ -74,7 +74,7 @@ const UploadInput = ({children, setSelectedFile},) => {
     ) : null }
     <label className='file-input' htmlFor="file-upload ">
 
-        <input accept='image/*'  type="file" onChange={handleFileChange} name="photo file input" id="file-upload" />
+        <input accept='image/*'  type="file" onChange={handleFileChange} name="photo" id="file-upload" />
         {children}
     </label>
     </>

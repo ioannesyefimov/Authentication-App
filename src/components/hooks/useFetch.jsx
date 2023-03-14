@@ -1,5 +1,6 @@
 import { useAuthentication } from '../Authentication/Authentication'
 import { APIFetch } from '../utils/utils';
+import { convertBase64 } from '../utils/utils';
 // 
 const useFetch = () => {
 
@@ -139,11 +140,11 @@ const useFetch = () => {
 
    }
 
-   const handleFetchType = async(updatedParam, email, token, urlParam) =>{
+   const handleFetchType = async(updatedParams, email, token,setMessage) =>{
     let response = await APIFetch({
-      url:`${url}change/${urlParam}`, 
+      url:`${url}change`, 
       method: 'POST',
-      body:{email: email, updatedParam: updatedParam, accessToken: token}
+      body:{userEmail: email, updatedParams: updatedParams, accessToken: token}
     })
     console.log(`email changing`);
     if(!response?.success){
@@ -152,6 +153,33 @@ const useFetch = () => {
     } 
     
   }
+  const uploadPicture = async (file,accessToken) => {
+   
+    // const file = event.target.files[0]
+    const base64 = await convertBase64(file)
+    
+
+        // 👇 Uploading the file using the fetch API to the server
+     const upload = await fetch('http://localhost:5050/api/upload/picture', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify({
+            image: base64,
+            accessToken: accessToken
+          }),
+        })
+
+      const uploadResponse = await upload.json()
+        return uploadResponse?.success ? (
+          {url: uploadResponse?.data?.url}
+        ) : (
+          {message: uploadResponse?.message}
+        )
+
+    }
+
    const handleChangeFetch = async ({data,user, accessToken}) => {
     setLoading(true)
     // console.log(user);
@@ -160,49 +188,70 @@ const useFetch = () => {
     let bio = data?.get('bio')
     let phone = data?.get('phone')
     let password = data?.get('password')
-    let changesArr=[]
+    let picture = data?.get('picture')
+    console.log(picture);
+    let changesArr={}
 
-    if(email) changesArr.push(`email`)
-    if(name) changesArr.push(`name`)
-    if(bio) changesArr.push(`bio`)
-    if(phone) changesArr.push(`phone`)
-    if(password) changesArr.push(`password`)
-
-    let haveMatched = true
-    for (let key in changesArr){
-      switch(changesArr[key]){
-        case 'email': 
-          handleFetchType(email, user?.email, accessToken, 'email');
-          console.log(changesArr[key]);
-          continue
-        case 'name': 
-          handleFetchType(name, user?.email, accessToken, 'name') ;
-          console.log(changesArr[key]);
-          continue
-        case 'phone': 
-          handleFetchType(phone, user?.email, accessToken, 'phone') ;
-          console.log(changesArr[key]);
-          continue
-        case 'bio':
-           handleFetchType(bio, user?.email, accessToken, 'bio') ;
-           console.log(changesArr[key]);
-           continue
-        case 'password': 
-          handleFetchType(password, user?.email, accessToken, 'password') ;
-          break
-          default: 
-            haveMatched = false
-      }
-    if(haveMatched){
-      return getUserData(accessToken)
-      // window.location.reload()
-    }else {
-      return setMessage({message: `MISSING ARGUMENTS`})
+    if(picture){
+      let url = await uploadPicture(picture,accessToken)
+      if(url?.message) return setMessage({message:url?.message})
+      changesArr.picture = url?.url
     }
-  }
+    if(email) changesArr.email = email
+    if(name) changesArr.name = name
+    if(bio) changesArr.bio = bio
+    if(phone) changesArr.phone = phone
+    if(password) changesArr.password = password
+    console.log(changesArr);
+    let response = await handleFetchType(changesArr, user?.email, accessToken, setMessage)
+    console.log(response);
+    if(!response?.success) {
+        return setMessage({message: response?.message})
+    }
+      let newUser =  await getUserData(accessToken)
+
+      console.log(newUser)
+      // window.location.reload()
+    // if(picture) changesArr.push('picture')
+    // if(email) changesArr.push(`email`)
+    // if(name) changesArr.push(`name`)
+    // if(bio) changesArr.push(`bio`)
+    // if(phone) changesArr.push(`phone`)
+    // if(password) changesArr.push(`password`)
+
+    // for (let key in changesArr){
+    //   switch(changesArr[key]){
+    //     case 'email': 
+    //       handleFetchType(email, user?.email, accessToken, 'email');
+    //       console.log(changesArr[key]);
+    //       continue
+    //     case 'name': 
+    //       handleFetchType(name, user?.email, accessToken, 'name') ;
+    //       console.log(changesArr[key]);
+    //       continue
+    //     case 'phone': 
+    //       handleFetchType(phone, user?.email, accessToken, 'phone') ;
+    //       console.log(changesArr[key]);
+    //       continue
+    //     case 'bio':
+    //        handleFetchType(bio, user?.email, accessToken, 'bio') ;
+    //        console.log(changesArr[key]);
+    //        continue
+    //     case 'picture':
+    //       changePhoto(picture, user, accessToken)
+    //       console.log(changesArr[key])
+    //       continue
+    //     case 'password': 
+    //       handleFetchType(password, user?.email, accessToken, 'password') ;
+    //       break
+    //       default: 
+    //         haveMatched = false
+    //   }
 
     
-   }
+  
+    }
+    
 
    
   

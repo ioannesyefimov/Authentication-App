@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { backIco, cameraIco, profileIco } from '../../../Assets'
 import { useAuthentication } from '../../Authentication/Authentication'
 import useFetch from '../../hooks/useFetch'
+import { convertBase64 } from '../../utils/utils'
 import ChangeForm from '../../LoginForm/ChangeForm'
 import './ChangeInfo.scss'
 import UploadInput from './UploadInput'
@@ -12,18 +13,17 @@ const ChangeInfo = () => {
   const {handleChangeFetch} = useFetch()
   const navigate = useNavigate()
   
- const handleSubmit = (e)=>{
+ const handleSubmit = async(e)=>{
   e.preventDefault()
   const data = new FormData(formRef.current)
-  console.log(data);
+  if(selectedFile){
+    data.append('picture',selectedFile )
+    console.log(data);
+  }
+  // console.log(data);
    handleChangeFetch({data, user:User, accessToken: cookies?.accessToken})
-
-
-  // console.log(formRef.current)
-  console.log(data.get('email'))
-  console.log(data)
  }
-  
+
   const formRef = React.createRef(null)
   const nameRef = React.createRef(null)
   const bioRef = React.createRef(null)
@@ -32,59 +32,10 @@ const ChangeInfo = () => {
   const passwordRef = React.createRef(null)
 
 
-  const changePhoto = async (event) => {
-   
-    // const file = event.target.files[0]
-    const base64 = await convertBase64(selectedFile)
-    
-
-        // 👇 Uploading the file using the fetch API to the server
-     const uplaod = await fetch('http://localhost:5050/api/upload/picture', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json' 
-          },
-          body: JSON.stringify({
-            image: base64
-          }),
-        })
-
-      const uploadResponse = await uplaod.json()
-
-      if(uploadResponse.success){
-        console.log(uploadResponse.data)
-        const changePhoto = await fetch('http://localhost:5050/api/change/picture', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json' 
-          },
-          body: JSON.stringify({
-            email: User?.email,
-            newPicture: uploadResponse?.data?.url
-          }),
-        })
-
-        const isChanged = await changePhoto.json()
-        console.log(isChanged)
-        if(isChanged.success){
-          setResponse({message: isChanged?.data?.message, success: isChanged?.success})
-          const updatedUser = User
-          updatedUser.picture = isChanged?.data?.url
-          setCookie('user', updatedUser, {path:'/'} )
-        }
-
-      }
-      else {
-        setResponse({message: isChanged?.message, success: isChanged?.success})
-        console.log(uploadResponse)
-      }
-     
-      };
+  
       
   
-  const hangdleChange = (e)=>{
-    setData({...data,[e.target.name]: e.target.value})
-  }
+
 
   
 
