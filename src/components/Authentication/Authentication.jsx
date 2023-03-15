@@ -1,9 +1,10 @@
-import React, {useState, useEffect,useMemo} from 'react'
+import React, {useState, useEffect,useMemo, Suspense} from 'react'
 import useFetch from '../hooks/useFetch'
 import useGithub from '../hooks/useGithub/useGithub'
 import {Navigate,Outlet, useLocation, useNavigate} from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import './Authentication.scss'
+import { Fallback } from '../ErrorBoundary/ErrorBoundary'
 import { Errors } from '../utils/utils'
   
 export const AuthContext = React.createContext()
@@ -23,12 +24,12 @@ export const AuthenticationProvider = ({children}) => {
       const isLoggedUser = cookies.user
 
       if(isLoggedUser?.fullName ){
-        setLoading(false)
-
         setUser(isLoggedUser)
         setIsLogged(true)
       } 
+
     },[cookies.user])
+
 
     const logout = () => {
       console.log('CLEARNING STATE')
@@ -54,10 +55,13 @@ export const AuthenticationProvider = ({children}) => {
 
 
     return (
-        <AuthContext.Provider value={value}>
-           {children}
-        </AuthContext.Provider>
-    )
+          <AuthContext.Provider value={value}>
+            {Loading ? <Fallback /> : children}
+          </AuthContext.Provider>
+      
+      )
+    
+        
 }
 
 export const Authentication = ()=>{
@@ -67,28 +71,52 @@ export const Authentication = ()=>{
   const location = useLocation()
 
   useEffect(() => {
-  console.log(`rerendered`);
-  if(!isLogged){
-    let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
-    let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
+    console.log(`rerendered`);
+    if(!isLogged){
+      let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
+      let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
 
-    checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
-    checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken: cookies.accessToken, getUserData, getUserDataGH,handleGithubRegister})
-  }
+      checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
+      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken: cookies.accessToken, getUserData, getUserDataGH,handleGithubRegister})
+    }
 
   }, [])
 
-  if(Loading && !isLogged){
-    return <h1 className='loading'>Loading...</h1>
-  }
 
-  if(!isLogged){
-    // if(location.search) return 
-    if(!location.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
-    return <Outlet />
-  } else if(isLogged){
-   return <Navigate to='/profile' replace />
-  }
+  // if(Loading && !isLogged){
+  //   return <h1 className='loading'>Loading...</h1>
+  // }
+  return (
+    <>
+      {
+        Loading ? (
+          <Fallback />
+        ) : (
+          !isLogged ? (
+            (!location.pathname.includes('/auth')) ? (
+              <Navigate to='/auth/signin' replace />
+            ) 
+            :
+            (
+               <Outlet />
+            )
+          ) : (
+            <Navigate to='/profile' replace />
+          ) 
+
+        ) 
+      
+    }
+    </>
+  )
+
+//   if(!isLogged){
+//     // if(location.search) return 
+//     if(!location.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
+//     return <Outlet />
+//   } else if(isLogged){
+//    return <Navigate to='/profile' replace />
+//   }
  
 }
 

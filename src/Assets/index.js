@@ -14,8 +14,10 @@ import triangleIco from './triangleIco.svg'
 import backIco from './backIco.svg'
 import cameraIco from './cameraIco.svg'
 import correctUploadIco from './correctUploadIco.svg'
+import loadingGif from './Loading.gif'
 
 export {
+  loadingGif,
     triangleIco, logoutIco, backIco,cameraIco,correctUploadIco,
       groupIco,devchall_dark, devchall_light,
        devchall_png, facebookIco, GithubIco, GoogleIco,

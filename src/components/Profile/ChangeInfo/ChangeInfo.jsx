@@ -7,8 +7,9 @@ import { convertBase64 } from '../../utils/utils'
 import ChangeForm from '../../LoginForm/ChangeForm'
 import './ChangeInfo.scss'
 import UploadInput from './UploadInput'
+import AlertDiv from '../../AlertDiv/AlertDiv'
 const ChangeInfo = () => {
-  const {User, cookies} = useAuthentication()
+  const {User, cookies, Message, setMessage} = useAuthentication()
   const [selectedFile, setSelectedFile] = useState(null)
   const {handleChangeFetch} = useFetch()
   const navigate = useNavigate()
@@ -21,7 +22,9 @@ const ChangeInfo = () => {
     console.log(data);
   }
   // console.log(data);
-   handleChangeFetch({data, user:User, accessToken: cookies?.accessToken})
+  await handleChangeFetch({data, user:User, accessToken: cookies?.accessToken});
+
+  navigate('/profile')
  }
 
   const formRef = React.createRef(null)
@@ -30,17 +33,9 @@ const ChangeInfo = () => {
   const phoneRef = React.createRef(null)
   const emailRef = React.createRef(null)
   const passwordRef = React.createRef(null)
-
-
-  
-      
-  
-
-
-  
-
   return (
     <div className='change-info-component'>
+      {Message?.message ? (<AlertDiv message={Message} setMessage={setMessage} />) : null}
       <button onClick={()=>navigate('/profile')} className='back-btn'>
         <img src={backIco} alt="back icon" />
         Back</button>

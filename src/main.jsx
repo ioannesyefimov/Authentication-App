@@ -10,6 +10,7 @@ import  { AuthenticationProvider, Authentication } from './components/Authentica
 
 import {CookiesProvider} from 'react-cookie'
 import App from './App'
+import ErrorBoundary, { Fallback } from './components/ErrorBoundary/ErrorBoundary'
 
 
 const router = createBrowserRouter([
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
+  <ErrorBoundary fallback={<Fallback/>}>
   <CookiesProvider>
 
     <AuthenticationProvider>
@@ -63,4 +65,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </ThemeProvider>
     </AuthenticationProvider>
   </CookiesProvider>
+  </ErrorBoundary>
 )

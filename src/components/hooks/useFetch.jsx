@@ -11,31 +11,56 @@ const useFetch = () => {
 
     
     const checkQueryString = async({LOGIN_TYPE, LOGGED_THROUGH,getGithubAccessToken}) => {
+      setLoading(true)
+      console.log(`query loading started`);
+
         const queryString = window.location.search
         const urlParams = new URLSearchParams(queryString)
         const codeParam = urlParams.get('code')
   
           if(codeParam && LOGGED_THROUGH == 'Github' ) {
-           await getGithubAccessToken(codeParam, LOGIN_TYPE)
+            setLoading(false)
+          return await getGithubAccessToken(codeParam, LOGIN_TYPE);
         } else {
+          setLoading(false)
           return console.log('query is empty')
         }
+
       }
       const checkAccessToken = async({LOGIN_TYPE, LOGGED_THROUGH, accessToken,handleGithubRegister,getUserData,getUserDataGH})=>{
+        setLoading(true)
+        console.log(`token loading started`);
+      
         if(accessToken && LOGGED_THROUGH ){
+          switch(LOGGED_THROUGH){
+            // check whether user is trying to register github account or signin
+            case 'Github': 
+             LOGIN_TYPE=='register' ?
+              await handleGithubRegister(accessToken,'register') :
+               await getUserDataGH();
+               break;
+            case 'Google':   
+              await getUserData(accessToken, LOGGED_THROUGH)
+              break;
+            case 'Internal':
+              await getUserData(accessToken, LOGGED_THROUGH)
+              break;
+            case 'Facebook':
+              await getUserData(accessToken, LOGGED_THROUGH)
+              break;
+            case 'Twitter': 
+             await getUserData(accessToken, LOGGED_THROUGH)
+             break;
+            default: 
+             console.log('not found')
+          }
+          setLoading(false)
             
-              switch(LOGGED_THROUGH){
-                // check whether user is trying to register github account or signin
-                case 'Github': return LOGIN_TYPE=='register' ? await handleGithubRegister(accessToken,'register') : await getUserDataGH()
-                case 'Google': return  await getUserData(accessToken, LOGGED_THROUGH)
-                case 'Internal': return await getUserData(accessToken, LOGGED_THROUGH)
-                case 'Facebook': return await getUserData(accessToken, LOGGED_THROUGH)
-                case 'Twitter': return await getUserData(accessToken, LOGGED_THROUGH)
-                default: return console.log('not found')
-              }
           } else {
+            setLoading(false)
             return console.log(`NOT_FOUND`)
           }
+          
         }
 
     const fetchRegister = async (fullNameRef,passwordRef,emailRef) => {
@@ -129,11 +154,14 @@ const useFetch = () => {
             console.log(response)
             localStorage.setItem('LOGGED_THROUGH', response?.loggedThrough)
             console.log(`GETTING USER `)
+
             setCookie('user',user ,{path: '/', maxAge: 2000})
+            // setCookie('accessToken', response?.data?.accessToken,{path: '/', maxAge: 2000})
             // removeCookie('accessToken', {path:'/'})
 //             removeCookie('accessToken', {path:'/auth'})
             setIsLogged(true)
             window.localStorage.clear()
+            // window.location.reload()
         }
 
         setLoading(false)
@@ -141,16 +169,12 @@ const useFetch = () => {
    }
 
    const handleFetchType = async(updatedParams, email, token,setMessage) =>{
-    let response = await APIFetch({
+    return await APIFetch({
       url:`${url}change`, 
       method: 'POST',
       body:{userEmail: email, updatedParams: updatedParams, accessToken: token}
     })
-    console.log(`email changing`);
-    if(!response?.success){
-       setMessage({...message, message:response?.message})
-       
-    } 
+    
     
   }
   const uploadPicture = async (file,accessToken) => {
@@ -181,83 +205,55 @@ const useFetch = () => {
     }
 
    const handleChangeFetch = async ({data,user, accessToken}) => {
-    setLoading(true)
     // console.log(user);
     let email = data?.get('email')
-    let name = data?.get('name')
+    let fullName = data?.get('name')
     let bio = data?.get('bio')
     let phone = data?.get('phone')
     let password = data?.get('password')
     let picture = data?.get('picture')
-    console.log(picture);
     let changesArr={}
 
-    if(picture){
-      let url = await uploadPicture(picture,accessToken)
-      if(url?.message) return setMessage({message:url?.message})
-      changesArr.picture = url?.url
-    }
-    if(email) changesArr.email = email
-    if(name) changesArr.name = name
-    if(bio) changesArr.bio = bio
-    if(phone) changesArr.phone = phone
-    if(password) changesArr.password = password
-    console.log(changesArr);
-    let response = await handleFetchType(changesArr, user?.email, accessToken, setMessage)
-    console.log(response);
-    if(!response?.success) {
+    try {
+     setLoading(true)
+
+      if(picture){
+        let url = await uploadPicture(picture,accessToken)
+        if(url?.message) {
+          setLoading(false)
+  
+          return setMessage({message:url?.message})
+        }
+        changesArr.picture = url?.url
+      }
+      if(email) changesArr.email = email
+      if(fullName) changesArr.fullName = fullName
+      if(bio) changesArr.bio = bio
+      if(phone) changesArr.phone = phone
+      if(password) changesArr.password = password
+      
+      let response = await handleFetchType(changesArr, user?.email, accessToken, setMessage);
+
+      console.log(response);
+      if(!response?.success) {
+        setLoading(false)
         return setMessage({message: response?.message})
+      };
+      if(!response?.data?.accessToken){
+        setLoading(false)
+
+        return setMessage({message:response?.message})  
+      }
+      setCookie('accessToken', response?.data?.accessToken, {path:'/', maxAge: 2000})
+      setMessage({message: response?.data?.message});
+      let updatedUser = await getUserData(response?.data?.accessToken);
+      console.log(updatedUser)
+
+    } catch (error) {
+      setLoading(true)
+      return setMessage({message:error})      
     }
-      let newUser =  await getUserData(accessToken)
-
-      console.log(newUser)
-      // window.location.reload()
-    // if(picture) changesArr.push('picture')
-    // if(email) changesArr.push(`email`)
-    // if(name) changesArr.push(`name`)
-    // if(bio) changesArr.push(`bio`)
-    // if(phone) changesArr.push(`phone`)
-    // if(password) changesArr.push(`password`)
-
-    // for (let key in changesArr){
-    //   switch(changesArr[key]){
-    //     case 'email': 
-    //       handleFetchType(email, user?.email, accessToken, 'email');
-    //       console.log(changesArr[key]);
-    //       continue
-    //     case 'name': 
-    //       handleFetchType(name, user?.email, accessToken, 'name') ;
-    //       console.log(changesArr[key]);
-    //       continue
-    //     case 'phone': 
-    //       handleFetchType(phone, user?.email, accessToken, 'phone') ;
-    //       console.log(changesArr[key]);
-    //       continue
-    //     case 'bio':
-    //        handleFetchType(bio, user?.email, accessToken, 'bio') ;
-    //        console.log(changesArr[key]);
-    //        continue
-    //     case 'picture':
-    //       changePhoto(picture, user, accessToken)
-    //       console.log(changesArr[key])
-    //       continue
-    //     case 'password': 
-    //       handleFetchType(password, user?.email, accessToken, 'password') ;
-    //       break
-    //       default: 
-    //         haveMatched = false
-    //   }
-
-    
-  
-    }
-    
-
-   
-  
-
-   
-
+  }
    return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString,handleChangeFetch,
     }
 }

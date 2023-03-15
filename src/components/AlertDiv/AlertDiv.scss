@@ -8,13 +8,15 @@
     max-width: 350px;
     box-shadow: 0 0 5px 1px  red;
     padding: 1.5rem;
-    height: 270px;
+    max-width: 500px;
+    max-height: 400px;
     display: grid;
     place-content: center;
     gap:1.5rem;
     margin: auto;
     inset: 0;
     border-radius: 12px;
+    color:blue;
     .alert-btn {
         font-size: .7rem;
     }

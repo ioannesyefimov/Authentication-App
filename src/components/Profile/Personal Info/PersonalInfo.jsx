@@ -35,7 +35,7 @@ const PersonalInfo = () => {
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">BIO</p>
-              <span className="user-input title">{User?.Bio ? User?.Bio : 'empty'}</span>
+              <span className="user-input title">{User?.bio ? User?.bio : 'empty'}</span>
             </div>
             <div className="info-wrapper">
               <p className="gray info-name">Phone</p>

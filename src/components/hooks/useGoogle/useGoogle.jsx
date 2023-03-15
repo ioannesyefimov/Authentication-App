@@ -21,6 +21,8 @@ const useGoogle = () => {
 
         if(!data?.success){
             setMessage({message: data.message, loggedThrough: data?.loggedThrough})
+            setLoading(false)
+
             return console.log(data?.message)
 
         }
