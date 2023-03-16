@@ -1,0 +1,47 @@
+.sensetive-area {
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap:1rem;
+    border-radius: 10px;
+
+    .title{
+        margin-top: 2rem;
+        text-align: center;
+        color: rgba(255, 0, 0, 0.897) !important;
+    }
+    .submit-btn{
+        transition: all .3s ease-out;
+        padding: 0.3rem !important;
+        &:hover{
+            background-color: red;
+        }
+    }
+    .delete-btn{
+        transition: .3s all ease-in-out;
+        margin-right: auto;
+        padding: .3rem;
+        color:gray;
+        background-color: transparent;
+        &:hover{
+            font-weight: 700;
+            color:red;
+
+            text-decoration: line-through;
+        }
+    }
+    .back-btn{
+        padding: 1.5rem 1rem;
+    }
+    .back-btn2{
+        margin-right: auto;
+        background-color: transparent;
+        color:gray;
+        border: 1px solid rgba(128, 128, 128, 0.178);
+    }
+
+    .login-form{
+        max-width: 70%;
+        margin: 0 auto;
+    }
+}

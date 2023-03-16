@@ -6,6 +6,7 @@ import { useCookies } from 'react-cookie'
 import './Authentication.scss'
 import { Fallback } from '../ErrorBoundary/ErrorBoundary'
 import { Errors } from '../utils/utils'
+import AlertDiv from '../AlertDiv/AlertDiv'
   
 export const AuthContext = React.createContext()
 
@@ -31,14 +32,19 @@ export const AuthenticationProvider = ({children}) => {
     },[cookies.user])
 
 
-    const logout = () => {
+    const logout = (replace) => {
       console.log('CLEARNING STATE')
       setUser({})
+      setIsLogged(false)
       setMessage({})
       removeCookie('accessToken', {path:'/'})
       removeCookie('refreshToken', {path:'/'})
+      if(!replace){
+        console.log(`not replacing`)
+      }else {
+        window.location.replace(replace)
+      }
       window.localStorage.clear()
-      window.location.replace('/auth/signin')
       removeCookie('user', {path:'/'})
       
 
@@ -65,59 +71,35 @@ export const AuthenticationProvider = ({children}) => {
 }
 
 export const Authentication = ()=>{
-  const {cookies,removeCookie,setIsLogged,isLogged,User, setUser, Loading, setLoading} = useAuthentication()
+  const {cookies,isLogged, Message,setMessage, Loading,} = useAuthentication()
   const { getUserData,checkQueryString,checkAccessToken} = useFetch();
   const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
   const location = useLocation()
 
   useEffect(() => {
     console.log(`rerendered`);
-    if(!isLogged){
+    if(!isLogged && !Message?.message){
       let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
       let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-
+      console.log(`isn't logged`);
       checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
-      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken: cookies.accessToken, getUserData, getUserDataGH,handleGithubRegister})
+      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken: cookies?.accessToken, getUserData, getUserDataGH,handleGithubRegister})
     }
 
-  }, [])
+  }, [cookies?.accessToken])
 
+    if(Message?.message) return <AlertDiv message={Message} setMessage={setMessage} />
 
   // if(Loading && !isLogged){
   //   return <h1 className='loading'>Loading...</h1>
+
+  if(Loading) return <Fallback />
+  if(!isLogged ) return <Outlet />
+  if(isLogged) return <Navigate to="/profile" replace />
   // }
-  return (
-    <>
-      {
-        Loading ? (
-          <Fallback />
-        ) : (
-          !isLogged ? (
-            (!location.pathname.includes('/auth')) ? (
-              <Navigate to='/auth/signin' replace />
-            ) 
-            :
-            (
-               <Outlet />
-            )
-          ) : (
-            <Navigate to='/profile' replace />
-          ) 
+  
+  
 
-        ) 
-      
-    }
-    </>
-  )
-
-//   if(!isLogged){
-//     // if(location.search) return 
-//     if(!location.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
-//     return <Outlet />
-//   } else if(isLogged){
-//    return <Navigate to='/profile' replace />
-//   }
- 
 }
 
 

@@ -1,7 +1,10 @@
 
 body[theme='light'] {
     background-color: white;
+    & > p,h2,h4,span,div {
+        color:#242424;
 
+    }
     .Profile {
         
         color:#242424

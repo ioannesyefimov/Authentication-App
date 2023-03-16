@@ -5,6 +5,7 @@ import useFetch from '../hooks/useFetch'
 import useGithub from '../hooks/useGithub/useGithub'
 import { timeout } from '../utils/utils'
 import { useNavigate } from 'react-router-dom'
+import { Fallback } from '../ErrorBoundary/ErrorBoundary'
 const ProtectedRoute =  () => {
     const {Loading,isLogged} =  useAuthentication();
    
@@ -13,8 +14,8 @@ const ProtectedRoute =  () => {
 
     const location = useLocation()
 
-    if(Loading && !isLogged ){
-      return <h1 className='loading'>Loading...</h1>
+    if(Loading ){
+      return <Fallback />
     } 
     if(isLogged){
 

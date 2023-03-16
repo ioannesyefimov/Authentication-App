@@ -2,9 +2,12 @@ import React from 'react'
 import {profileIco} from '../../../Assets/index'
 import "./PersonalInfo.scss"
 import {useAuthentication} from '../../Authentication/Authentication'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,Navigate } from 'react-router-dom'
+import SensentiveArea from './SensetiveArea'
 const PersonalInfo = () => {
-  const {User} = useAuthentication()
+  const {User, isLogged} = useAuthentication()
+
+  if(!isLogged) return <Navigate to='/auth/signin' replace />
   const navigate = useNavigate()
   return (
     <div className='personal-info-component'>
@@ -50,6 +53,7 @@ const PersonalInfo = () => {
               <span className="user-input title">{User?.password ? User?.password : '**********'}</span>
             </div>
           </div>
+       
         </div>
        </div>
   )

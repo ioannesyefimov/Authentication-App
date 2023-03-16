@@ -1,5 +1,4 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuthentication } from '../Authentication/Authentication'
 import SocialLoginBtns from '../Authentication/SocialLoginBtns/SocialLoginBtns'
 import { Errors, validateInput } from '../utils/utils'
@@ -11,9 +10,7 @@ const AlertDiv = ({message, success, setMessage}) => {
 
   const { logout} = useAuthentication()
   const [isClicked,setIsClicked] = React.useState(false)
-  const navigate = useNavigate()
-
-  let FuncComponent = ({message, onClc, btnText}) =>{
+  const FuncComponent = ({message, onClc, btnText}) =>{
     return (
       <>
         <p className="alert-type">{message?.message.replaceAll('_', ' ')}</p>  
@@ -36,12 +33,12 @@ const AlertDiv = ({message, success, setMessage}) => {
   }
   return (
     <div className='alert-div-component'>
-      { message?.message?.includes('jwt') ?
+      { message?.message === Errors.JWT_MALFORMED ?
         (
         <>
            <p className="alert-type">You need to sign in again </p>  
             <div className="wrapper">
-              <button onClick={()=>{logout(); navigate('/auth/signin')}} className="alert-btn" type="button">Sign in </button>
+              <button onClick={()=>{logout('/auth/signin'); }} className="alert-btn" type="button">Sign in </button>
             </div>
          </>
         ) :
@@ -54,14 +51,14 @@ const AlertDiv = ({message, success, setMessage}) => {
           <p className="alert-type">Such account has already been signed up through {message?.loggedThrough}</p>  
         )}
           <div className="wrapper">
-            <button onClick={async()=>{await logout(); navigate('/auth/register')}} 
+            <button onClick={async()=>{await logout(`/auth/register`); }} 
             className="alert-btn" type="button"
             >
                 Sign up new 
               </button>
             {message?.loggedThrough === 'Internal' ? (
             <button 
-              onClick={async() =>{ await logout(); navigate('/auth/signin')}}
+              onClick={async() =>{ await logout(`/auth/signin`) }}
               className="alert-btn" 
               type="button">
                 Sign in 
@@ -83,19 +80,19 @@ const AlertDiv = ({message, success, setMessage}) => {
             <button onClick={()=>setMessage('')} className='hide' >hide</button>
         </>
         ) : 
-        message?.message == (Errors.NOT_SIGNED_UP || Errors.NOT_FOUND) ?
+        message?.message == Errors.NOT_SIGNED_UP ||      message?.message == Errors.NOT_FOUND ?
         (
           <>
             <p className="alert-type">You have yet to sign up to our Application</p>  
             <div className="wrapper">
-              <button onClick={()=> {logout();navigate('/auth/register')}} 
+              <button onClick={()=> {logout(`/auth/register`)}} 
               className="alert-btn" type="button">
                 Sign up new
               </button>
-              <button onClick={logout} className="alert-btn" type="button">Sign in with different accont</button>
+              <button onClick={()=>logout('/auth/signin')} className="alert-btn" type="button">Sign in with different accont</button>
             </div>
           </>
-        ) : (null)
+        ) : (<button onClick={()=>{setMessage([])}}>NOT MATCH</button>)
       }
     </div>
   )

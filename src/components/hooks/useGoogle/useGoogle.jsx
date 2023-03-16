@@ -1,9 +1,10 @@
 import React from 'react'
 import { useAuthentication } from '../../Authentication/Authentication';
+import useFetch from '../useFetch';
 
 const useGoogle = () => {
-    const {setCookie,setMessage,setLoading} = useAuthentication()
-
+    const {setCookie,setMessage,setLoading, logout} = useAuthentication()
+    const {handleDelete} = useFetch()
     const url = `http://localhost:5050/api/auth/`
 
     let newURL = location.href.split("?")[0];
@@ -74,9 +75,45 @@ const useGoogle = () => {
         window.location.reload()
     }
 
+    const handleGoogleDelete = async() =>{
+        try {
+            console.log(`DELETING USER GOOGLE`)
+            setLoading(true)
+            let response = await  fetch(`${url}google/signin`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({credential: response.credential}),
+            }
+            );
     
+        const data = await response.json()
+    
+        if(!data?.success && data?.message){
+            console.log(data)
+             setMessage({message:data.message, loggedThrough: data?.loggedThrough})
+            return setLoading(false)
+    
+        }
+    
+        console.log(data)
+            let dbResponse = data.data
+            // if(!dbResponse?.accessToken)return setMessage({message:``})
+            let deleteUser = await handleDelete({accessToken: dbResponse?.accessToken})
+            console.log(deleteUser)
+            setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});
+        
+            logout('/auth/sigin')
+        setLoading(false)
+            
+        } catch (error) {
+            return  setMessage({message:error})
 
-  return {handleGoogleRegister,handleGoogleSignin}
+        }
+    }
+
+  return {handleGoogleRegister,handleGoogleSignin, handleGoogleDelete}
 }
 
 export default useGoogle

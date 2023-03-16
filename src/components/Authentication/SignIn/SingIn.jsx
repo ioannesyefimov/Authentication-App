@@ -50,7 +50,9 @@ const SingIn = () => {
           <FormInput Message={Message} btnText={'Login'}  emailRef={emailRef} passwordRef={passwordRef}  onSubmit={onSignInSubmit}/>
           <div className="social-btns">
             <span>or continue with these social profile</span>
+            <div className="social-wrapper">
             <SocialLoginBtns url={"http://localhost:5050/api/auth/"}  type="signin"/>
+            </div>
           <span className='hint-btn'>Don't have an account yet? <Link to="/auth/register" replace >Register</Link></span>
           </div>
     </div>

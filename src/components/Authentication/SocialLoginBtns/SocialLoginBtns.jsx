@@ -12,15 +12,16 @@ const SocialLoginBtns = ({type, loggedThroughBtn=null}) => {
   const {setUser, setRerender,setLoading, setError} = useAuthentication()
   const {handleTwitter} = useTwitter()
   const {handleFacebook} = useFacebook(  )
-  const {handleGoogleRegister,handleGoogleSignin} = useGoogle()
+  const {handleGoogleDelete,handleGoogleRegister,handleGoogleSignin} = useGoogle()
   const {handleGitHub} = useGithub()
     
   useEffect(() => {
-
+    console.log((loggedThroughBtn));
+    console.log((type));
     if(window.google){
       google.accounts.id.initialize({
         client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
-        callback: type==="register" ? handleGoogleRegister : handleGoogleSignin ,
+        callback: type==="register" ? handleGoogleRegister : type==="signin" ? handleGoogleSignin : type==="delete" ? handleGoogleDelete : null ,
       })
       google.accounts.id.renderButton(document.getElementById('googleBtn'), {
         shape: "circle",
@@ -29,7 +30,7 @@ const SocialLoginBtns = ({type, loggedThroughBtn=null}) => {
     }
     // google.accounts.id.prompt()
     
-  }, [type==='register' ? handleGoogleRegister : handleGoogleSignin])
+  }, [type==='register' ? handleGoogleRegister : type==="signin"?  handleGoogleSignin : type==="delete" ? handleGoogleDelete :null] )
   if(loggedThroughBtn?.social){
     switch(loggedThroughBtn?.social){
       case 'Google':   return <SocialBtn icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />

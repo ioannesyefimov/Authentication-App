@@ -4,7 +4,7 @@ import { convertBase64 } from '../utils/utils';
 // 
 const useFetch = () => {
 
-    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged} = useAuthentication()
+    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged, logout} = useAuthentication()
     // const {getGithubAccessToken} = useGithub()
     const url = `http://localhost:5050/api/`
     let newURL = location.href.split("?")[0];
@@ -30,14 +30,18 @@ const useFetch = () => {
       const checkAccessToken = async({LOGIN_TYPE, LOGGED_THROUGH, accessToken,handleGithubRegister,getUserData,getUserDataGH})=>{
         setLoading(true)
         console.log(`token loading started`);
-      
+        console.log(`logintype:`, LOGIN_TYPE)
+        console.log(`loggedThrough:`, LOGGED_THROUGH)
+        console.log("token: ",accessToken);
         if(accessToken && LOGGED_THROUGH ){
           switch(LOGGED_THROUGH){
             // check whether user is trying to register github account or signin
             case 'Github': 
-             LOGIN_TYPE=='register' ?
-              await handleGithubRegister(accessToken,'register') :
-               await getUserDataGH();
+            if(LOGIN_TYPE =='register'){
+              await handleGithubRegister(accessToken) 
+            } else if(LOGIN_TYPE =='signin') {
+              await getUserDataGH();
+            }
                break;
             case 'Google':   
               await getUserData(accessToken, LOGGED_THROUGH)
@@ -113,23 +117,20 @@ const useFetch = () => {
       
           if(!response.success ) {
              setLoading(false)
-               setMessage({message:response?.message, loggedThrough: response?.loggedThrough})
-          } else if(response.success){
+             return  setMessage({message:response?.message, loggedThrough: response?.loggedThrough})
+          } 
             // setCookie('user',response.data.user, {path: '/', maxAge: '2000'})
             setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
             localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
-            window.location.reload()
-          }
-        // window.location.reload()
 
           setLoading(false)
 
     }
 
    const getUserData= async(accessToken, loggedThrough) =>{
-    setLoading(true)
-
-       const response = await APIFetch({
+     try {
+      setLoading(true)
+      const response = await APIFetch({
         url: `${url}auth/signin`,
         method: 'POST', 
         body: {
@@ -138,7 +139,7 @@ const useFetch = () => {
         }})
 
         if(!response?.success && response.message){
-             setMessage({message:response.message, loggedThrough:response?.loggedThrough})
+            return setMessage({message:response.message, loggedThrough:response?.loggedThrough})
         }
         console.log(response)
         if(response?.data.user){
@@ -152,25 +153,30 @@ const useFetch = () => {
             }
 
             console.log(response)
-            localStorage.setItem('LOGGED_THROUGH', response?.loggedThrough)
+            localStorage.setItem('LOGGED_THROUGH', response?.data?.loggedThrough)
             console.log(`GETTING USER `)
 
             setCookie('user',user ,{path: '/', maxAge: 2000})
-            // setCookie('accessToken', response?.data?.accessToken,{path: '/', maxAge: 2000})
+            setCookie('accessToken', response?.data?.accessToken,{path: '/', maxAge: 2000})
             // removeCookie('accessToken', {path:'/'})
 //             removeCookie('accessToken', {path:'/auth'})
             setIsLogged(true)
-            window.localStorage.clear()
-            // window.location.reload()
+            // window.localStorage.clear()
         }
 
         setLoading(false)
+    } catch (error) {
+      return setMessage({message:error})
+
+    }
+
+      
 
    }
 
-   const handleFetchType = async(updatedParams, email, token,setMessage) =>{
+   const handleFetchType = async(updatedParams, email, token,uri='') =>{
     return await APIFetch({
-      url:`${url}change`, 
+      url:`${url}change${uri}`, 
       method: 'POST',
       body:{userEmail: email, updatedParams: updatedParams, accessToken: token}
     })
@@ -203,6 +209,36 @@ const useFetch = () => {
         )
 
     }
+    const handleDelete = async({data, user, accessToken}) =>{
+      let email = data?.get('email')
+      let password = data?.get('password')
+
+      try {
+        if(email && password){
+          let dbDelete = await handleFetchType(data, email , accessToken, 'delete')
+          let response = await dbDelete.json()
+
+          if(!response?.success) return setMessage({message:response?.message})
+
+          console.log(response)
+          setMessage({message: response?.message})
+        }
+        if(accessToken ){
+          let dbDelete = await handleFetchType(data, user?.email , accessToken, 'delete')
+          let response = await dbDelete.json()
+
+          if(!response?.success) return setMessage({message:response?.message})
+
+          console.log(response)
+          setMessage({message: response?.message})
+          logout('/auth/sigin')
+        }
+
+      } catch (error) {
+        return setMessage({message:error})
+      }
+
+    }
 
    const handleChangeFetch = async ({data,user, accessToken}) => {
     // console.log(user);
@@ -218,6 +254,7 @@ const useFetch = () => {
      setLoading(true)
 
       if(picture){
+        console.log(`token: ${accessToken}`)
         let url = await uploadPicture(picture,accessToken)
         if(url?.message) {
           setLoading(false)
@@ -254,7 +291,7 @@ const useFetch = () => {
       return setMessage({message:error})      
     }
   }
-   return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString,handleChangeFetch,
+   return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString,handleChangeFetch,handleDelete,
     }
 }
 

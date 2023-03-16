@@ -1,0 +1,13 @@
+.inner-wrapper{
+    display: grid;
+    label {
+        text-transform: capitalize;
+    }
+    input {
+        background-color: transparent;
+        padding: .85rem 1rem;
+        border: 1px solid gray;
+        color: rgb(67, 183, 203);
+        border-radius: 12px;
+    }
+}

@@ -41,7 +41,7 @@ const Navbar = () => {
                     </div>
                     <div className="wrapper">
                        <img src={logoutIco} alt="logout icon" />
-                        <button onClick={logout} className='logout-btn'>Logout
+                        <button onClick={()=>logout('/auth/signin')} className='logout-btn'>Logout
                        </button>
                     </div>
                 </div>
