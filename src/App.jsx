@@ -1,47 +1,80 @@
 import React from 'react'
-import {ProtectedRoute, SingIn, Register, Profile, ChangeInfo, PersonalInfo} from './components/index'
 // import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.scss'
 import Navbar from './components/Profile/Navbar/Navbar'
 import { useAuthentication } from './components/Authentication/Authentication'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import {ProtectedRoute, SingIn, Register, Profile, ChangeInfo, PersonalInfo} from './components/index'
+import  {  Authentication } from './components/Authentication/Authentication'
+
 import { Outlet } from 'react-router-dom'
-// const router = createBrowserRouter([
-//     {
-          
-//           element:<ProtectedRoute/>,
-//           path:'/',
-//           children:[
-//             {
-//               element: <Navbar/>,
-//             },
-//             {
-//               element: <PersonalInfo/>,
-//               path: '/profile',
-             
-//             },
-//             {
-//               element: <ChangeInfo />,
-//               path: '/profile/change'
-//             },
-        
-//             {
-//               element: <SingIn/>,
-//               path: '/auth/signin'
-//             },
-//             {
-//               element: <Register/>,
-//               path: '/auth/register'
-//             },
-//           ],
-//     },
-//   ])
+import { Fallback } from './components/ErrorBoundary/ErrorBoundary'
+import AlertDiv from './components/AlertDiv/AlertDiv'
+
+const NotFound = () =>{
+  return (
+    <div><h2>NOT FOUND</h2></div>
+  )
+}
+
+const router = createBrowserRouter([
+  {
+    element: <NotFound />,
+    path: '*',
+  },
+  {
+    element:<ProtectedRoute/>,
+    path:'/',
+    children:[      
+      {
+        element: <Navbar />,
+        children : [
+          {
+            element: <PersonalInfo/>,
+            path: '/profile',
+            
+          },
+          {
+            element: <ChangeInfo />,
+            path: '/profile/change'
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <Authentication />,
+    path: '/',
+    children: [
+      {
+        element: <SingIn/>,
+        path: '/auth/signin'
+      },
+      {
+        element: <Register/>,
+        path: '/auth/register'
+      },
+    ]
+
+  },
+
+])
 
 const App = ({}) => {
-  const {User} = useAuthentication()
+  const {User,logout,Message,setMessage, Loading} = useAuthentication()
   return (
     <div className='App'>
-      {User?.fullName && !window.location.pathname.includes('/auth') ? ( <Navbar/>) : (null)}
-        <Outlet />
+      {Message?.message ? (
+        <AlertDiv message={Message} setMessage={setMessage} logout={logout}/>
+      
+      ) : (
+        Loading ? <Fallback /> : (
+          <RouterProvider router={router} />
+            ) 
+          )
+          }
+       
+
     </div>
   )
 }

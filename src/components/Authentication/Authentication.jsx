@@ -4,6 +4,7 @@ import useGithub from '../hooks/useGithub/useGithub'
 import {Navigate,Outlet, useLocation, useNavigate} from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import './Authentication.scss'
+
 import { Fallback } from '../ErrorBoundary/ErrorBoundary'
 import { Errors } from '../utils/utils'
 import AlertDiv from '../AlertDiv/AlertDiv'
@@ -17,19 +18,20 @@ export const useAuthentication = ()=>{
 export const AuthenticationProvider = ({children}) => {
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [Loading, setLoading] = useState(false)
-    const [User, setUser] = useState({})
+    const [User, setUser] = useState({message: '1243'})
     const [isLogged, setIsLogged] = useState(false)
     const [Message, setMessage] = useState({})
 
-    useEffect(()=>{
-      const isLoggedUser = cookies.user
+    useEffect(
+      ()=>{
+        const isLoggedUser = cookies.user
+         if(isLoggedUser?.fullName ){
+           setUser(isLoggedUser)
+           return setIsLogged(true)
+         } 
 
-      if(isLoggedUser?.fullName ){
-        setUser(isLoggedUser)
-        setIsLogged(true)
-      } 
-
-    },[cookies.user])
+      }, [cookies?.user]
+    )
 
 
     const logout = (replace) => {
@@ -62,39 +64,43 @@ export const AuthenticationProvider = ({children}) => {
 
     return (
           <AuthContext.Provider value={value}>
-            {Loading ? <Fallback /> : children}
+            {children}
           </AuthContext.Provider>
-      
       )
     
         
 }
 
 export const Authentication = ()=>{
-  const {cookies,isLogged, Message,setMessage, Loading,} = useAuthentication()
+  const {cookies,isLogged, Message,setMessage,setUser,setIsLogged, Loading,} = useAuthentication()
   const { getUserData,checkQueryString,checkAccessToken} = useFetch();
   const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
   const location = useLocation()
 
   useEffect(() => {
+    let accessToken = cookies.accessToken
+    console.log(`token: ${accessToken}`);
     console.log(`rerendered`);
-    if(!isLogged && !Message?.message){
+    
+    if(accessToken == 'undefined') return console.log('accessToken is' , accessToken) 
+    if(!isLogged && !Message?.message ){
       let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
       let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
       console.log(`isn't logged`);
       checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
-      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken: cookies?.accessToken, getUserData, getUserDataGH,handleGithubRegister})
+      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken, getUserData, getUserDataGH,handleGithubRegister})
     }
 
   }, [cookies?.accessToken])
 
-    if(Message?.message) return <AlertDiv message={Message} setMessage={setMessage} />
 
-  // if(Loading && !isLogged){
-  //   return <h1 className='loading'>Loading...</h1>
+
+
+
 
   if(Loading) return <Fallback />
-  if(!isLogged ) return <Outlet />
+  // if(!isLogged && !location?.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
+  if(!isLogged && location?.pathname?.includes('/auth') ) return <Outlet />
   if(isLogged) return <Navigate to="/profile" replace />
   // }
   

@@ -6,7 +6,7 @@ import {
     triangleIco} from '../../../Assets'
 import { useAuthentication } from '../../Authentication/Authentication'
 import { useTheme } from '../../Authentication/ThemeProvider/ThemeProvider'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,Outlet } from 'react-router-dom'
 
 const Navbar = () => {
     const {theme} = useTheme()
@@ -16,6 +16,7 @@ const Navbar = () => {
     
 
   return (
+    <>
     <div className='navbar'>
         <img onClick={()=>window.location.replace('/profile')} src={theme==='light' ? devchall_dark : devchall_light  } alt="" />
         <div className='wrapper'>
@@ -45,10 +46,11 @@ const Navbar = () => {
                        </button>
                     </div>
                 </div>
-          
-       
+
         </div>
     </div>
+    <Outlet />
+    </>
   )
 }
 

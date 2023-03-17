@@ -1,12 +1,12 @@
 import React from 'react'
 import {loadingGif} from '../../Assets/index'
-
 export const Fallback = ()=> {
 
     return (
-        <div style={{margin: 'auto auto', width: '50%'}}>
-        <h1>Loading...</h1>
+        <div style={{margin: '4rem auto', width: '50%'}}>
+        <h1 style={{textAlign: 'center'}}>Loading...</h1>
         <img style={{margin: '0 auto', borderRadius: "15PX", }} className="box-shadow" src={loadingGif} alt="loading" />
+        <button style={{margin: '0 auto', borderRadius: "15PX", }} onClick={()=>window.location.reload()}>Reload</button>
         </div>
     )
 }

@@ -3,7 +3,7 @@ import { useAuthentication } from '../../Authentication/Authentication';
 import useFetch from '../useFetch';
 
 const useGoogle = () => {
-    const {setCookie,setMessage,setLoading, logout} = useAuthentication()
+    const {setCookie,setMessage,setLoading, User,logout} = useAuthentication()
     const {handleDelete} = useFetch()
     const url = `http://localhost:5050/api/auth/`
 
@@ -75,37 +75,35 @@ const useGoogle = () => {
         window.location.reload()
     }
 
-    const handleGoogleDelete = async() =>{
+    const handleGoogleDelete = async(response) =>{
         try {
             console.log(`DELETING USER GOOGLE`)
             setLoading(true)
-            let response = await  fetch(`${url}google/signin`, {
+            let DBFETCH = await  fetch(`${url}google/signin`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({credential: response.credential}),
+                body: JSON.stringify({credential: response.credential, loggedThrough: 'Google'}),
             }
             );
     
-        const data = await response.json()
-    
-        if(!data?.success && data?.message){
+            const data = await DBFETCH.json()
             console.log(data)
-             setMessage({message:data.message, loggedThrough: data?.loggedThrough})
-            return setLoading(false)
+            if(!data?.success && data?.message){
+                console.log(data)
+                setMessage({message:data.message, loggedThrough: data?.loggedThrough})
+                return setLoading(false)
+        
+            }
     
-        }
-    
-        console.log(data)
             let dbResponse = data.data
             // if(!dbResponse?.accessToken)return setMessage({message:``})
-            let deleteUser = await handleDelete({accessToken: dbResponse?.accessToken})
+            let deleteUser = await handleDelete({accessToken: dbResponse?.accessToken, user: User})
             console.log(deleteUser)
-            setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});
+            // setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});
         
-            logout('/auth/sigin')
-        setLoading(false)
+            setLoading(false)
             
         } catch (error) {
             return  setMessage({message:error})

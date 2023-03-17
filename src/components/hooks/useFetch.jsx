@@ -1,5 +1,5 @@
 import { useAuthentication } from '../Authentication/Authentication'
-import { APIFetch } from '../utils/utils';
+import { APIFetch, Errors } from '../utils/utils';
 import { convertBase64 } from '../utils/utils';
 // 
 const useFetch = () => {
@@ -33,7 +33,7 @@ const useFetch = () => {
         console.log(`logintype:`, LOGIN_TYPE)
         console.log(`loggedThrough:`, LOGGED_THROUGH)
         console.log("token: ",accessToken);
-        if(accessToken && LOGGED_THROUGH ){
+        if(accessToken !== 'undefined' && LOGGED_THROUGH ){
           switch(LOGGED_THROUGH){
             // check whether user is trying to register github account or signin
             case 'Github': 
@@ -157,7 +157,9 @@ const useFetch = () => {
             console.log(`GETTING USER `)
 
             setCookie('user',user ,{path: '/', maxAge: 2000})
-            setCookie('accessToken', response?.data?.accessToken,{path: '/', maxAge: 2000})
+            if(response?.data.accessToken){
+              setCookie('accessToken', response?.data.accessToken,{path: '/', maxAge: 2000})
+            }
             // removeCookie('accessToken', {path:'/'})
 //             removeCookie('accessToken', {path:'/auth'})
             setIsLogged(true)
@@ -174,15 +176,9 @@ const useFetch = () => {
 
    }
 
-   const handleFetchType = async(updatedParams, email, token,uri='') =>{
-    return await APIFetch({
-      url:`${url}change${uri}`, 
-      method: 'POST',
-      body:{userEmail: email, updatedParams: updatedParams, accessToken: token}
-    })
+
     
     
-  }
   const uploadPicture = async (file,accessToken) => {
    
     // const file = event.target.files[0]
@@ -212,26 +208,27 @@ const useFetch = () => {
     const handleDelete = async({data, user, accessToken}) =>{
       let email = data?.get('email')
       let password = data?.get('password')
-
+      
       try {
+        console.log(`handleDelete IS WORKING`)
         if(email && password){
-          let dbDelete = await handleFetchType(data, email , accessToken, 'delete')
-          let response = await dbDelete.json()
+          // let dbDelete = await handleFetchType({updatedParams: {password, email}, email , accessToken, uri:'/delete', method: 'delete'})
 
-          if(!response?.success) return setMessage({message:response?.message})
+          if(!dbDelete?.success) return setMessage({message:dbDelete?.message})
+          console.log(dbDelete)
+          setMessage({message: dbDelete?.message})
+          return {message: dbDelete?.message}
+        } else
+        if(accessToken !=='undefined' && !password ){
+          console.log(`DELETING THROUGH ACCESS-TOKEN`)
+          
+          let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email, accessToken}})
 
-          console.log(response)
-          setMessage({message: response?.message})
-        }
-        if(accessToken ){
-          let dbDelete = await handleFetchType(data, user?.email , accessToken, 'delete')
-          let response = await dbDelete.json()
+          console.log(dbDelete)
+          if(!dbDelete?.success) return setMessage({message:dbDelete?.message})
 
-          if(!response?.success) return setMessage({message:response?.message})
-
-          console.log(response)
-          setMessage({message: response?.message})
-          logout('/auth/sigin')
+          setMessage({message: dbDelete?.message})
+          return {message:dbDelete?.message}
         }
 
       } catch (error) {
@@ -241,6 +238,7 @@ const useFetch = () => {
     }
 
    const handleChangeFetch = async ({data,user, accessToken}) => {
+    // change users information.
     // console.log(user);
     let email = data?.get('email')
     let fullName = data?.get('name')
@@ -249,28 +247,47 @@ const useFetch = () => {
     let password = data?.get('password')
     let picture = data?.get('picture')
     let changesArr={}
-
+    console.log(`data: `, data)
     try {
      setLoading(true)
 
-      if(picture){
-        console.log(`token: ${accessToken}`)
-        let url = await uploadPicture(picture,accessToken)
-        if(url?.message) {
-          setLoading(false)
-  
-          return setMessage({message:url?.message})
-        }
-        changesArr.picture = url?.url
+      //add updatedParams if they have been added by user
+     if(picture){
+      let uri = await convertBase64(picture);
+      console.log(`uri: `,uri);
+       changesArr.picture = uri
+       console.log(`picture is added`);
+     }
+      if(email) 
+      {
+        console.log(`email is added`);
+        changesArr.email = email
       }
-      if(email) changesArr.email = email
-      if(fullName) changesArr.fullName = fullName
-      if(bio) changesArr.bio = bio
-      if(phone) changesArr.phone = phone
-      if(password) changesArr.password = password
-      
-      let response = await handleFetchType(changesArr, user?.email, accessToken, setMessage);
+      if(fullName)
+      {
+        console.log(`fullName is added`);
+        changesArr.fullName = fullName
+      }
+     
+      if(bio) 
+      {
+        console.log(`bio is added`);
+        changesArr.bio = bio
+      }
+      if(phone) 
+      {
+        console.log(`phone is added`);
+        changesArr.phone = phone
+      }
+      if(password)
+      {
+        console.log(`password is added`);
+        changesArr.password = password
+      }
+      // send request to change user's information
 
+      console.log(`is going to send response`)
+      let response = await APIFetch({url: `${url}change`, method:'post', body: {updatedParams: changesArr, userEmail: user?.email, accessToken}});
       console.log(response);
       if(!response?.success) {
         setLoading(false)
@@ -282,9 +299,8 @@ const useFetch = () => {
         return setMessage({message:response?.message})  
       }
       setCookie('accessToken', response?.data?.accessToken, {path:'/', maxAge: 2000})
-      setMessage({message: response?.data?.message});
-      let updatedUser = await getUserData(response?.data?.accessToken);
-      console.log(updatedUser)
+      setMessage({message: response?.data?.message, changes: response?.data?.changes});
+      return  await getUserData(response?.data?.accessToken, user?.loggedThrough || localStorage.getItem('LOGGED_THROUGH'));
 
     } catch (error) {
       setLoading(true)

@@ -13,55 +13,14 @@ import App from './App'
 import ErrorBoundary, { Fallback } from './components/ErrorBoundary/ErrorBoundary'
 
 
-const router = createBrowserRouter([
-  {
-    element:<ProtectedRoute/>,
-    children:[
-      {
-        element: <App/>,
-        children: [
-          {
-            element: <PersonalInfo/>,
-            path: '/profile',
-            
-          },
-          {
-            element: <ChangeInfo />,
-            path: '/profile/change'
-          },
-        ],
-      },
-    ],
-  },
-  {
-    element: <Authentication />,
-    path: '/',
-    children: [
-      {
-        element: <SingIn/>,
-        path: '/auth/signin'
-      },
-      {
-        element: <Register/>,
-        path: '/auth/register'
-      },
-    ]
-
-  },
-
-])
-
-
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary fallback={<Fallback/>}>
   <CookiesProvider>
 
     <AuthenticationProvider>
       <ThemeProvider>
-       <RouterProvider router={router} />
 
-        {/* <App /> */}
+        <App />
       </ThemeProvider>
     </AuthenticationProvider>
   </CookiesProvider>

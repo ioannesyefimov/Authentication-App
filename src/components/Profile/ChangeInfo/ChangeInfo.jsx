@@ -20,6 +20,7 @@ const ChangeInfo = () => {
   e.preventDefault()
   const data = new FormData(formRef.current)
   if(selectedFile){
+
     data.append('picture',selectedFile )
     console.log(data);
   }
@@ -27,7 +28,8 @@ const ChangeInfo = () => {
   await handleChangeFetch({data, user:User, accessToken: cookies?.accessToken});
 
   navigate('/profile')
- }
+}
+// {Message?.message ? (<AlertDiv message={Message} setMessage={setMessage} />) : null}
 
   const formRef = React.createRef(null)
   const nameRef = React.createRef(null)
@@ -37,7 +39,6 @@ const ChangeInfo = () => {
   const passwordRef = React.createRef(null)
   return (
     <div className='change-info-component'>
-      {Message?.message ? (<AlertDiv message={Message} setMessage={setMessage} />) : null}
       {isSelectedSensetive ? (<SensentiveArea isShowed={isSelectedSensetive} setIsShowed={setIsSelecterSensetive} />) : (
         <>
          <button onClick={()=>navigate('/profile')} className='back-btn'>

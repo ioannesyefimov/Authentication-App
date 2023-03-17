@@ -54,6 +54,8 @@
   }
 
 
+
+
   
  function validatePassword(password, name){
     // check whether password doesn't contains at least 
@@ -124,30 +126,30 @@
   INVALID_NUMBER: `INVALID_NUMBER`,
   CHANGES_APPLIED: `CHANGES_APPLIED`,
   CHANGES_NOT_APPLIED: `CHANGES_NOT_APPLIED`,
-  JWT_MALFORMED: `jwt malformed` 
+  JWT_MALFORMED: `jwt malformed` ,
+  MISSING_ARGUMENTS: `MISSING_ARGUMENTS`,
+  JWT_EXPIRED: `jwt expired`,
+
   
 }
 
-export {
-    Errors, validateEmail,validatePassword,validateInput
-}
 
-export const getUrlWithQueryParams = (baseUrl, params) =>{
+const getUrlWithQueryParams = (baseUrl, params) =>{
   const query = Object.entries(params)
-    .map(([key,value])=> `${key}=${encodeURIComponent(value)}`)
+  .map(([key,value])=> `${key}=${encodeURIComponent(value)}`)
     .join(`&`)
     return `${baseUrl}?${query}`
 }
 
-export const assertEnvVar = (name)=> {
+const assertEnvVar = (name)=> {
   return `${import.meta.env}.VITE_${name}`
 }
 
-export const timeout = (delay)=>{
+const timeout = (delay)=>{
   return new Promise(res=>setTimeout(res,delay));
 }
 
-export const convertBase64 = (file) => {
+const convertBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file)
@@ -161,9 +163,9 @@ export const convertBase64 = (file) => {
   })
 }
 
-export const APIFetch = async({url,method, body}) => {
+ const APIFetch = async({url,method, body}) => {
   console.log(body);
- return method?.toLowerCase().includes('post')? (
+ return !method?.toLowerCase().includes('get')  ? (
   await fetch(url, {
     method: method,
     headers: {
@@ -179,5 +181,22 @@ export const APIFetch = async({url,method, body}) => {
     },
   }).then(response=>response.json())
  )
+}
+
+const isObj = (obj) =>{
+  return (typeof obj === 'object' && !Array.isArray(obj) && obj !== null && Object)
 
 }
+const isTrue = (arg) =>{
+  if(Array.isArray(arg) && !arg.length){
+    return {arg, is:false}
+  }
+  if(isObj(arg) && !Object.keys(arg).length){
+    return {arg, is: false}
+  }
+  return {arg, is: !!arg}
+}
+ 
+  export {
+    convertBase64, timeout,assertEnvVar, getUrlWithQueryParams, Errors, validateEmail,validatePassword,validateInput, isTrue,isObj,APIFetch
+  }

@@ -33,13 +33,13 @@ const SensentiveArea = ({setIsShowed, isShowed}) => {
 
           </>
         ) : (
-            <>
+            <div style={{display:"flex",justifyContent:'center',alignItems: 'center'}}>
             <button  onClick={()=>setIsShowed(isShowed=>!isShowed) } className='back-btn'>
             <img src={backIco} alt="back icon" />
             Back</button>
 
             <button className='delete-btn' onClick={()=>setIsPrompted(isPrompted=>!isPrompted)}>Delete Account</button>
-          </>
+          </div>
         )}
         
     </div>

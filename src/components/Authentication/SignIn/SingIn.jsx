@@ -34,13 +34,13 @@ const SingIn = () => {
 
  
 
+  // { Message?.message   ? 
+  // (<AlertDiv  message={Message} setMessage={setMessage}  />)  : (null)
+  // }
 
 
   return (
     <div className='authentication-component box-shadow'>
-      { Message?.message   ? 
-      (<AlertDiv  message={Message} setMessage={setMessage}  />)  : (null)
-      }
           <div className='wrapper'>
             <img src={theme == 'light' ?  (devchall_dark) : (devchall_light)} alt="logo" />
             <div className="text-wrapper">
