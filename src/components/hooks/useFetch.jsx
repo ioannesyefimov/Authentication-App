@@ -1,75 +1,27 @@
 import { useAuthentication } from '../Authentication/Authentication'
 import { APIFetch, Errors } from '../utils/utils';
-import { convertBase64 } from '../utils/utils';
-// 
+import { convertBase64,validateInput} from '../utils/utils';
+
 const useFetch = () => {
 
-    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged, logout} = useAuthentication()
-    // const {getGithubAccessToken} = useGithub()
+    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged, logout,setReload} = useAuthentication()
     const url = `http://localhost:5050/api/`
     let newURL = location.href.split("?")[0];
 
-    
-    const checkQueryString = async({LOGIN_TYPE, LOGGED_THROUGH,getGithubAccessToken}) => {
-      setLoading(true)
-      console.log(`query loading started`);
-
-        const queryString = window.location.search
-        const urlParams = new URLSearchParams(queryString)
-        const codeParam = urlParams.get('code')
-  
-          if(codeParam && LOGGED_THROUGH == 'Github' ) {
-            setLoading(false)
-          return await getGithubAccessToken(codeParam, LOGIN_TYPE);
-        } else {
-          setLoading(false)
-          return console.log('query is empty')
-        }
-
-      }
-      const checkAccessToken = async({LOGIN_TYPE, LOGGED_THROUGH, accessToken,handleGithubRegister,getUserData,getUserDataGH})=>{
+   
+    const fetchRegister = async ({fullNameRef,passwordRef,emailRef}) => {
+      // do clean up before 
+      try {
+        removeCookie('user', {path: '/'})
+        removeCookie('accessToken', {path: '/'})
+        const isValidInput =await validateInput(
+          {firstRef:emailRef , secondRef:fullNameRef , thirdRef:passwordRef}
+          );
+        console.log(isValidInput)
+        console.log(`email: `, emailRef.current.value)
+        if(!isValidInput?.success) return setMessage({success:false,message: isValidInput?.message})
         setLoading(true)
-        console.log(`token loading started`);
-        console.log(`logintype:`, LOGIN_TYPE)
-        console.log(`loggedThrough:`, LOGGED_THROUGH)
-        console.log("token: ",accessToken);
-        if(accessToken !== 'undefined' && LOGGED_THROUGH ){
-          switch(LOGGED_THROUGH){
-            // check whether user is trying to register github account or signin
-            case 'Github': 
-            if(LOGIN_TYPE =='register'){
-              await handleGithubRegister(accessToken) 
-            } else if(LOGIN_TYPE =='signin') {
-              await getUserDataGH();
-            }
-               break;
-            case 'Google':   
-              await getUserData(accessToken, LOGGED_THROUGH)
-              break;
-            case 'Internal':
-              await getUserData(accessToken, LOGGED_THROUGH)
-              break;
-            case 'Facebook':
-              await getUserData(accessToken, LOGGED_THROUGH)
-              break;
-            case 'Twitter': 
-             await getUserData(accessToken, LOGGED_THROUGH)
-             break;
-            default: 
-             console.log('not found')
-          }
-          setLoading(false)
-            
-          } else {
-            setLoading(false)
-            return console.log(`NOT_FOUND`)
-          }
-          
-        }
-
-    const fetchRegister = async (fullNameRef,passwordRef,emailRef) => {
-        setLoading(true)
-
+        
         const response = await APIFetch({
           url:`${url}auth/register`, 
           method:'POST',
@@ -83,47 +35,65 @@ const useFetch = () => {
        
     
 
-    console.log(response)
+      console.log(response)
 
-    if(!response.success ) {
-      if(response?.loggedThrough ){
-         setMessage({message:response.message, loggedThrough: response?.loggedThrough})
+      if(!response.success ) {
+          return setMessage({message:response.message, loggedThrough: response?.loggedThrough})
       } 
-    } 
-      setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
-      setCookie('refreshToken', response.data.refreshToken, {path: '/', maxAge: 2000})
+        setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
+        setCookie('refreshToken', response.data.refreshToken, {path: '/', maxAge: 2000})
 
-      localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
-    (response.data?.loggedThrough)
+        localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
 
-    
-    setLoading(false)
+        setReload(prev=>prev+1)
+
+        } catch (error) {
+          return setMessage({message:error})
+
+        } finally{
+          setLoading(false)
+        }
+
     }
 
     const fetchSignin = async (emailRef,passwordRef) => {
+      const isValidInput = await validateInput({firstRef:emailRef , 
+        secondRef:undefined, thirdRef:passwordRef , setMessage});
+        
+        console.log(isValidInput)
+        if(!isValidInput?.success){
+          return setMessage({message: isValidInput?.message})
+        }
+        
+        try {
         setLoading(true)
-
-
         const response = await APIFetch({
+           url: `${url}auth/signin`, 
+           method: 'POST', 
+           body: {
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+            loggedThrough: 'Internal'
+          }}) 
+             
+        
+            if(!response.success ) {
+               setLoading(false)
+               return  setMessage({message:response?.message, loggedThrough: response?.loggedThrough})
+            } 
+              // setCookie('user',response.data.user, {path: '/', maxAge: '2000'})
+              setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
+              localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
+  
+            setReload(prev=>prev+1)
+            
+        } catch (error) {
+          return setMessage({message:error})
 
-         url: `${url}auth/signin`, 
-         method: 'POST', 
-         body: {
-          email: emailRef.current.value,
-          password: passwordRef.current.value,
-          loggedThrough: 'Internal'
-        }}) 
-           
-      
-          if(!response.success ) {
-             setLoading(false)
-             return  setMessage({message:response?.message, loggedThrough: response?.loggedThrough})
-          } 
-            // setCookie('user',response.data.user, {path: '/', maxAge: '2000'})
-            setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
-            localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
-
+        } finally {
           setLoading(false)
+        }
+
 
     }
 
@@ -160,15 +130,16 @@ const useFetch = () => {
             if(response?.data.accessToken){
               setCookie('accessToken', response?.data.accessToken,{path: '/', maxAge: 2000})
             }
-            // removeCookie('accessToken', {path:'/'})
-//             removeCookie('accessToken', {path:'/auth'})
             setIsLogged(true)
+      setReload(prev=>prev +1 )
+
             // window.localStorage.clear()
         }
 
-        setLoading(false)
     } catch (error) {
       return setMessage({message:error})
+    } finally {
+      setLoading(false)
 
     }
 
@@ -176,7 +147,54 @@ const useFetch = () => {
 
    }
 
+   const handleDeleteSocial = async({social, type, functions})=>{
+    try {
 
+      if(type == 'signin' || type == 'register'){
+        switch(social){
+          case 'Github' : {
+            let getAccessToken = await functions?.handleGithub(type)
+            console.log(getAccessToken)
+            break
+          }
+          case 'Twitter' : {
+            let getAccessToken = await functions?.handleTwitter(type)
+            console.log(getAccessToken)
+            break
+          } 
+          case 'Facebook' : {
+            let getAccessToken = await functions?.handleFacebook(type)
+            console.log(getAccessToken)
+            break
+          } 
+        }
+      
+      } else if (type == 'delete'){
+        switch(social){
+          case 'Github' : {
+            let getAccessToken = await functions?.handleGitHub(type)
+            console.log(getAccessToken)
+            break
+          }
+          case 'Twitter' : {
+            let getAccessToken = await functions?.handleTwitterDelete(type)
+            console.log(getAccessToken)
+            break
+          } 
+          case 'Facebook' : {
+            let getAccessToken = await functions?.handleFacebookDelete(type)
+            console.log(getAccessToken)
+            break
+          } 
+      
+        }
+      }
+         
+
+    } catch (error) {
+      
+    }
+   }
     
     
   const uploadPicture = async (file,accessToken) => {
@@ -206,18 +224,17 @@ const useFetch = () => {
 
     }
     const handleDelete = async({data, user, accessToken}) =>{
+
       let email = data?.get('email')
       let password = data?.get('password')
-      
+      console.log(email);
+      console.log(password);
       try {
         console.log(`handleDelete IS WORKING`)
         if(email && password){
-          // let dbDelete = await handleFetchType({updatedParams: {password, email}, email , accessToken, uri:'/delete', method: 'delete'})
+          let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email,updatedParams:{password}, accessToken}})
 
-          if(!dbDelete?.success) return setMessage({message:dbDelete?.message})
-          console.log(dbDelete)
-          setMessage({message: dbDelete?.message})
-          return {message: dbDelete?.message}
+          if(!dbDelete?.success) return {success:false, message:dbDelete?.message}
         } else
         if(accessToken !=='undefined' && !password ){
           console.log(`DELETING THROUGH ACCESS-TOKEN`)
@@ -225,14 +242,13 @@ const useFetch = () => {
           let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email, accessToken}})
 
           console.log(dbDelete)
-          if(!dbDelete?.success) return setMessage({message:dbDelete?.message})
+          if(!dbDelete?.success) return {success:false, message:dbDelete?.message}
 
-          setMessage({message: dbDelete?.message})
-          return {message:dbDelete?.message}
+          return {success:true, message:dbDelete?.message}
         }
 
       } catch (error) {
-        return setMessage({message:error})
+        return {success:false, message:error}
       }
 
     }
@@ -250,7 +266,6 @@ const useFetch = () => {
     console.log(`data: `, data)
     try {
      setLoading(true)
-
       //add updatedParams if they have been added by user
      if(picture){
       let uri = await convertBase64(picture);
@@ -290,24 +305,26 @@ const useFetch = () => {
       let response = await APIFetch({url: `${url}change`, method:'post', body: {updatedParams: changesArr, userEmail: user?.email, accessToken}});
       console.log(response);
       if(!response?.success) {
-        setLoading(false)
+
         return setMessage({message: response?.message})
       };
       if(!response?.data?.accessToken){
-        setLoading(false)
 
         return setMessage({message:response?.message})  
       }
       setCookie('accessToken', response?.data?.accessToken, {path:'/', maxAge: 2000})
+
       setMessage({message: response?.data?.message, changes: response?.data?.changes});
+      
       return  await getUserData(response?.data?.accessToken, user?.loggedThrough || localStorage.getItem('LOGGED_THROUGH'));
 
     } catch (error) {
-      setLoading(true)
       return setMessage({message:error})      
+    } finally{
+      setLoading(false)
     }
   }
-   return { getUserData, fetchSignin,fetchRegister,checkAccessToken,checkQueryString,handleChangeFetch,handleDelete,
+   return { getUserData, fetchSignin,fetchRegister,handleChangeFetch,handleDelete,handleDeleteSocial,
     }
 }
 

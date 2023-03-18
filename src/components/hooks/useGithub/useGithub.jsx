@@ -1,11 +1,12 @@
 import React from 'react'
 import { useAuthentication } from '../../Authentication/Authentication';
+import { APIFetch } from '../../utils/utils';
 import useFetch from '../useFetch';
 
 const useGithub = () => {
     const {logout, setCookie, cookies,setMessage, setLoading,setIsLogged} = useAuthentication()
     const {getUserData} = useFetch()
-    const url = `http://localhost:5050/api/auth/`
+    const url = `http://localhost:5050/api/`
 
     let newURL = location.href.split("?")[0];
     newURL = '/auth/signin'
@@ -21,7 +22,7 @@ const useGithub = () => {
 
     const handleGithubRegister = async(accessToken) => {
         console.log(`GH REGISTERING`)
-        const registerUser = await fetch(`${url}github/register`, {
+        const registerUser = await fetch(`${url}auth/github/register`, {
             method:"POST",
             headers: {
                 "Content-Type": 'application/json' // Bearer ACCESSTOKEN
@@ -37,20 +38,36 @@ const useGithub = () => {
         setCookie('accessToken', response?.data?.accessToken, {path: '/', maxAge: '2000'})
         localStorage.setItem('LOGIN_TYPE', 'signin')
         // window.location.reload()
-
-
-    
-    
-      
     }
 
+    const handleGithubDelete = async({accessToken, user})=>{
+        try {
+            setLoading(true)
+            let response = await APIFetch({
+                url: `${url}change/delete`,
+                method:'delete', 
+                body:{accessToken, userEmail:user?.email}}
+            );
+            if(!response?.success)return setMessage({message:response?.message})
+
+            logout('/auth/signin')
+            
+           
+        } catch (error) {
+            return setMessage({message: error})
+
+        } finally{
+            setLoading(false)
+        }
+    }
+    
     const getGithubAccessToken= async(codeParam,type) => {
         console.log(`GH GETTING TOKEN`)
 
         console.log(url)
         try {
             setLoading(true)
-            const accessTokenGH = await fetch(`${url}github/getAccessToken?code=${codeParam}`, {
+            const accessTokenGH = await fetch(`${url}auth/github/getAccessToken?code=${codeParam}`, {
                 method: 'GET',
                 headers:{
                     "Content-Type": "application/json"
@@ -73,19 +90,20 @@ const useGithub = () => {
 
             return setMessage({message: error})
 
+        } finally{
+            setLoading(false)
         }
 
 
         // window.location.replace(`auth/${type}`)
 
-        setLoading(false)
     }
     const getUserDataGH = async()=>{
         try {
             setLoading(true)
             console.log(`GH GETTING USER`)
 
-            const responseToken = await fetch(`${url}github/getUserToken`, {
+            const responseToken = await fetch(`${url}auth/github/getUserToken`, {
                 method: "GET",
                 headers: {
                   "Authorization": cookies?.accessToken // Bearer ACCESSTOKEN
@@ -100,19 +118,20 @@ const useGithub = () => {
                await getUserData(dbResponse?.data?.accessToken, 'Github')
             localStorage.clear()
             // removeCookie('accessToken', {path:'/'})
-            setLoading(false)
 
 
         } catch (error) {
             console.log(error)
             return setMessage({message:error})
 
+        } finally{
+            setLoading(false)
         }
 
     }
   
   
-    return {handleGitHub,handleGithubRegister,getGithubAccessToken,getUserDataGH}
+    return {handleGithubDelete,handleGitHub,handleGithubRegister,getGithubAccessToken,getUserDataGH}
 }
 
 export default useGithub

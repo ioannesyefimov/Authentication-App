@@ -16,6 +16,10 @@ const useTwitter = () => {
 
     let newURL = location.href.split("?")[0];
 
+    const handleTwitterDelete = async() =>{
+        console.log('TWITTER DELETING')
+    }
+
     const handleTwitter = ( redirectUri) => {
         getUrlWithQueryParams(TWITTER_AUTH_URL, {
             response_type:'code',
@@ -30,7 +34,7 @@ const useTwitter = () => {
 
     }
  
-    return {handleTwitter}
+    return {handleTwitter,handleTwitterDelete}
 }
 
 export default useTwitter

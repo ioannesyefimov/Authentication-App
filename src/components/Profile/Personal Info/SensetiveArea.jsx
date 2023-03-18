@@ -10,10 +10,23 @@ import SocialLoginBtns from '../../Authentication/SocialLoginBtns/SocialLoginBtn
 const SensentiveArea = ({setIsShowed, isShowed}) => {
   const [isPrompted,setIsPrompted] = useState(false)
   const {handleDelete} = useFetch()
-  const {Message,User} = useAuthentication()
+  const {Message,User, cookies,logout} = useAuthentication()
+  const handleDeleteSubmit = async(e)=>{
+    e.preventDefault();
+
+    const data = new FormData(formRef.current)
+    console.log(data)
+    let isDeleted = await handleDelete({data,accessToken: cookies?.accessToken, user: User })
+    console.log(`isdeleted: `,isDeleted)
+    if(!isDeleted?.success) return setMessage({message: isDeleted?.message})
+    return logout('/auth/signin')
+
+  }
 
   const emailRef = React.createRef(null)
   const passwordRef = React.createRef(null)
+  const formRef = React.createRef(null)
+
   return (
     <div className='sensetive-area box-shadow'>
         
@@ -24,7 +37,7 @@ const SensentiveArea = ({setIsShowed, isShowed}) => {
           <button  onClick={()=>setIsShowed(isShowed=>!isShowed) } className='back-btn'>
             <img src={backIco} alt="back icon" />
             Back</button>
-          <AuthForm btnText={'Delete User'} onSubmit={handleDelete} emailRef={emailRef} passwordRef={passwordRef} Message={Message} type="signin" />
+          <AuthForm btnText={'Delete User'} formRef={formRef} onSubmit={handleDeleteSubmit} emailRef={emailRef} passwordRef={passwordRef} Message={Message} type="signin" />
           <p style={{margin: '0 auto'}} className="gray">Or continue with social:</p>
           <div className="social-wrapper">
             <SocialLoginBtns loggedThroughBtn={{social : User?.loggedThrough ? User.loggedThrough : localStorage.getItem('LOGGED_THROUGH')}} type={'delete'} />

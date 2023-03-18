@@ -10,6 +10,7 @@ import FormInput from '../../LoginForm/AuthForm'
 import SocialLoginBtns from '../SocialLoginBtns/SocialLoginBtns'
 import AlertDiv from '../../AlertDiv/AlertDiv'
 import { useAuthentication } from '../Authentication'
+import useFetchData from '../../hooks/useFetchData'
 
 
 const SingIn = () => {
@@ -17,19 +18,23 @@ const SingIn = () => {
   const {theme} = useTheme()
   const {Message,setMessage} = useAuthentication()
   const {fetchSignin} = useFetch()
+ 
+  
+  
   
 
   const emailRef = React.createRef(null)
+  const formRef = React.createRef(null)
   const passwordRef = React.createRef(null)
 
 
 
   const onSignInSubmit = async(e)=> {
     e.preventDefault()
-    if(!validateInput({firstRef:emailRef , secondRef:undefined, thirdRef:passwordRef , setMessage})) return console.log(validateInput({firstRef:emailRef , secondRef:undefined, thirdRef:passwordRef , setMessage}))
-    console.log('signing in')
+    const data = new FormData(formRef.current)
 
-    fetchSignin(emailRef,passwordRef)
+
+   await fetchSignin(emailRef,passwordRef)
   }
 
  
@@ -47,7 +52,7 @@ const SingIn = () => {
             <span className='inner'>Login</span>
             </div>
           </div> 
-          <FormInput Message={Message} btnText={'Login'}  emailRef={emailRef} passwordRef={passwordRef}  onSubmit={onSignInSubmit}/>
+          <FormInput formRef={formRef} Message={Message} btnText={'Login'}  emailRef={emailRef} passwordRef={passwordRef}  onSubmit={onSignInSubmit}/>
           <div className="social-btns">
             <span>or continue with these social profile</span>
             <div className="social-wrapper">

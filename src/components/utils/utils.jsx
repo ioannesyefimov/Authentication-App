@@ -3,54 +3,57 @@
        return regex.test(email)
 };
 
- const validateInput = ({ firstRef,secondRef,thirdRef,setMessage,Message})=>{
+ const validateInput = ({ firstRef,secondRef,thirdRef})=>{
   
   let firstVal = firstRef?.current.value
   let secondVal = secondRef?.current.value
   let thirdVal = thirdRef?.current.value
-  let err = []
+  let err = {}
+
+
     if(!firstVal){
-      firstRef.current.classList.add('error')
-         err.push(`${Errors.CANNOT_BE_EMPTY}EMAIL`)
+      firstRef?.current.classList.add('error')
+      err.email = Errors.INVALID_EMAIL
     }else if (firstVal && !validateEmail(firstVal)){
-      firstRef.current.classList.add('error')
-         err.push(Errors.INVALID_EMAIL)
+      firstRef?.current.classList.add('error')
+         err.email = Errors.INVALID_EMAIL
+    } else {
+      firstRef?.current.classList.remove('error')
+
+      delete err.email 
     }
 
 
     if(!secondVal && secondRef !== undefined){
-      secondRef.current.classList.add('error')
-         err.push(`${Errors.CANNOT_BE_EMPTY}NAME`)
+      secondRef?.current.classList.add('error')
+      err.name = Errors.CANNOT_BE_EMPTY
 
     } else if (secondRef !== undefined  && /\d/.test(secondVal)){
-      secondRef.current.classList.add('error')
-       err.push(Errors.CANNOT_CONTAIN_NUMBERS)
-    } 
+      secondRef?.current.classList.add('error')
+       err.name = Errors.CANNOT_CONTAIN_NUMBERS
+    } else {
+      secondRef?.current.classList.remove('error')
+
+      delete err.name 
+    }
     if(!thirdVal ){
       thirdRef.current.classList.add('error')
-      err.push(`${Errors.CANNOT_BE_EMPTY}PW`)
+      err.password = Errors.CANNOT_BE_EMPTY
     }else if (secondRef && secondVal !== '' && validatePassword(thirdVal, secondVal) !== 'valid'){
       let currentErr = validatePassword(thirdVal,secondVal)
-        secondRef.current.classList.add('error')
-        setMessage(Message, `${currentErr}`)
-        
-        err.push(currentErr)
+        secondRef?.current.classList.add('error')
+        err.password = currentErr
 
-    }
-    if(err.length > 0) {
-     setMessage(Message)
-      return false
     } else {
-      firstRef.current.classList.remove('error')
-
-      if(secondRef){
-        secondRef.current.classList.remove('error')
-      }
-
-      thirdRef.current.classList.remove('error')
+      delete err.password 
+      secondRef?.current.classList.remove('error')
 
     }
-    return true
+    console.log(isTrue(err))
+    if(isTrue(err).is) {
+      return {success:false, message: err}
+    } 
+    return {success:true, message: err}
   }
 
 
@@ -129,6 +132,8 @@
   JWT_MALFORMED: `jwt malformed` ,
   MISSING_ARGUMENTS: `MISSING_ARGUMENTS`,
   JWT_EXPIRED: `jwt expired`,
+  ABORTED_TRANSACTION: `ABORTED_TRANSACTION`,
+
 
   
 }
@@ -184,7 +189,7 @@ const convertBase64 = (file) => {
 }
 
 const isObj = (obj) =>{
-  return (typeof obj === 'object' && !Array.isArray(obj) && obj !== null && Object)
+  return (typeof obj === 'object' && !Array.isArray(obj) && obj !== null && obj.constructor === Object )
 
 }
 const isTrue = (arg) =>{

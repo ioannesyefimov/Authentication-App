@@ -7,15 +7,24 @@ import useGithub from '../../hooks/useGithub/useGithub'
 import useFacebook from '../../hooks/useFacebook/useFacebook'
 import useTwitter from '../../hooks/useTwitter/useTwitter'
 import SocialBtn from './SocialBtn'
+import useFetch from '../../hooks/useFetch'
 
 const SocialLoginBtns = ({type, loggedThroughBtn=null}) => {
-  const {setUser, setRerender,setLoading, setError} = useAuthentication()
-  const {handleTwitter} = useTwitter()
-  const {handleFacebook} = useFacebook(  )
-  const {handleGoogleDelete,handleGoogleRegister,handleGoogleSignin} = useGoogle()
-  const {handleGitHub} = useGithub()
-    
+  const {setUser, setRerender,setLoading, setError} = useAuthentication();
+  const {handleTwitter,handleTwitterDelete} = useTwitter();
+  const {handleFacebook,handleFacebookDelete} = useFacebook(); 
+  const {handleGoogleDelete,handleGoogleRegister,handleGoogleSignin} = useGoogle();
+  const {handleGitHub} = useGithub();
+  const {handleDeleteSocial} = useFetch();
+  
+  const googleRef= React.createRef()
+  const githubRef= React.createRef()
+  const twitterRef= React.createRef()
+  const facebookRef= React.createRef()
+
   useEffect(() => {
+    console.log((loggedThroughBtn));
+    console.log((type));
     console.log((loggedThroughBtn));
     console.log((type));
     if(window.google){
@@ -28,62 +37,61 @@ const SocialLoginBtns = ({type, loggedThroughBtn=null}) => {
         type: "icon",
       })
     }
-    // google.accounts.id.prompt()
+   
     
-  }, [type==='register' ? handleGoogleRegister : type==="signin"?  handleGoogleSignin : type==="delete" ? handleGoogleDelete :null] )
+  }, [type==='register' ?
+   (handleGoogleRegister, handleGitHub, handleTwitter,handleFacebook)
+    : type==="signin"?  (handleGoogleSignin,handleTwitter,handleFacebook,handleGitHub) 
+    : type==="delete" ? (handleGoogleDelete, handleDeleteSocial) :null]
+  )
+
+  useEffect(
+    () => {
+      githubRef.current.focus()
+      googleRef.current.focus()
+      facebookRef.current.focus()
+      twitterRef.current.focus()
+      if(twitterRef || githubRef || facebookRef || googleRef == null) return console.log('something is null')
+      switch(type){
+        case 'delete':  {
+          githubRef?.current.onclick = () => handleDeleteSocial({social: 'Github', type, functions: {handleGitHub}})
+          twitterRef?.current.onclick = () => handleDeleteSocial({social: 'Twitter', type, functions: {handleTwitterDelete}})
+          facebookRef?.current.onclick = () => handleDeleteSocial({social: 'Facebook', type, functions: {handleFacebookDelete}})
+          break
+        }
+        case 'signin': 
+          githubRef?.current.onclick = ()=> handleGitHub(type)
+          twitterRef?.current.onclick = () => handleTwitter(type)
+          facebookRef?.current.onclick = () => handleFacebook(type)
+        case 'register': 
+          githubRef?.current.onclick = ()=> handleGitHub(type)
+          twitterRef?.current.onclick = () => handleTwitter(type)
+          facebookRef?.current.onclick = () => handleFacebook(type)
+          break
+        
+      }
+    }, [googleRef,githubRef,twitterRef,facebookRef]
+  )
+
+  if(loggedThroughBtn?.social){
   if(loggedThroughBtn?.social){
     switch(loggedThroughBtn?.social){
-      case 'Google':   return <SocialBtn icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />
-      case 'Github':   return <SocialBtn icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`} execFunc={handleGitHub} />
-      case 'Twitter':  return <SocialBtn icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  execFunc={handleTwitter}/>
-      case 'Facebook': return <SocialBtn icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}  execFunc={handleFacebook} />
-  } 
-}
-    
+      case 'Google':   return <SocialBtn ref={googleRef} icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />
+      case 'Github':   return <SocialBtn ref={githubRef} icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`}  />
+      case 'Twitter':  return <SocialBtn ref={twitterRef} icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  />
+      case 'Facebook': return <SocialBtn ref={facebookRef} icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}   />
+    } 
+   }
+  }
   
   return (
     <div className='social-wrapper'>
       <SocialBtn icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />
-      <SocialBtn icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}  execFunc={handleFacebook} />
-      <SocialBtn icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  execFunc={handleTwitter}/>
-      <SocialBtn icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`} execFunc={handleGitHub} />
+      <SocialBtn icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}   />
+      <SocialBtn icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  />
+      <SocialBtn icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`}  />
     </div>
   )
-//   return (
-//     <div className="social-wrapper">
-//       <div className="social-btn-container" id='GG-btn'>
-//        <img src={GoogleIco} alt="google icon" />
-//        <button className="social-btn" id="googleBtn">
-//        </button>
-//       </div>
-//       <div className="social-btn-container">
-//           <img     src={facebookIco} alt="facebook icon"  />
-//         <button onClick={()=> handleFacebook(type)} className="social-btn" id="facebookBtn">
-//         </button>
-//       </div>
-//       <div className="social-btn-container">
-//         <img     src={TwitterIco} alt="twitter icon" />
-//         <button onClick={()=> handleTwitter(type)} className="social-btn">
-//         </button>
-//       </div>
-//       <div className="social-btn-container">
-//         <img     src={GithubIco} alt="Github icon" />
-//         <button onClick={()=> handleGitHub(type)} className="social-btn">
-//         </button>
-//       </div>
-//       <div className='hint'>
-//         {type === 'register' ? (
-//           <p>Already a member? <Link to="/auth/signin" replace>Login</Link></p>
-
-//         ) : (
-//           <p>Don't have an account yet? <Link to="/auth/register" replace>Register</Link></p>
-//         )}
-
-//       </div>
-
-
-//   </div>
-//   )
 }
 
 export default SocialLoginBtns

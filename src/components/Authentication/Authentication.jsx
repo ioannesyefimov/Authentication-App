@@ -18,6 +18,7 @@ export const useAuthentication = ()=>{
 export const AuthenticationProvider = ({children}) => {
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [Loading, setLoading] = useState(false)
+    const [Reload, setReload] = useState(false)
     const [User, setUser] = useState({message: '1243'})
     const [isLogged, setIsLogged] = useState(false)
     const [Message, setMessage] = useState({})
@@ -30,7 +31,7 @@ export const AuthenticationProvider = ({children}) => {
            return setIsLogged(true)
          } 
 
-      }, [cookies?.user]
+      }, [Reload]
     )
 
 
@@ -56,9 +57,9 @@ export const AuthenticationProvider = ({children}) => {
     
     const value = useMemo(
         () => ({
-            User,cookies,isLogged, Message, Loading,setIsLogged, setLoading,setCookie,removeCookie,setMessage, setUser,logout
+            User,cookies,Reload, isLogged, Message, Loading,setReload,setIsLogged, setLoading,setCookie,removeCookie,setMessage, setUser,logout
         }),
-         [User,isLogged,Message,cookies,Loading]
+         [User,Reload,isLogged,Message,cookies,Loading]
     )
 
 
@@ -73,36 +74,32 @@ export const AuthenticationProvider = ({children}) => {
 
 export const Authentication = ()=>{
   const {cookies,isLogged, Message,setMessage,setUser,setIsLogged, Loading,} = useAuthentication()
-  const { getUserData,checkQueryString,checkAccessToken} = useFetch();
-  const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
+  // const { getUserData,checkQueryString,checkAccessToken} = useFetch();
+  // const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
   const location = useLocation()
 
-  useEffect(() => {
-    let accessToken = cookies.accessToken
-    console.log(`token: ${accessToken}`);
-    console.log(`rerendered`);
+  // useEffect(() => {
+  //   let accessToken = cookies.accessToken
+  //   console.log(`token: ${accessToken}`);
+  //   console.log(`rerendered`);
+  //   let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
+  //   let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
     
-    if(accessToken == 'undefined') return console.log('accessToken is' , accessToken) 
-    if(!isLogged && !Message?.message ){
-      let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
-      let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-      console.log(`isn't logged`);
-      checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
-      checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken, getUserData, getUserDataGH,handleGithubRegister})
-    }
+  //   if(!isLogged && !Message?.message ){
+  //     console.log(`isn't logged`);
+  //     checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
+  //     if(accessToken == 'undefined' || accessToken == undefined) return console.log('accessToken is' , accessToken) 
+  //     checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken, getUserData, getUserDataGH,handleGithubRegister})
+  //   }
 
-  }, [cookies?.accessToken])
+  // }, [cookies?.accessToken])
 
 
 
-
-
-
-  if(Loading) return <Fallback />
-  // if(!isLogged && !location?.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
+  if(window.location.search ) return <Fallback />
+  if(!isLogged && !location?.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
   if(!isLogged && location?.pathname?.includes('/auth') ) return <Outlet />
   if(isLogged) return <Navigate to="/profile" replace />
-  // }
   
   
 

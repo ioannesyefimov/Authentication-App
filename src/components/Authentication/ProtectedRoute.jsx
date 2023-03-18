@@ -12,20 +12,17 @@ const ProtectedRoute =  () => {
     const navigate = useNavigate()
  
 
-    const location = useLocation()
 
-    if(Loading ){
-      return <Fallback />
-    } 
+
     if(isLogged){
-
       switch(location.pathname){
         case '/': return <Navigate to='/profile' replace />
         case '/profile': return <Outlet/>
         case '/profile/change': return <Outlet />
+        default: console.log('NOT matched')
       }
-    }   else {
-     return<Navigate to='/auth/signin' replace />
+    } else if(!isLogged) {
+      return <Navigate to='/auth/signin' replace />
     }
 
 }

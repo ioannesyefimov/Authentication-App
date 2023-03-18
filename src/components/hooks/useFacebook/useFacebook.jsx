@@ -11,9 +11,12 @@ const useFacebook = () => {
     const handleFacebook = () => {
 
     }
+    const handleFacebookDelete = async()=>{
+        console.log(`deleting facebok`)
+    }
 
 
-    return {handleFacebook}
+    return {handleFacebookDelete, handleFacebook}
 }
 
 export default useFacebook

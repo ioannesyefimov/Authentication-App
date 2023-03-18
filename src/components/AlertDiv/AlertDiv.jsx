@@ -1,39 +1,43 @@
 import React from 'react'
 import { useAuthentication } from '../Authentication/Authentication'
 import SocialLoginBtns from '../Authentication/SocialLoginBtns/SocialLoginBtns'
-import { Errors, isTrue, validateInput } from '../utils/utils'
+import { Errors, isTrue,isObj, validateInput } from '../utils/utils'
+
 import { Link } from 'react-router-dom'
 import './AlertDiv.scss'
+const FuncComponent = ({message, onClc, btnText}) =>{
+  return (
+    <div className='alert-div-component'>
+      <p className="alert-type">{message?.replaceAll('_', ' ')}</p>  
+    <div className="wrapper">
+        <button onClick={onClc} className="alert-btn" type="button">{btnText}</button>
+    </div>
+</div>
+  )
+}
 
-const AlertDiv = ({message, success, setMessage, logout}) => {
+const AlertDiv = () => {
+  const {User,logout,Message,setMessage, Loading,setLoading} = useAuthentication()
 
 
   // const { logout} = useAuthentication()
   const [isClicked,setIsClicked] = React.useState(false)
-  const FuncComponent = ({message, onClc, btnText}) =>{
-    return (
-      <div className='alert-div-component'>
-        <p className="alert-type">{message?.message.replaceAll('_', ' ')}</p>  
-      <div className="wrapper">
-          <button onClick={onClc} className="alert-btn" type="button">{btnText}</button>
-      </div>
-  </div>
-    )
-  }
+
   
-  switch(message?.message){
-    case Errors.CHANGES_APPLIED: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Continue'} />
-    case Errors.CHANGES_NOT_APPLIED: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Continue'} />
-    case Errors.INVALID_EMAIL: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Type in valid'} />
-    case Errors.INVALID_PASSWORD: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Type different'} />
-    case Errors.INVALID_NUMBER: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Type in valid'} />
-    case Errors.PASSWORD_CONTAINS_NAME: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Type different'} />
-    case Errors.CANNOT_CONTAIN_NUMBERS: return <FuncComponent message={message} onClc={()=>setMessage({})} btnText={'Type different'} />
+  switch(Message?.message){
+    case Errors.CHANGES_APPLIED: return <FuncComponent message={Message?.message} onClc={()=>{setMessage({})}} btnText={'Continue'} />
+    case Errors.CHANGES_NOT_APPLIED: return <FuncComponent message={Message?.message} onClc={()=>{setMessage({})}} btnText={'Continue'} />
     default: console.log(`NOT MATCHED SWITCH`)
   }
+
+
+
   return (
-    <div className='alert-div-component'>
-      { message?.message === Errors.JWT_MALFORMED  || message?.message === Errors.JWT_EXPIRED?
+     isObj(Message?.message) ? (
+        console.log(`${Message} is Object`)
+      ) : (
+      <div className='alert-div-component'>
+      { Message?.message === Errors.JWT_MALFORMED  || Message?.message === Errors.JWT_EXPIRED ?
         (
         <>
            <p className="alert-type">You need to sign in again </p>  
@@ -42,21 +46,21 @@ const AlertDiv = ({message, success, setMessage, logout}) => {
             </div>
          </>
         ) :
-        message?.message == Errors.ALREADY_EXISTS || message?.message === Errors.SIGNED_UP_DIFFERENTLY ? 
+          (Message?.message == Errors.ALREADY_EXISTS || Message?.message === Errors.SIGNED_UP_DIFFERENTLY) ? 
         (
         <>
-          {message?.loggedThrough === 'Internal' ? (
+          {Message?.loggedThrough === 'Internal' ? (
           <p className="alert-type">Such account has already been signed up</p>  
-        ) : (
-          <p className="alert-type">Such account has already been signed up through {message?.loggedThrough}</p>  
-        )}
+          ) : (
+            <p className="alert-type">Such account has already been signed up through {Message?.loggedThrough}</p>  
+          )}
           <div className="wrapper">
             <button onClick={async()=>{await logout(`/auth/register`); }} 
             className="alert-btn" type="button"
             >
                 Sign up new 
               </button>
-            {message?.loggedThrough === 'Internal' ? (
+            {Message?.loggedThrough === 'Internal' ? (
             <button 
               onClick={async() =>{ await logout(`/auth/signin`) }}
               className="alert-btn" 
@@ -68,19 +72,19 @@ const AlertDiv = ({message, success, setMessage, logout}) => {
                 onClick={async() =>setIsClicked(true)}
                 className="alert-btn" 
                 type="button">
-                  Sign in with {message?.loggedThrough}
+                  Sign in with {Message?.loggedThrough}
               </button>
             )}
           </div>
             {isClicked ? (
               <div className='social-wrapper' style={{margin:'0 auto'}}>
-                <SocialLoginBtns  type={`signin`} loggedThroughBtn={{social: message?.loggedThrough}}/>
+                <SocialLoginBtns  type={`signin`} loggedThroughBtn={{social: Message?.loggedThrough}}/>
               </div>
             ) : null}
             <button onClick={()=>setMessage({})} className='hide' >hide</button>
         </>
         ) : 
-        message?.message == Errors.NOT_SIGNED_UP ||      message?.message == Errors.NOT_FOUND ?
+         Message?.message == Errors.NOT_SIGNED_UP || Message?.message == Errors.NOT_FOUND ?
         (
           <>
             <p className="alert-type">You have yet to sign up to our Application</p>  
@@ -92,22 +96,22 @@ const AlertDiv = ({message, success, setMessage, logout}) => {
               <button onClick={()=>logout('/auth/signin')} className="alert-btn" type="button">Sign in with different accont</button>
             </div>
           </>
-        ) : isTrue(message?.message).is ? (
+        ) :  !isObj(Message?.message) ? (
           <>
-          <p className="alert-type">{message?.message?.replaceAll('_', ' ')}</p>  
-          <div className="wrapper">
-           
-            <button onClick={()=> {setMessage({})}} 
-            className="alert-btn" type="button">
-              Continue
-            </button>
-          </div>
-        </>
-        ) : (<button onClick={()=>setMessage({})}>NOT MATCHED</button>)
+            <p className="alert-type">{Message?.message}</p>  
+            <div className="wrapper">
+            
+              <button onClick={()=> {setMessage({}) ;setLoading(false)}} 
+              className="alert-btn" type="button">
+                Continue
+              </button>
+            </div>
+         </>
+        ) : (console.log('NOT MATCHED'))
       }
     </div>
+    ) 
   )
-
 
   }
 export default AlertDiv

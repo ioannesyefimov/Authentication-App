@@ -10,11 +10,11 @@ import  { AuthenticationProvider, Authentication } from './components/Authentica
 
 import {CookiesProvider} from 'react-cookie'
 import App from './App'
-import ErrorBoundary, { Fallback } from './components/ErrorBoundary/ErrorBoundary'
+import ErrorBoundary, {ErrorFallBack } from './components/ErrorBoundary/ErrorBoundary'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <ErrorBoundary fallback={<Fallback/>}>
+  <ErrorBoundary fallback={<ErrorFallBack/>}>
   <CookiesProvider>
 
     <AuthenticationProvider>

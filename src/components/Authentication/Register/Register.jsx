@@ -1,11 +1,10 @@
 import React, { useEffect , useState} from 'react'
 import {devchall_light, devchall_dark} from '../../../Assets'
-import FormInput from '../../LoginForm/AuthForm'
+import AuthForm from '../../LoginForm/AuthForm'
 import useFetch from '../../hooks/useFetch'
 import { useTheme } from '../ThemeProvider/ThemeProvider'
 import './Register.scss'
 import SocialLoginBtns from '../SocialLoginBtns/SocialLoginBtns'
-import { validateInput } from '../../utils/utils'
 import { Link } from 'react-router-dom'
 import '../Authentication.scss'
 import { useAuthentication } from '../Authentication'
@@ -26,9 +25,7 @@ const Register = () => {
   const onRegisterSubmit = async(e)=> {
     e.preventDefault()
 
-    if(!validateInput({firstRef:emailRef , secondRef:fullNameRef , thirdRef:passwordRef , setMessage, Message})) return 
-
-    fetchRegister(fullNameRef,passwordRef,emailRef)
+    await fetchRegister({fullNameRef,passwordRef,emailRef})
   }
 
  
@@ -45,7 +42,7 @@ const Register = () => {
             <p className='inner'>Master web development by making real-life projects. There are multiple paths for you to choose</p>
           </div>
       </div> 
-      <FormInput type='register' fullNameRef={fullNameRef} Message={Message} btnText={'Start coding now'} emailRef={emailRef} passwordRef={passwordRef}   onSubmit={onRegisterSubmit}/>
+      <AuthForm type='register' fullNameRef={fullNameRef} Message={Message} btnText={'Start coding now'} emailRef={emailRef} passwordRef={passwordRef}   onSubmit={onRegisterSubmit}/>
       <div className="social-btns">
         <span>or continue with these social profile</span>
         <SocialLoginBtns type="register" />
