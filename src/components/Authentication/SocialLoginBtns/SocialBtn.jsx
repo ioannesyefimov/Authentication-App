@@ -1,13 +1,13 @@
 import React from 'react'
 
-const SocialBtn = React.forwardRef ((props, ref) => {
+const SocialBtn =  ({type,id,execFunc,icon,socialType}) => {
   return (
     <div className="social-btn-container" >
-        <img src={props?.icon} alt={`${props?.socialType} icon`} />
-        <button ref={ref}  className="social-btn" id={props?.id}>
+        <img src={icon} alt={`${socialType} icon`} />
+        <button onClick={()=> execFunc(type)}   className="social-btn" id={id}>
     </button>
    </div>
   )
-})
+}
 
 export default SocialBtn

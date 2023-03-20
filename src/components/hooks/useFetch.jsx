@@ -108,7 +108,7 @@ const useFetch = () => {
         loggedThrough: loggedThrough
         }})
 
-        if(!response?.success && response.message){
+        if(!response?.success ){
             return setMessage({message:response.message, loggedThrough:response?.loggedThrough})
         }
         console.log(response)
@@ -120,6 +120,7 @@ const useFetch = () => {
                 picture: response?.data.user.picture,
                 bio: response?.data.user?.bio,
                 phone: response?.data.user?.phone,
+                loggedThrough: response?.data?.loggedThrough
             }
 
             console.log(response)
@@ -132,6 +133,7 @@ const useFetch = () => {
             }
             setIsLogged(true)
       setReload(prev=>prev +1 )
+      return {token: response?.data?.accessToken}
 
             // window.localStorage.clear()
         }
@@ -229,6 +231,7 @@ const useFetch = () => {
       let password = data?.get('password')
       console.log(email);
       console.log(password);
+      console.log(`token DELETING:`, accessToken)
       try {
         console.log(`handleDelete IS WORKING`)
         if(email && password){
@@ -236,19 +239,24 @@ const useFetch = () => {
 
           if(!dbDelete?.success) return {success:false, message:dbDelete?.message}
         } else
-        if(accessToken !=='undefined' && !password ){
+        if(accessToken !=='undefined' || accessToken !== undefined && !password ){
           console.log(`DELETING THROUGH ACCESS-TOKEN`)
           
           let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email, accessToken}})
 
           console.log(dbDelete)
-          if(!dbDelete?.success) return {success:false, message:dbDelete?.message}
-
+          if(!dbDelete?.success) 
+          {
+            return {success:false, message:dbDelete?.message}
+          }
           return {success:true, message:dbDelete?.message}
         }
 
       } catch (error) {
-        return {success:false, message:error}
+        return {success:true, message:error}
+
+      } finally{
+        setLoading(false)
       }
 
     }

@@ -10,7 +10,7 @@ import SocialLoginBtns from '../../Authentication/SocialLoginBtns/SocialLoginBtn
 const SensentiveArea = ({setIsShowed, isShowed}) => {
   const [isPrompted,setIsPrompted] = useState(false)
   const {handleDelete} = useFetch()
-  const {Message,User, cookies,logout} = useAuthentication()
+  const {Message,User,setMessage, cookies,logout} = useAuthentication()
   const handleDeleteSubmit = async(e)=>{
     e.preventDefault();
 

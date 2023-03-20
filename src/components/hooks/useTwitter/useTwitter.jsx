@@ -1,5 +1,5 @@
 import React from 'react'
-import { assertEnvVar, getUrlWithQueryParams } from '../../utils/utils';
+import {  getUrlWithQueryParams } from '../../utils/utils';
 import { useAuthentication } from '../../Authentication/Authentication';
 
 
@@ -23,7 +23,7 @@ const useTwitter = () => {
     const handleTwitter = ( redirectUri) => {
         getUrlWithQueryParams(TWITTER_AUTH_URL, {
             response_type:'code',
-            client_id: assertEnvVar(`TWITTER_CLIENT_ID`),
+            client_id: import.meta.env.VITE_APP_TWITTER_CLIENT_ID,
             redirect_uri: redirectUri,
             scope:TWITTER_SCOPE,
             state: TWITTER_STATE,

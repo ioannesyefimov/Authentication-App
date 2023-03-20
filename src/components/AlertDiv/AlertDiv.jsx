@@ -23,7 +23,7 @@ const AlertDiv = () => {
   // const { logout} = useAuthentication()
   const [isClicked,setIsClicked] = React.useState(false)
 
-  
+  console.log(`Message: `,Message)
   switch(Message?.message){
     case Errors.CHANGES_APPLIED: return <FuncComponent message={Message?.message} onClc={()=>{setMessage({})}} btnText={'Continue'} />
     case Errors.CHANGES_NOT_APPLIED: return <FuncComponent message={Message?.message} onClc={()=>{setMessage({})}} btnText={'Continue'} />
@@ -33,7 +33,7 @@ const AlertDiv = () => {
 
 
   return (
-     isObj(Message?.message) ? (
+     isObj(Message?.message)   ? (
         console.log(`${Message} is Object`)
       ) : (
       <div className='alert-div-component'>
@@ -84,7 +84,7 @@ const AlertDiv = () => {
             <button onClick={()=>setMessage({})} className='hide' >hide</button>
         </>
         ) : 
-         Message?.message == Errors.NOT_SIGNED_UP || Message?.message == Errors.NOT_FOUND ?
+         Message?.message == Errors.NOT_SIGNED_UP ||  Message?.message == Errors.NOT_FOUND ?
         (
           <>
             <p className="alert-type">You have yet to sign up to our Application</p>  
@@ -96,9 +96,9 @@ const AlertDiv = () => {
               <button onClick={()=>logout('/auth/signin')} className="alert-btn" type="button">Sign in with different accont</button>
             </div>
           </>
-        ) :  !isObj(Message?.message) ? (
+        ) :    (
           <>
-            <p className="alert-type">{Message?.message}</p>  
+            <p className="alert-type">{JSON.stringify(Message?.message)}</p>  
             <div className="wrapper">
             
               <button onClick={()=> {setMessage({}) ;setLoading(false)}} 
@@ -107,7 +107,7 @@ const AlertDiv = () => {
               </button>
             </div>
          </>
-        ) : (console.log('NOT MATCHED'))
+        )
       }
     </div>
     ) 

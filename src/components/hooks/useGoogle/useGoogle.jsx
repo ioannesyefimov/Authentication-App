@@ -1,11 +1,37 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useAuthentication } from '../../Authentication/Authentication';
 import useFetch from '../useFetch';
 
-const useGoogle = () => {
+const useGoogle = (type) => {
     const {setCookie,setMessage,setLoading, User,logout} = useAuthentication()
     const {handleDelete} = useFetch()
+    const handleGoogle = (response,type)=>{
+        switch(type){
+            case 'signin': return handleGoogleSignin(response);
+            case 'register': return handleGoogleRegister(response);
+            case 'delete': return handleGoogleDelete(response);
+            default: return console.log(`NOT MATCHED TYPE `)
+        }
+    }
+    
+    useEffect(() => {
+        if(window.google){
+        google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
+            callback: (response)=> handleGoogle(response, type)
+        })
+        google.accounts.id.renderButton(document.getElementById('googleBtn'), {
+            shape: "circle",
+            type: "icon",
+        })
+        }
+    
+        
+    }, [handleGoogle]
+    )
+
     const url = `http://localhost:5050/api/auth/`
+
 
     let newURL = location.href.split("?")[0];
     const handleGoogleSignin = async(response) =>{
@@ -101,6 +127,7 @@ const useGoogle = () => {
             // if(!dbResponse?.accessToken)return setMessage({message:``})
             let deleteUser = await handleDelete({accessToken: dbResponse?.accessToken, user: User})
             console.log(deleteUser)
+            logout('/auth/signin')
             // setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});
         
             setLoading(false)
@@ -111,7 +138,7 @@ const useGoogle = () => {
         }
     }
 
-  return {handleGoogleRegister,handleGoogleSignin, handleGoogleDelete}
+  return {handleGoogleRegister,handleGoogleSignin, handleGoogleDelete,handleGoogle}
 }
 
 export default useGoogle

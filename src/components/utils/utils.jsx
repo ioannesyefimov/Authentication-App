@@ -146,9 +146,6 @@ const getUrlWithQueryParams = (baseUrl, params) =>{
     return `${baseUrl}?${query}`
 }
 
-const assertEnvVar = (name)=> {
-  return `${import.meta.env}.VITE_${name}`
-}
 
 const timeout = (delay)=>{
   return new Promise(res=>setTimeout(res,delay));
@@ -203,5 +200,5 @@ const isTrue = (arg) =>{
 }
  
   export {
-    convertBase64, timeout,assertEnvVar, getUrlWithQueryParams, Errors, validateEmail,validatePassword,validateInput, isTrue,isObj,APIFetch
+    convertBase64, timeout, getUrlWithQueryParams, Errors, validateEmail,validatePassword,validateInput, isTrue,isObj,APIFetch
   }

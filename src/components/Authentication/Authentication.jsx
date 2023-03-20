@@ -16,23 +16,26 @@ export const useAuthentication = ()=>{
 }
 
 export const AuthenticationProvider = ({children}) => {
-    const [cookies, setCookie, removeCookie] = useCookies(['user'])
+    const [cookies, setCookie, removeCookie] = useCookies(['user','accessToken'])
     const [Loading, setLoading] = useState(false)
-    const [Reload, setReload] = useState(false)
-    const [User, setUser] = useState({message: '1243'})
+    const [Reload, setReload] = useState(0)
+    const [User, setUser] = useState({})
     const [isLogged, setIsLogged] = useState(false)
-    const [Message, setMessage] = useState({})
+    const [Message, setMessage] = useState('')
 
     useEffect(
       ()=>{
         const isLoggedUser = cookies.user
          if(isLoggedUser?.fullName ){
+          console.log(`isLoggedUser: `, isLoggedUser)
            setUser(isLoggedUser)
            return setIsLogged(true)
          } 
 
-      }, [Reload]
+      }, [cookies?.user]
     )
+
+  
 
 
     const logout = (replace) => {

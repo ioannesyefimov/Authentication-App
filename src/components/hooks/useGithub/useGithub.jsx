@@ -3,9 +3,9 @@ import { useAuthentication } from '../../Authentication/Authentication';
 import { APIFetch } from '../../utils/utils';
 import useFetch from '../useFetch';
 
-const useGithub = () => {
-    const {logout, setCookie, cookies,setMessage, setLoading,setIsLogged} = useAuthentication()
-    const {getUserData} = useFetch()
+const useGithub = (type) => {
+    const {logout, setCookie, cookies,setMessage, setLoading,setReload} = useAuthentication()
+    const {getUserData,handleDelete} = useFetch()
     const url = `http://localhost:5050/api/`
 
     let newURL = location.href.split("?")[0];
@@ -36,21 +36,34 @@ const useGithub = () => {
             return setMessage({message: response?.message, loggedThrough:response?.loggedThrough})
         }
         setCookie('accessToken', response?.data?.accessToken, {path: '/', maxAge: '2000'})
+        setReload(prev=>prev+1)
+
         localStorage.setItem('LOGIN_TYPE', 'signin')
         // window.location.reload()
     }
 
     const handleGithubDelete = async({accessToken, user})=>{
+        console.log(`github deleting`)
+        console.log(`github token:`, accessToken);
         try {
-            setLoading(true)
-            let response = await APIFetch({
-                url: `${url}change/delete`,
-                method:'delete', 
-                body:{accessToken, userEmail:user?.email}}
-            );
-            if(!response?.success)return setMessage({message:response?.message})
+            const responseToken = await fetch(`${url}auth/github/getUserToken`, {
+                method: "GET",
+                headers: {
+                  "Authorization": accessToken // Bearer ACCESSTOKEN
+                }
+            })
 
-            logout('/auth/signin')
+              let response = await responseToken.json();
+              if(!response?.success ){
+                console.log(response.message)
+                return setMessage({message: response.message, loggedThrough: response.loggedThrough})
+             }
+
+             let  deleteUser =await handleDelete({accessToken: response?.data?.accessToken, user});
+             if(!deleteUser?.success) return setMessage({message: deleteUser.message});
+             
+
+             logout('/auth/signin')
             
            
         } catch (error) {
@@ -62,10 +75,8 @@ const useGithub = () => {
     }
     
     const getGithubAccessToken= async(codeParam,type) => {
-        console.log(`GH GETTING TOKEN`)
-
-        console.log(url)
         try {
+            console.log(`GH GETTING TOKEN`)
             setLoading(true)
             const accessTokenGH = await fetch(`${url}auth/github/getAccessToken?code=${codeParam}`, {
                 method: 'GET',
@@ -77,16 +88,17 @@ const useGithub = () => {
     
             const responseGH = await accessTokenGH.json()
             if(!responseGH.success){
-                setMessage({message: responseGH?.message})
+                window.history.pushState(null, document.title, newURL);
+
+               return setMessage({message: responseGH?.message})
             }
              console.log(responseGH)
             setCookie('accessToken', responseGH.data.accessToken, {path: '/', maxAge: '2000'})
+            setReload(prev=>prev+1)
             // localStorage.setItem('LOGIN_TYPE','signin')
              window.history.pushState(null, document.title, newURL);
-             window.location.reload()
         console.log(type)
         } catch (error) {
-            // window.history.pushState(null, document.title, newURL);
 
             return setMessage({message: error})
 
@@ -98,25 +110,26 @@ const useGithub = () => {
         // window.location.replace(`auth/${type}`)
 
     }
-    const getUserDataGH = async()=>{
+    const getUserDataGH = async(accessToken)=>{
         try {
+            console.log(`GH ACCESSTOKEN: ${accessToken}`)
             setLoading(true)
             console.log(`GH GETTING USER`)
 
             const responseToken = await fetch(`${url}auth/github/getUserToken`, {
                 method: "GET",
                 headers: {
-                  "Authorization": cookies?.accessToken // Bearer ACCESSTOKEN
+                  "Authorization": accessToken // Bearer ACCESSTOKEN
                 }
             })
 
               let dbResponse = await responseToken.json();
-              if(!dbResponse?.success && dbResponse.message){
+              if(!dbResponse?.success ){
                 console.log(dbResponse.message)
                 return setMessage({message: dbResponse.message, loggedThrough: dbResponse.loggedThrough})
                 }
-               await getUserData(dbResponse?.data?.accessToken, 'Github')
-            localStorage.clear()
+                localStorage.clear()
+                await getUserData(dbResponse?.data?.accessToken, 'Github')
             // removeCookie('accessToken', {path:'/'})
 
 

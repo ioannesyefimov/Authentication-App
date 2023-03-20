@@ -15,9 +15,9 @@ import backIco from './backIco.svg'
 import cameraIco from './cameraIco.svg'
 import correctUploadIco from './correctUploadIco.svg'
 import loadingGif from './Loading.gif'
-
+import questionIco from './questionIco.svg'
 export {
-  loadingGif,
+  questionIco,  loadingGif,
     triangleIco, logoutIco, backIco,cameraIco,correctUploadIco,
       groupIco,devchall_dark, devchall_light,
        devchall_png, facebookIco, GithubIco, GoogleIco,

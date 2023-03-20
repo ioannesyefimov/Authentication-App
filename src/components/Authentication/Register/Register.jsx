@@ -20,6 +20,7 @@ const Register = () => {
   const emailRef = React.createRef(null)
   const fullNameRef = React.createRef(null)
   const passwordRef = React.createRef(null)
+  const formRef = React.createRef(null)
 
 
   const onRegisterSubmit = async(e)=> {
@@ -42,7 +43,7 @@ const Register = () => {
             <p className='inner'>Master web development by making real-life projects. There are multiple paths for you to choose</p>
           </div>
       </div> 
-      <AuthForm type='register' fullNameRef={fullNameRef} Message={Message} btnText={'Start coding now'} emailRef={emailRef} passwordRef={passwordRef}   onSubmit={onRegisterSubmit}/>
+      <AuthForm formRef={formRef} type='register' fullNameRef={fullNameRef} Message={Message} btnText={'Start coding now'} emailRef={emailRef} passwordRef={passwordRef}   onSubmit={onRegisterSubmit}/>
       <div className="social-btns">
         <span>or continue with these social profile</span>
         <SocialLoginBtns type="register" />
