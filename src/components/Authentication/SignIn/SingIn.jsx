@@ -56,7 +56,7 @@ const SingIn = () => {
           <div className="social-btns">
             <span>or continue with these social profile</span>
             <div className="social-wrapper">
-            <SocialLoginBtns url={"http://localhost:5050/api/auth/"}  type="signin"/>
+            <SocialLoginBtns url={"http://localhost:5050/api/auth/"}  loginType="signin"/>
             </div>
           <span className='hint-btn'>Don't have an account yet? <Link to="/auth/register" replace >Register</Link></span>
           </div>

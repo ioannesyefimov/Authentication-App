@@ -8,20 +8,21 @@ import './AlertDiv.scss'
 const FuncComponent = ({message, onClc, btnText}) =>{
   return (
     <div className='alert-div-component'>
-      <p className="alert-type">{message?.replaceAll('_', ' ')}</p>  
+      <div className='alert-div-inner'>
+      <span className="alertType">{message?.replaceAll('_', ' ')}</span>  
     <div className="wrapper">
         <button onClick={onClc} className="alert-btn" type="button">{btnText}</button>
     </div>
+      </div>
 </div>
   )
 }
 
 const AlertDiv = () => {
-  const {User,logout,Message,setMessage, Loading,setLoading} = useAuthentication()
+  const {logout,Message,setMessage,setLoading} = useAuthentication()
 
 
   // const { logout} = useAuthentication()
-  const [isClicked,setIsClicked] = React.useState(false)
 
   console.log(`Message: `,Message)
   switch(Message?.message){
@@ -33,11 +34,10 @@ const AlertDiv = () => {
 
 
   return (
-     isObj(Message?.message)   ? (
-        console.log(`${Message} is Object`)
-      ) : (
+    
       <div className='alert-div-component'>
-      { Message?.message === Errors.JWT_MALFORMED  || Message?.message === Errors.JWT_EXPIRED ?
+        <div className="alert-div-inner">
+        { Message?.message === Errors.JWT_MALFORMED  || Message?.message === Errors.JWT_EXPIRED ?
         (
         <>
            <p className="alert-type">You need to sign in again </p>  
@@ -45,7 +45,17 @@ const AlertDiv = () => {
               <button onClick={()=>{logout('/auth/signin'); }} className="alert-btn" type="button">Sign in </button>
             </div>
          </>
-        ) :
+        ) : Message?.message === Errors.CHANGES_APPLIED || Message?.message === Errors.CHANGES_NOT_APPLIED ? (
+          <FuncComponent message={Message?.message} onClc={()=>{setMessage({})}} btnText={'Continue'} />
+        )  : Message?.message == 'UNAVAIBLE' ? (
+          <>
+           <p className="alert-type">{Message?.message.replaceAll('_', ' '.toLocaleLowerCase())} </p>  
+            <div className="wrapper">
+              <button onClick={()=>{setMessage({})}} className="alert-btn" type="button">Pick another </button>
+            </div>
+         </>
+        )
+         :
           (Message?.message == Errors.ALREADY_EXISTS || Message?.message === Errors.SIGNED_UP_DIFFERENTLY) ? 
         (
         <>
@@ -55,33 +65,18 @@ const AlertDiv = () => {
             <p className="alert-type">Such account has already been signed up through {Message?.loggedThrough}</p>  
           )}
           <div className="wrapper">
-            <button onClick={async()=>{await logout(`/auth/register`); }} 
+            <button onClick={()=>logout()} 
             className="alert-btn" type="button"
             >
                 Sign up new 
               </button>
-            {Message?.loggedThrough === 'Internal' ? (
             <button 
-              onClick={async() =>{ await logout(`/auth/signin`) }}
+              onClick={() => logout(`/auth/signin`) }
               className="alert-btn" 
               type="button">
                 Sign in 
               </button>
-            ) : (
-              <button 
-                onClick={async() =>setIsClicked(true)}
-                className="alert-btn" 
-                type="button">
-                  Sign in with {Message?.loggedThrough}
-              </button>
-            )}
           </div>
-            {isClicked ? (
-              <div className='social-wrapper' style={{margin:'0 auto'}}>
-                <SocialLoginBtns  type={`signin`} loggedThroughBtn={{social: Message?.loggedThrough}}/>
-              </div>
-            ) : null}
-            <button onClick={()=>setMessage({})} className='hide' >hide</button>
         </>
         ) : 
          Message?.message == Errors.NOT_SIGNED_UP ||  Message?.message == Errors.NOT_FOUND ?
@@ -93,12 +88,23 @@ const AlertDiv = () => {
               className="alert-btn" type="button">
                 Sign up new
               </button>
-              <button onClick={()=>logout('/auth/signin')} className="alert-btn" type="button">Sign in with different accont</button>
+              <button onClick={()=>logout()} className="alert-btn" type="button">Sign in with different accont</button>
             </div>
           </>
         ) :    (
           <>
-            <p className="alert-type">{JSON.stringify(Message?.message)}</p>  
+          <>
+           {Object.keys(Message?.message).map((key,value)=>{
+             console.log(`${key}: ${Message?.message[key]}`)
+             return(
+              <div className='errors-wrapper'>
+              <strong>{key}:</strong>
+              <span key={key[value]} className='errorType'> {Message?.message[key]?.replaceAll('_', ' ').toLocaleLowerCase()}</span>
+              </div>
+             )
+            }
+            )}
+          </>
             <div className="wrapper">
             
               <button onClick={()=> {setMessage({}) ;setLoading(false)}} 
@@ -109,8 +115,9 @@ const AlertDiv = () => {
          </>
         )
       }
+        </div>
+      
     </div>
-    ) 
   )
 
   }

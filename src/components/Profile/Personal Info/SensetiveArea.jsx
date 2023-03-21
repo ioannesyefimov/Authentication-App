@@ -40,7 +40,7 @@ const SensentiveArea = ({setIsShowed, isShowed}) => {
           <AuthForm btnText={'Delete User'} formRef={formRef} onSubmit={handleDeleteSubmit} emailRef={emailRef} passwordRef={passwordRef} Message={Message} type="signin" />
           <p style={{margin: '0 auto'}} className="gray">Or continue with social:</p>
           <div className="social-wrapper">
-            <SocialLoginBtns loggedThroughBtn={{social : User?.loggedThrough ? User.loggedThrough : localStorage.getItem('LOGGED_THROUGH')}} type={'delete'} />
+            <SocialLoginBtns loggedThroughBtn={{social : User?.loggedThrough ? User.loggedThrough : localStorage.getItem('LOGGED_THROUGH')}} loginType='delete' />
           </div>
           {/* <button className='back-btn2' onClick={()=>setIsPrompted(isPrompted=>!isPrompted)}></button> */}
 

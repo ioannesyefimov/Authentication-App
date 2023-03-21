@@ -25,7 +25,7 @@ const router = createBrowserRouter([
   },
   {
     element:<ProtectedRoute/>,
-    // path:'/profile',
+    path:'/',
     children:[      
       {
         element: <Navbar />,
@@ -45,15 +45,15 @@ const router = createBrowserRouter([
   },
   {
     element: <Authentication />,
-    path: '/',
+    path: '/auth',
     children: [
       {
         element: <SingIn/>,
-        path: '/auth/signin'
+        path: 'signin'
       },
       {
         element: <Register/>,
-        path: '/auth/register'
+        path: 'register'
       },
     ]
 
@@ -64,40 +64,9 @@ const router = createBrowserRouter([
 const App = ({}) => {
   const {cookies,isLogged, setLoading, User, Message,setMessage, Loading,Reload} = useAuthentication()
   const { getUserData, handleDelete} = useFetch()
-  const {getGithubAccessToken,handleGithubDelete, getUserDataGH,handleGithubRegister} = useGithub()
+  const {handleGithubDelete, getUserDataGH,handleGithubRegister} = useGithub()
 
-  useEffect(() => {
-    let accessToken = cookies.accessToken
-    console.log(`token: ${accessToken}`);
-    console.log(`rerendered`);
-
-
-    
-    if(!isLogged ){
-       const checkQueryString = async() => {
-          try {
-            setLoading(true)
-            let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
-            let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-            console.log(`query loading started`);
-              const queryString = window.location.search
-              const urlParams = new URLSearchParams(queryString)
-              const codeParam = urlParams.get('code')
-                if(codeParam && LOGGED_THROUGH == 'Github' ) {
-                return await getGithubAccessToken(codeParam, LOGIN_TYPE);
-              } else {
-                return console.log('query is empty')
-              }
-          } catch (error) {
-            return setMessage({message:error})
-  
-          } finally{
-            setLoading(false)
-          }
-          }
-      checkQueryString()
-        }
-  }, [])
+ 
 
   useEffect(
     ()=>{
@@ -105,7 +74,7 @@ const App = ({}) => {
       let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
       const accessToken = cookies?.accessToken
 
-      if(!isLogged){
+      if(!isLogged && !Message?.message){
         const checkAccessToken = async({accessToken})=>{
           if(accessToken == 'undefined' || accessToken == undefined ) return console.log('TOKEN IS ', accessToken)
           

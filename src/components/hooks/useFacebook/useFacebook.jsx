@@ -48,9 +48,7 @@ const useFacebook = (type) => {
             }
             
             setCookie('accessToken', response?.data?.accessToken, {path: '/', maxAge: '2000'})
-            // setReload(prev=>prev+1)
             localStorage.setItem('LOGIN_TYPE', 'signin')
-            // window.location.reload()
 
         } catch (error) {
             return setMessage({message: error})
@@ -72,11 +70,10 @@ const useFacebook = (type) => {
             }
             
             setCookie('accessToken', response?.data?.accessToken, {path: '/', maxAge: '2000'})
-            // setReload(prev=>prev+1)
             localStorage.setItem('LOGIN_TYPE', 'signin')
-            // window.location.reload()
 
         } catch (error) {
+            logout()
             return setMessage({message: error})
 
         } finally {
@@ -110,6 +107,7 @@ const useFacebook = (type) => {
     const handleFacebook = async(type) => {
 
         try {
+            setLoading(true)
             const params ={
                 provider: 'facebook'
             }; 
@@ -126,8 +124,7 @@ const useFacebook = (type) => {
                         // params.credentials = response
 
                     });
-                    // onSuccess(params?.credentials,'signin');
-                    // onSuccess(params, this.props.currentUser)
+                    onSuccess(params?.credentials,'signin');
                 }
             });
 
@@ -157,6 +154,8 @@ const useFacebook = (type) => {
         } catch (error) {
             console.log(error)
             return {message:error,success:false}
+        } finally{
+            setLoading(false)
         }
         
 
@@ -176,7 +175,7 @@ const useFacebook = (type) => {
             }
 
          
-            let  deleteUser =await handleDelete({accessToken: response?.data?.accessToken, user: credentials});
+            let  deleteUser =await handleDelete({accessToken: response?.data?.accessToken, user: credentials, deletedThrough: 'Facebook'});
             if(!deleteUser?.success) return setMessage({message: deleteUser.message});
 
             logout('/auth/signin')

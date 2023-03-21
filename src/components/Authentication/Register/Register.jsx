@@ -46,7 +46,7 @@ const Register = () => {
       <AuthForm formRef={formRef} type='register' fullNameRef={fullNameRef} Message={Message} btnText={'Start coding now'} emailRef={emailRef} passwordRef={passwordRef}   onSubmit={onRegisterSubmit}/>
       <div className="social-btns">
         <span>or continue with these social profile</span>
-        <SocialLoginBtns type="register" />
+        <SocialLoginBtns loginType="register" />
         <span className='hint-btn'>Already a member ? <Link to="/auth/signin" replace >Login</Link></span>
 
       </div>

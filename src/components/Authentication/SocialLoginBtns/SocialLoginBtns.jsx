@@ -9,30 +9,31 @@ import useTwitter from '../../hooks/useTwitter/useTwitter'
 import SocialBtn from './SocialBtn'
 import useFetch from '../../hooks/useFetch'
 
-const SocialLoginBtns = ({type, loggedThroughBtn=null}) => {
+const SocialLoginBtns = ({loginType, loggedThroughBtn=null}) => {
   const {setUser, setRerender,setLoading, setError} = useAuthentication();
-  const {handleTwitter} = useTwitter(type);
-  const {handleFacebook} = useFacebook(type); 
-  const {handleGoogle} = useGoogle(type);
-  const {handleGitHub} = useGithub(type);
+  const {handleTwitter} = useTwitter(loginType);
+  const {handleFacebook} = useFacebook(loginType); 
+  const {handleGoogle} = useGoogle(loginType);
+  const {handleGitHub} = useGithub(loginType);
+  console.log(loginType)
   
 
 
   if(loggedThroughBtn?.social){
     switch(loggedThroughBtn?.social){
-      case 'Google':   return <SocialBtn  execFunc={handleGoogle} icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />
-      case 'Github':   return <SocialBtn  execFunc={handleGitHub} icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`}  />
-      case 'Twitter':  return <SocialBtn  execFunc={handleTwitter} icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  />
-      case 'Facebook': return <SocialBtn  execFunc={handleFacebook} icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}   />
+      case 'Google':   return <SocialBtn  execFunc={handleGoogle} icon={GoogleIco} socialType={`Google`} loginType={loginType} id={`googleBtn`} />
+      case 'Github':   return <SocialBtn  execFunc={handleGitHub} icon={GithubIco} socialType={`Github`} loginType={loginType} id={`githubBtn`}  />
+      case 'Twitter':  return <SocialBtn  execFunc={handleTwitter} icon={TwitterIco} socialType={`Twitter`} loginType={loginType} id={`twitterBtn`}  />
+      case 'Facebook': return <SocialBtn  execFunc={handleFacebook} icon={facebookIco} socialType={`Facebook`} loginType={loginType} id={`facebookBtn`}   />
    }
   }
   
   return (
     <div className='social-wrapper'>
-      <SocialBtn execFunc={handleGoogle} icon={GoogleIco} socialType={`Google`} type={type} id={`googleBtn`} />
-      <SocialBtn execFunc={handleFacebook} icon={facebookIco} socialType={`Facebook`} type={type} id={`facebookBtn`}   />
-      <SocialBtn execFunc={handleTwitter} icon={TwitterIco} socialType={`Twitter`} type={type} id={`twitterBtn`}  />
-      <SocialBtn execFunc={handleGitHub} icon={GithubIco} socialType={`Github`} type={type} id={`githubBtn`}  />
+      <SocialBtn execFunc={handleGoogle} icon={GoogleIco} socialType={`Google`} loginType={loginType} id={`googleBtn`} />
+      <SocialBtn execFunc={handleFacebook} icon={facebookIco} socialType={`Facebook`} loginType={loginType} id={`facebookBtn`}   />
+      <SocialBtn execFunc={handleTwitter} icon={TwitterIco} socialType={`Twitter`} type={loginType} id={`twitterBtn`}  />
+      <SocialBtn execFunc={handleGitHub} icon={GithubIco} socialType={`Github`} loginType={loginType} id={`githubBtn`}  />
     </div>
   )
 }

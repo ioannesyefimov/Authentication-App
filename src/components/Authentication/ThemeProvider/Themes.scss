@@ -26,10 +26,12 @@ body[theme='light'] {
         }
     }
     .alert-div-component {
-    background-color: rgb(255, 225, 252);
-
+    background-color: rgba(255, 225, 252, 0.168);
+    
+        .alert-div-inner{
+            background-color: rgb(252, 235, 251);
+        }
     }
-
 
     .App{
         
@@ -77,11 +79,13 @@ body[theme="dark"] {
     .loading {
         color: #ffffff
         }
-
-    .alert-div-component {
-        background-color: #4b4750
-    
+        .alert-div-component {
+            background-color: #5d5c5f15;
+            .alert-div-inner{
+                background-color: #4b4750
+            }
         }
+
         p.gray, label.gray{
             color:rgb(173, 173, 173)
         }

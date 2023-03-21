@@ -4,7 +4,7 @@ import { convertBase64,validateInput} from '../utils/utils';
 
 const useFetch = () => {
 
-    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged, logout,setReload} = useAuthentication()
+    const {setCookie, setMessage,setLoading,removeCookie,setIsLogged, logout} = useAuthentication()
     const url = `http://localhost:5050/api/`
     let newURL = location.href.split("?")[0];
 
@@ -38,14 +38,13 @@ const useFetch = () => {
       console.log(response)
 
       if(!response.success ) {
+        logout()
           return setMessage({message:response.message, loggedThrough: response?.loggedThrough})
       } 
         setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
         setCookie('refreshToken', response.data.refreshToken, {path: '/', maxAge: 2000})
 
         localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
-
-        setReload(prev=>prev+1)
 
         } catch (error) {
           return setMessage({message:error})
@@ -78,15 +77,13 @@ const useFetch = () => {
              
         
             if(!response.success ) {
-               setLoading(false)
+              logout()
                return  setMessage({message:response?.message, loggedThrough: response?.loggedThrough})
             } 
               // setCookie('user',response.data.user, {path: '/', maxAge: '2000'})
               setCookie('accessToken', response.data.accessToken, {path: '/', maxAge: 2000})
               localStorage.setItem('LOGGED_THROUGH', response.data.loggedThrough)
   
-            setReload(prev=>prev+1)
-            
         } catch (error) {
           return setMessage({message:error})
 
@@ -109,7 +106,9 @@ const useFetch = () => {
         }})
 
         if(!response?.success ){
-            return setMessage({message:response.message, loggedThrough:response?.loggedThrough})
+          logout()
+          return setMessage({message:response.message, loggedThrough:response?.loggedThrough})
+           
         }
         console.log(response)
         if(response?.data.user){
@@ -132,7 +131,6 @@ const useFetch = () => {
               setCookie('accessToken', response?.data.accessToken,{path: '/', maxAge: 2000})
             }
             setIsLogged(true)
-      setReload(prev=>prev +1 )
       return {token: response?.data?.accessToken}
 
             // window.localStorage.clear()
@@ -144,60 +142,7 @@ const useFetch = () => {
       setLoading(false)
 
     }
-
-      
-
-   }
-
-   const handleDeleteSocial = async({social, type, functions})=>{
-    try {
-
-      if(type == 'signin' || type == 'register'){
-        switch(social){
-          case 'Github' : {
-            let getAccessToken = await functions?.handleGithub(type)
-            console.log(getAccessToken)
-            break
-          }
-          case 'Twitter' : {
-            let getAccessToken = await functions?.handleTwitter(type)
-            console.log(getAccessToken)
-            break
-          } 
-          case 'Facebook' : {
-            let getAccessToken = await functions?.handleFacebook(type)
-            console.log(getAccessToken)
-            break
-          } 
-        }
-      
-      } else if (type == 'delete'){
-        switch(social){
-          case 'Github' : {
-            let getAccessToken = await functions?.handleGitHub(type)
-            console.log(getAccessToken)
-            break
-          }
-          case 'Twitter' : {
-            let getAccessToken = await functions?.handleTwitterDelete(type)
-            console.log(getAccessToken)
-            break
-          } 
-          case 'Facebook' : {
-            let getAccessToken = await functions?.handleFacebookDelete(type)
-            console.log(getAccessToken)
-            break
-          } 
-      
-        }
-      }
-         
-
-    } catch (error) {
-      
-    }
-   }
-    
+  }
     
   const uploadPicture = async (file,accessToken) => {
    
@@ -225,7 +170,7 @@ const useFetch = () => {
         )
 
     }
-    const handleDelete = async({data, user, accessToken}) =>{
+    const handleDelete = async({data, user, accessToken,deletedThrough}) =>{
 
       let email = data?.get('email')
       let password = data?.get('password')
@@ -242,7 +187,7 @@ const useFetch = () => {
         if(accessToken !=='undefined' || accessToken !== undefined && !password ){
           console.log(`DELETING THROUGH ACCESS-TOKEN`)
           
-          let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email, accessToken}})
+          let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email, accessToken, deletedThrough}})
 
           console.log(dbDelete)
           if(!dbDelete?.success) 
@@ -332,7 +277,7 @@ const useFetch = () => {
       setLoading(false)
     }
   }
-   return { getUserData, fetchSignin,fetchRegister,handleChangeFetch,handleDelete,handleDeleteSocial,
+   return { getUserData, fetchSignin,fetchRegister,handleChangeFetch,handleDelete,
     }
 }
 

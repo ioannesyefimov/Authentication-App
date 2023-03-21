@@ -18,7 +18,6 @@ export const useAuthentication = ()=>{
 export const AuthenticationProvider = ({children}) => {
     const [cookies, setCookie, removeCookie] = useCookies(['user','accessToken'])
     const [Loading, setLoading] = useState(false)
-    const [Reload, setReload] = useState(0)
     const [User, setUser] = useState({})
     const [isLogged, setIsLogged] = useState(false)
     const [Message, setMessage] = useState('')
@@ -60,9 +59,9 @@ export const AuthenticationProvider = ({children}) => {
     
     const value = useMemo(
         () => ({
-            User,cookies,Reload, isLogged, Message, Loading,setReload,setIsLogged, setLoading,setCookie,removeCookie,setMessage, setUser,logout
+            User,cookies, isLogged, Message, Loading,setIsLogged, setLoading,setCookie,removeCookie,setMessage, setUser,logout
         }),
-         [User,Reload,isLogged,Message,cookies,Loading]
+         [User,isLogged,Message,cookies,Loading]
     )
 
 
@@ -76,35 +75,21 @@ export const AuthenticationProvider = ({children}) => {
 }
 
 export const Authentication = ()=>{
-  const {cookies,isLogged, Message,setMessage,setUser,setIsLogged, Loading,} = useAuthentication()
-  // const { getUserData,checkQueryString,checkAccessToken} = useFetch();
-  // const {getGithubAccessToken, getUserDataGH,handleGithubRegister} = useGithub()
+  const {isLogged} = useAuthentication()
   const location = useLocation()
 
-  // useEffect(() => {
-  //   let accessToken = cookies.accessToken
-  //   console.log(`token: ${accessToken}`);
-  //   console.log(`rerendered`);
-  //   let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
-  //   let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-    
-  //   if(!isLogged && !Message?.message ){
-  //     console.log(`isn't logged`);
-  //     checkQueryString({LOGIN_TYPE, LOGGED_THROUGH, getGithubAccessToken})
-  //     if(accessToken == 'undefined' || accessToken == undefined) return console.log('accessToken is' , accessToken) 
-  //     checkAccessToken({LOGIN_TYPE, LOGGED_THROUGH, accessToken, getUserData, getUserDataGH,handleGithubRegister})
-  //   }
-
-  // }, [cookies?.accessToken])
-
-
-
   if(window.location.search ) return <Fallback />
-  if(!isLogged && !location?.pathname.includes('/auth')) return <Navigate to='/auth/signin' replace />
-  if(!isLogged && location?.pathname?.includes('/auth') ) return <Outlet />
+  
+  if(!isLogged ){
+    switch(location.pathname){
+      case '/auth' : return <Navigate to="/auth/signin" replace />
+      case '/auth/signin' : return <Outlet />;
+      case '/auth/register' : return <Outlet />;
+  
+    }
+
+  }
   if(isLogged) return <Navigate to="/profile" replace />
-  
-  
 
 }
 

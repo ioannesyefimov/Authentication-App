@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import useGoogle from '../../hooks/useGoogle/useGoogle'
 
-const SocialBtn =  ({type,id,execFunc,icon,socialType}) => {
+const SocialBtn =  ({loginType,id,execFunc,icon,socialType}) => {
+
   return (
     <div className="social-btn-container" >
         <img src={icon} alt={`${socialType} icon`} />
-        <button onClick={()=> execFunc(type)}   className="social-btn" id={id}>
-    </button>
+          <button onClick={()=> execFunc(loginType)}   className="social-btn" id={id}> </button>
    </div>
   )
 }

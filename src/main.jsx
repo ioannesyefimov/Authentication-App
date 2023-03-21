@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.scss'
 import './components/utils/css-reset.scss'
@@ -19,8 +19,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
     <AuthenticationProvider>
       <ThemeProvider>
-
+      <StrictMode>
         <App />
+      </StrictMode>
       </ThemeProvider>
     </AuthenticationProvider>
   </CookiesProvider>
