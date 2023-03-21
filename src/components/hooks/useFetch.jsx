@@ -5,7 +5,7 @@ import { convertBase64,validateInput} from '../utils/utils';
 const useFetch = () => {
 
     const {setCookie, setMessage,setLoading,removeCookie,setIsLogged, logout} = useAuthentication()
-    const url = `http://localhost:5050/api/`
+    const url = `https://authentic-app-backend.onrender.com/api/`
     let newURL = location.href.split("?")[0];
 
    
@@ -151,7 +151,7 @@ const useFetch = () => {
     
 
         // 👇 Uploading the file using the fetch API to the server
-     const upload = await fetch('http://localhost:5050/api/upload/picture', {
+     const upload = await fetch(`${url}/upload/picture`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json' 

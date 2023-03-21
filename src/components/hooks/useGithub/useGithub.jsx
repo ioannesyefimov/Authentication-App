@@ -6,7 +6,7 @@ import useFetch from '../useFetch';
 const useGithub = (type) => {
     const {getUserData,handleDelete} = useFetch()
     const {cookies,setCookie,setMessage,setLoading,logout,isLogged} = useAuthentication()
-    const url = `http://localhost:5050/api/`
+    const url = `https://authentic-app-backend.onrender.com/api/`
 
     let newURL = location.href.split("?")[0];
     newURL = '/auth/signin'

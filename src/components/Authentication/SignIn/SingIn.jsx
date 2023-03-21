@@ -37,13 +37,6 @@ const SingIn = () => {
    await fetchSignin(emailRef,passwordRef)
   }
 
- 
-
-  // { Message?.message   ? 
-  // (<AlertDiv  message={Message} setMessage={setMessage}  />)  : (null)
-  // }
-
-
   return (
     <div className='authentication-component box-shadow'>
           <div className='wrapper'>
@@ -56,7 +49,7 @@ const SingIn = () => {
           <div className="social-btns">
             <span>or continue with these social profile</span>
             <div className="social-wrapper">
-            <SocialLoginBtns url={"http://localhost:5050/api/auth/"}  loginType="signin"/>
+            <SocialLoginBtns   loginType="signin"/>
             </div>
           <span className='hint-btn'>Don't have an account yet? <Link to="/auth/register" replace >Register</Link></span>
           </div>

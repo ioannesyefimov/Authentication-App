@@ -32,7 +32,7 @@ const useFacebook = (type) => {
         }, []
     )
 
-    const url = `http://localhost:5050/api/`
+    const url = `https://authentic-app-backend.onrender.com/api/`
 
     let newURL = location.href.split("?")[0];
 
