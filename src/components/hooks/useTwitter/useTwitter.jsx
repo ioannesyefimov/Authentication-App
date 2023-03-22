@@ -13,7 +13,7 @@ const useTwitter = () => {
     const TWITTER_SCOPE = ['tweet.read','users.read','offline.access'].join('')
     const TWITTER_STATE = `twitter-increaser-state`
     const TWITTER_CODE_CHALLENGE = `challenge`
-    const redirectUri = 'https://localhost:5173/profile'
+    const redirectUri = 'https://authentic-app.netlify.app/auth/signin/profile'
 
     let newURL = location.href.split("?")[0];
 

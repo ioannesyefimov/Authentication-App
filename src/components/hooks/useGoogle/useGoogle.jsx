@@ -9,9 +9,9 @@ const useGoogle = (loginType) => {
     
     const handleGoogle = (response)=>{
         let loginType = window.localStorage.getItem('LOGIN_TYPE')
-        if(!response) return console.log(`MISSING GOOGLE'S RESPONSE `)
-        console.log(`type:`, loginType)
-        console.log(`RESPONSE: `, response)
+        console.log(loginType)
+        console.log(response)
+        if(!response?.credential) return console.log(`MISSING GOOGLE'S RESPONSE `)
         switch(loginType){
             case 'signin': return handleGoogleSignin(response);
             case 'register': return handleGoogleRegister(response);
@@ -20,14 +20,12 @@ const useGoogle = (loginType) => {
         }
     }
     useEffect(() => {
-        console.log(loginType, `effect google`)
         if(window.google){
             window.localStorage.setItem('LOGIN_TYPE', loginType)
             google.accounts.id.initialize({
                 client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
                 callback: handleGoogle
             })
-            console.log('RENDERING BUTTON')
             google.accounts.id.renderButton(document.getElementById('googleBtn'), {
                 shape: "circle",
                 type: "icon",
@@ -35,10 +33,9 @@ const useGoogle = (loginType) => {
         }
     
         
-    }, [handleGoogle,loginType]
+    }, [handleGoogle]
     )
-
-    const url = `http://localhost:5050/api/auth/`
+    const url = `https://authentic-app-backend.onrender.com/api/auth/`
 
 
     let newURL = location.href.split("?")[0];
@@ -67,62 +64,49 @@ const useGoogle = (loginType) => {
         }
     }
 
-    const handleGoogleRegister = async (response) => {
-        setLoading(true)
-            response = await   fetch(`${url}google/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({credential: response.credential}),
+    const handleGoogleRegister = async (googleResponse) => {
+        try {
+            setLoading(true)
+            let response = await APIFetch({url:`${url}google/register`, method:'POST',body: {credential: googleResponse?.credential} })
+
+            if(!response?.success && response?.message){
+                
+                console.log(data)
+                setMessage({message:response.message, loggedThrough: response?.loggedThrough})
+                return setLoading(false)
+
             }
-            )
-
-        const data = await response.json()
-
-        if(!data?.success && data?.message){
+            console.log(`google response: ${response}`)
+            let dbResponse = response.data
             
-            console.log(data)
-             setMessage({message:data.message, loggedThrough: data?.loggedThrough})
-            return setLoading(false)
-
-        }
-
-        console.log(data)
-            let dbResponse = data.data
-        
-            setCookie('refreshToken', dbResponse?.refreshToken,  {path: '/'}, {maxAge : "1200"})
-            
+                
             setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});
             localStorage.setItem('LOGGED_THROUGH', 'Google')
             localStorage.setItem('LOGIN_TYPE', 'register')
-        setLoading(false)
-        window.location.reload()
+            
+        } catch (error) {
+            
+            return setMessage({message:error})
+
+        }finally {
+            setLoading(false)
+        }
     }
 
-    const handleGoogleDelete = async(response) =>{
+    const handleGoogleDelete = async(googleResponse) =>{
         try {
             console.log(`DELETING USER GOOGLE`)
             setLoading(true)
-            let DBFETCH = await  fetch(`${url}google/signin`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({credential: response.credential, loggedThrough: 'Google'}),
-            }
-            );
+
+            let response = await APIFetch({url:`${url}google/signin`, method:'POST',body: {credential: googleResponse?.credential, loggedThrough: 'Google'} })
     
-            const data = await DBFETCH.json()
             console.log(data)
-            if(!data?.success && data?.message){
-                console.log(data)
-                setMessage({message:data.message, loggedThrough: data?.loggedThrough})
-                return setLoading(false)
-        
+            if(!response?.success && response?.message){
+                console.log(response)
+                setMessage({message:response.message, loggedThrough: response?.loggedThrough})
             }
     
-            let dbResponse = data.data
+            let dbResponse = response.data
             // if(!dbResponse?.accessToken)return setMessage({message:``})
             let deleteUser = await handleDelete({accessToken: dbResponse?.accessToken, user: User, deletedThrough:'Google'})
             console.log(deleteUser)
@@ -136,7 +120,8 @@ const useGoogle = (loginType) => {
             
         } catch (error) {
             return  setMessage({message:error})
-
+        } finally{
+            setLoading(false)
         }
     }
 

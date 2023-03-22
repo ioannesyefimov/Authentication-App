@@ -13,34 +13,33 @@ const useGithub = (type) => {
 
     useEffect(() => {
         let accessToken = cookies.accessToken
-        console.log(`token: ${accessToken}`);
-        console.log(`rerendered`);
-    
-    
         
         if(!isLogged ){
-           const checkQueryString = async() => {
-              try {
-                setLoading(true)
-                let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
-                let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-                console.log(`query loading started`);
-                  const queryString = window.location.search
-                  const urlParams = new URLSearchParams(queryString)
-                  const codeParam = urlParams.get('code')
-                    if(codeParam && LOGGED_THROUGH == 'Github' ) {
-                    return await getGithubAccessToken(codeParam, LOGIN_TYPE);
-                  } else {
-                    return console.log('query is empty')
-                  }
-              } catch (error) {
-                return setMessage({message:error})
-      
-              } finally{
-                setLoading(false)
-              }
-              }
-          checkQueryString()
+            const queryString = window.location.search
+            console.log(queryString)
+            if(queryString){
+                const checkQueryString = async(queryString) => {
+                   try {
+                     setLoading(true)
+                     let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
+                     let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
+                     console.log(`query loading started`);
+                       const urlParams = new URLSearchParams(queryString)
+                       const codeParam = urlParams.get('code')
+                         if(codeParam && LOGGED_THROUGH == 'Github' ) {
+                         return await getGithubAccessToken(codeParam, LOGIN_TYPE);
+                       } else {
+                         return console.log('query is empty')
+                       }
+                   } catch (error) {
+                     return setMessage({message:error})
+           
+                   } finally{
+                     setLoading(false)
+                   }
+                   }
+               checkQueryString()
+            }
             }
       }, [])
 

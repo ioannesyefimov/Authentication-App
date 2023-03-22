@@ -94,17 +94,20 @@ const AlertDiv = () => {
         ) :    (
           <>
           <>
-           {Object.keys(Message?.message).map((key,value)=>{
-             console.log(`${key}: ${Message?.message[key]}`)
-             return(
-              <div className='errors-wrapper'>
-              <strong>{key}:</strong>
-              <span key={key[value]} className='errorType'> {Message?.message[key]?.replaceAll('_', ' ').toLocaleLowerCase()}</span>
-              </div>
-             )
+           { isObj(Message?.message) ? (
+             Object.keys(Message?.message).map((key,value)=>{
+               console.log(`${key}: ${Message?.message[key]}`)
+               return(
+                <div  key={key[value]} className='errors-wrapper'>
+                <strong>{key}:</strong>
+                <span className='errorType'> {Message?.message[key]?.replaceAll('_', ' ').toLocaleLowerCase()}</span>
+                </div>
+               )
+              }
+              )
+           ) : (<span className="errorType">{Message?.message}</span>)
             }
-            )}
-          </>
+           </>
             <div className="wrapper">
             
               <button onClick={()=> {setMessage({}) ;setLoading(false)}} 

@@ -3,11 +3,11 @@ import {loadingGif} from '../../Assets/index'
 export const Fallback = ()=> {
 
     return (
-        <div style={{margin: '4rem auto', width: '50%'}}>
+        <div style={{gap:'1rem',margin: '4rem auto',display:'grid', width: '60%', maxWidth: '500px'}}>
         <h1 style={{textAlign: 'center'}}>Loading...</h1>
-        <img style={{margin: '0 auto', borderRadius: "15PX", }} className="box-shadow" src={loadingGif} alt="loading" />
-        <button style={{margin: '0 auto', borderRadius: "15PX", }} onClick={()=>window.location.reload()}>Reload</button>
-        </div>
+        <img style={{margin: '0 auto', borderRadius: "15PX", maxWidth:'60%'}} className="box-shadow" src={loadingGif} alt="loading" />
+        <button style={{borderRadius: "15PX", margin: '0 auto', padding: '.5rem 5rem' }} onClick={()=>window.location.reload()}>Reload</button>
+    </div>
     )
 }
 

@@ -15,13 +15,12 @@ const SocialLoginBtns = ({loginType, loggedThroughBtn=null}) => {
   const {handleFacebook} = useFacebook(loginType); 
   const {handleGoogle} = useGoogle(loginType);
   const {handleGitHub} = useGithub(loginType);
-  console.log(loginType)
   
 
 
   if(loggedThroughBtn?.social){
     switch(loggedThroughBtn?.social){
-      case 'Google':   return <SocialBtn  execFunc={handleGoogle} icon={GoogleIco} socialType={`Google`} loginType={loginType} id={`googleBtn`} />
+      case 'Google':   return <SocialBtn   icon={GoogleIco} socialType={`Google`} loginType={loginType} id={`googleBtn`} />
       case 'Github':   return <SocialBtn  execFunc={handleGitHub} icon={GithubIco} socialType={`Github`} loginType={loginType} id={`githubBtn`}  />
       case 'Twitter':  return <SocialBtn  execFunc={handleTwitter} icon={TwitterIco} socialType={`Twitter`} loginType={loginType} id={`twitterBtn`}  />
       case 'Facebook': return <SocialBtn  execFunc={handleFacebook} icon={facebookIco} socialType={`Facebook`} loginType={loginType} id={`facebookBtn`}   />
@@ -30,7 +29,7 @@ const SocialLoginBtns = ({loginType, loggedThroughBtn=null}) => {
   
   return (
     <div className='social-wrapper'>
-      <SocialBtn execFunc={handleGoogle} icon={GoogleIco} socialType={`Google`} loginType={loginType} id={`googleBtn`} />
+      <SocialBtn  icon={GoogleIco} socialType={`Google`} loginType={loginType} id={`googleBtn`} />
       <SocialBtn execFunc={handleFacebook} icon={facebookIco} socialType={`Facebook`} loginType={loginType} id={`facebookBtn`}   />
       <SocialBtn execFunc={handleTwitter} icon={TwitterIco} socialType={`Twitter`} type={loginType} id={`twitterBtn`}  />
       <SocialBtn execFunc={handleGitHub} icon={GithubIco} socialType={`Github`} loginType={loginType} id={`githubBtn`}  />

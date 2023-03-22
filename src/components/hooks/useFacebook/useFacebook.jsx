@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useAuthentication } from '../../Authentication/Authentication';
-import { addFacebookScript } from '../../Authentication/scripts/logins';
+import { addFacebookScript } from '../../scripts/scripts';
 import { APIFetch, Errors } from '../../utils/utils';
 import useFetch from '../useFetch';
 
@@ -11,14 +11,13 @@ const useFacebook = (type) => {
         ()=>{
             const addScript = async()=>{
                 try {
-                    console.log(`appId:`,import.meta.env.VITE_APP_FACEBOOK_APP_ID);
-                    await addFacebookScript();
                     const params = {
                         appId: import.meta.env.VITE_APP_FACEBOOK_APP_ID,
-                        cookies: true,
+                        cookies: false,
                         xfbml: true,
                         version: 'v16.0'
                     }
+                    await addFacebookScript();
                     FB.init(params);
                     FB.getLoginStatus(resp=>{
                         console.log(`FB:status: ${resp.status}`)
@@ -124,7 +123,6 @@ const useFacebook = (type) => {
                         // params.credentials = response
 
                     });
-                    onSuccess(params?.credentials,'signin');
                 }
             });
 

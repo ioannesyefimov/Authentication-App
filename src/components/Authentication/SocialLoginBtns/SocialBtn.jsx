@@ -6,7 +6,14 @@ const SocialBtn =  ({loginType,id,execFunc,icon,socialType}) => {
   return (
     <div className="social-btn-container" >
         <img src={icon} alt={`${socialType} icon`} />
+        {socialType === 'Google' ? (
+          <button    className="social-btn" id={id}> </button>
+
+
+        ) : (
           <button onClick={()=> execFunc(loginType)}   className="social-btn" id={id}> </button>
+
+        )}
    </div>
   )
 }

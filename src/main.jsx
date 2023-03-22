@@ -16,7 +16,6 @@ import ErrorBoundary, {ErrorFallBack } from './components/ErrorBoundary/ErrorBou
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary fallback={<ErrorFallBack/>}>
   <CookiesProvider>
-
     <AuthenticationProvider>
       <ThemeProvider>
       <StrictMode>

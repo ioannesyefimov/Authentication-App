@@ -1,4 +1,4 @@
-import React, {useState, useEffect,useMemo, Suspense} from 'react'
+import React, {useState, useEffect,useLayoutEffect ,useMemo, Suspense} from 'react'
 import useFetch from '../hooks/useFetch'
 import useGithub from '../hooks/useGithub/useGithub'
 import {Navigate,Outlet, useLocation, useNavigate} from 'react-router-dom'
@@ -21,20 +21,10 @@ export const AuthenticationProvider = ({children}) => {
     const [User, setUser] = useState({})
     const [isLogged, setIsLogged] = useState(false)
     const [Message, setMessage] = useState('')
-
-    useEffect(
-      ()=>{
-        const isLoggedUser = cookies.user
-         if(isLoggedUser?.fullName ){
-          console.log(`isLoggedUser: `, isLoggedUser)
-           setUser(isLoggedUser)
-           return setIsLogged(true)
-         } 
-
-      }, [cookies?.user]
-    )
-
   
+    
+    
+
 
 
     const logout = (replace) => {
