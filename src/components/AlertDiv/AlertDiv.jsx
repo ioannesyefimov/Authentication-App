@@ -105,7 +105,7 @@ const AlertDiv = () => {
                )
               }
               )
-           ) : (<span className="errorType">{Message?.message}</span>)
+           ) : (<span className="errorType">{JSON.stringify(Message?.message)}</span>)
             }
            </>
             <div className="wrapper">

@@ -67,17 +67,14 @@ const useGoogle = (loginType) => {
     const handleGoogleRegister = async (googleResponse) => {
         try {
             setLoading(true)
-            let response = await APIFetch({url:`${url}google/register`, method:'POST',body: {credential: googleResponse?.credential} })
+            let response = await APIFetch({url:`${url}google/register`, method:'POST',body: {credential: googleResponse?.credential} });
 
-            if(!response?.success && response?.message){
-                
-                console.log(data)
-                setMessage({message:response.message, loggedThrough: response?.loggedThrough})
-                return setLoading(false)
+            if(!response?.success ){
+               return setMessage({message:response.message, loggedThrough: response?.loggedThrough})
 
             }
             console.log(`google response: ${response}`)
-            let dbResponse = response.data
+            let dbResponse = response?.data
             
                 
             setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});

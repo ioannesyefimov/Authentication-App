@@ -122,7 +122,6 @@ const useFetch = () => {
                 loggedThrough: response?.data?.loggedThrough
             }
 
-            console.log(response)
             localStorage.setItem('LOGGED_THROUGH', response?.data?.loggedThrough)
             console.log(`GETTING USER `)
 
