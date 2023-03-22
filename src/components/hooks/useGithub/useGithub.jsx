@@ -15,13 +15,12 @@ const useGithub = (type) => {
         let accessToken = cookies.accessToken
         
         if(!isLogged ){
-            const queryString = window.location.search
-            console.log(queryString)
             if(queryString){
-                const checkQueryString = async(queryString) => {
-                   try {
-                     setLoading(true)
-                     let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
+                const checkQueryString = async() => {
+                    try {
+                        setLoading(true)
+                        const queryString = window.location.search
+                        let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
                      let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
                      console.log(`query loading started`);
                        const urlParams = new URLSearchParams(queryString)
