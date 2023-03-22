@@ -19,10 +19,9 @@ const useGithub = (type) => {
                 const checkQueryString = async() => {
                     try {
                         setLoading(true)
-                        const queryString = window.location.search
                         let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
-                     let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-                     console.log(`query loading started`);
+                        let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
+                        const queryString = window.location.search
                        const urlParams = new URLSearchParams(queryString)
                        const codeParam = urlParams.get('code')
                          if(codeParam && LOGGED_THROUGH == 'Github' ) {

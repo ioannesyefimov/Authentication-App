@@ -68,7 +68,7 @@ export const Authentication = ()=>{
   const {isLogged} = useAuthentication()
   const location = useLocation()
 
-  if(window.location.search ) return <Fallback />
+  if(window.location.search !== '') return <Fallback />
   
   if(!isLogged ){
     switch(location.pathname){
