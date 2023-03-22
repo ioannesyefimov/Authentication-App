@@ -20,6 +20,7 @@ const FuncComponent = ({message, onClc, btnText}) =>{
 
 const AlertDiv = () => {
   const {logout,Message,setMessage,setLoading} = useAuthentication()
+  const navigate = useNavigate()
 
 
   // const { logout} = useAuthentication()
@@ -31,7 +32,6 @@ const AlertDiv = () => {
     default: console.log(`NOT MATCHED SWITCH`)
   }
 
-  const navigate = useNavigate()
 
   if(!Message?.message){
     return <Outlet />
