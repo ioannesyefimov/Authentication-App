@@ -15,7 +15,6 @@ const useGithub = (type) => {
         let accessToken = cookies.accessToken
         
         if(!isLogged ){
-            if(queryString){
                 const checkQueryString = async() => {
                     try {
                         setLoading(true)
@@ -37,7 +36,6 @@ const useGithub = (type) => {
                    }
                    }
                checkQueryString()
-            }
             }
       }, [])
 
