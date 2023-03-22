@@ -27,7 +27,7 @@ export const AuthenticationProvider = ({children}) => {
 
 
 
-    const logout = (replace) => {
+    const logout = (replace, navigate) => {
       console.log('CLEARNING STATE')
       setUser({})
       setIsLogged(false)
@@ -37,7 +37,7 @@ export const AuthenticationProvider = ({children}) => {
       if(!replace){
         console.log(`not replacing`)
       }else {
-        window.location.replace(replace)
+        navigate(replace)
       }
       window.localStorage.clear()
       removeCookie('user', {path:'/'})
@@ -68,7 +68,7 @@ export const Authentication = ()=>{
   const {isLogged} = useAuthentication()
   const location = useLocation()
 
-  if(window.location.search !== '') return <Fallback />
+  if(window.location.search.length > 0) return <Fallback />
   
   if(!isLogged ){
     switch(location.pathname){

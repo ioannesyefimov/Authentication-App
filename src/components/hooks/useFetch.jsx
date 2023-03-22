@@ -182,6 +182,7 @@ const useFetch = () => {
           let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email,updatedParams:{password}, accessToken}})
 
           if(!dbDelete?.success) return {success:false, message:dbDelete?.message}
+          return dbDelete
         } else
         if(accessToken !=='undefined' || accessToken !== undefined && !password ){
           console.log(`DELETING THROUGH ACCESS-TOKEN`)

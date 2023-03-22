@@ -3,7 +3,7 @@ import { useAuthentication } from '../Authentication/Authentication'
 import SocialLoginBtns from '../Authentication/SocialLoginBtns/SocialLoginBtns'
 import { Errors, isTrue,isObj, validateInput } from '../utils/utils'
 
-import { Link } from 'react-router-dom'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 import './AlertDiv.scss'
 const FuncComponent = ({message, onClc, btnText}) =>{
   return (
@@ -31,6 +31,12 @@ const AlertDiv = () => {
     default: console.log(`NOT MATCHED SWITCH`)
   }
 
+  const navigate = useNavigate()
+
+  if(!Message?.message){
+    return <Outlet />
+  }
+
 
 
   return (
@@ -42,7 +48,7 @@ const AlertDiv = () => {
         <>
            <p className="alert-type">You need to sign in again </p>  
             <div className="wrapper">
-              <button onClick={()=>{logout('/auth/signin'); }} className="alert-btn" type="button">Sign in </button>
+              <button onClick={()=>{logout('/auth/signin',navigate); }} className="alert-btn" type="button">Sign in </button>
             </div>
          </>
         ) : Message?.message === Errors.CHANGES_APPLIED || Message?.message === Errors.CHANGES_NOT_APPLIED ? (
@@ -71,7 +77,7 @@ const AlertDiv = () => {
                 Sign up new 
               </button>
             <button 
-              onClick={() => logout(`/auth/signin`) }
+              onClick={() => logout(`/auth/signin`,navigate) }
               className="alert-btn" 
               type="button">
                 Sign in 
@@ -84,7 +90,7 @@ const AlertDiv = () => {
           <>
             <p className="alert-type">You have yet to sign up to our Application</p>  
             <div className="wrapper">
-              <button onClick={()=> {logout(`/auth/register`)}} 
+              <button onClick={()=> {logout(`/auth/register`,navigate)}} 
               className="alert-btn" type="button">
                 Sign up new
               </button>

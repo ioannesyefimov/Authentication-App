@@ -1,4 +1,3 @@
-import Profile from "./Profile/Profile";
 import Register from "./Authentication/Register/Register";
 import SingIn from "./Authentication/SignIn/SingIn";
 
@@ -16,7 +15,6 @@ import PersonalInfo from "./Profile/Personal Info/PersonalInfo";
 export {
     PersonalInfo,
     ChangeInfo,
-    Profile,
     Register,
     SingIn,
     ThemeProvider,

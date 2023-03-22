@@ -15,12 +15,13 @@ const useGithub = (type) => {
         let accessToken = cookies.accessToken
         
         if(!isLogged ){
-                const checkQueryString = async() => {
+          const queryString = window.location.search
+          console.log(queryString.length)
+                const checkQueryString = async(queryString) => {
                     try {
                         setLoading(true)
                         let LOGIN_TYPE = localStorage.getItem('LOGIN_TYPE')
                         let LOGGED_THROUGH = window.localStorage.getItem('LOGGED_THROUGH')
-                        const queryString = window.location.search
                        const urlParams = new URLSearchParams(queryString)
                        const codeParam = urlParams.get('code')
                          if(codeParam && LOGGED_THROUGH == 'Github' ) {
@@ -35,7 +36,7 @@ const useGithub = (type) => {
                      setLoading(false)
                    }
                    }
-               checkQueryString()
+               checkQueryString(queryString)
             }
       }, [])
 

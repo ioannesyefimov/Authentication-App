@@ -2,9 +2,9 @@ import React,{useEffect} from 'react'
 import Navbar from './components/Profile/Navbar/Navbar'
 import { useAuthentication } from './components/Authentication/Authentication'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import {ProtectedRoute, SingIn, Register, Profile, ChangeInfo, PersonalInfo, useFetch} from './components/index'
+import {ProtectedRoute, SingIn, Register, ChangeInfo, PersonalInfo, useFetch} from './components/index'
 import  {  Authentication } from './components/Authentication/Authentication'
-import { addPolicyScript,addFacebookScript, addPolicyScript2, addPolicyScript3 } from './components/scripts/scripts'
+import { addPolicyScript, addPolicyScript2, addPolicyScript3 } from './components/scripts/scripts'
 import { Fallback } from './components/ErrorBoundary/ErrorBoundary'
 import AlertDiv from './components/AlertDiv/AlertDiv'
 import useGithub from './components/hooks/useGithub/useGithub'
@@ -22,40 +22,46 @@ const router = createBrowserRouter([
     path: '*',
   },
   {
-    element:<ProtectedRoute/>,
-    path:'/',
-    children:[      
+    element: <AlertDiv />,
+    children: [
+
       {
-        element: <Navbar />,
-        children : [
+        element:<ProtectedRoute/>,
+        path:'/',
+        children:[      
           {
-            element: <PersonalInfo/>,
-            path: '/profile',
-            
-          },
-          {
-            element: <ChangeInfo />,
-            path: '/profile/change'
+            element: <Navbar />,
+            children : [
+              {
+                element: <PersonalInfo/>,
+                path: '/profile',
+                
+              },
+              {
+                element: <ChangeInfo />,
+                path: '/profile/change'
+              },
+            ],
           },
         ],
       },
-    ],
-  },
-  {
-    element: <Authentication />,
-    path: '/auth',
-    children: [
       {
-        element: <SingIn/>,
-        path: 'signin'
-      },
-      {
-        element: <Register/>,
-        path: 'register'
+        element: <Authentication />,
+        path: '/auth',
+        children: [
+          {
+            element: <SingIn/>,
+            path: 'signin'
+          },
+          {
+            element: <Register/>,
+            path: 'register'
+          },
+        ]
+    
       },
     ]
-
-  },
+  }
 
 ])
 
@@ -81,6 +87,7 @@ const App = ({}) => {
     }
     },[]
   )
+
 
   useEffect(
     ()=>{
@@ -170,13 +177,7 @@ const App = ({}) => {
           <RouterProvider router={router} />
             )
           }
-          {!Loading && Message?.message ? 
-            (
-             <AlertDiv />
-            )
-             :
-            (null)
-          }
+         
        
 
     </div>
