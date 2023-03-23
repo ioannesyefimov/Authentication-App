@@ -28,16 +28,16 @@ export const AuthenticationProvider = ({children}) => {
 
 
     const logout = (replace, navigate) => {
-      console.log('CLEARNING STATE')
+      // console.log('CLEARNING STATE')
       setUser({})
       setIsLogged(false)
       setMessage({})
       removeCookie('accessToken', {path:'/'})
       removeCookie('refreshToken', {path:'/'})
       if(!replace){
-        console.log(`not replacing`)
+        // console.log(`not replacing`)
       }else {
-        navigate(replace)
+        // navigate(replace)
       }
       window.localStorage.clear()
       removeCookie('user', {path:'/'})

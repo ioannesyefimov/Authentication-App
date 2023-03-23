@@ -9,14 +9,14 @@ const useGoogle = (loginType) => {
     
     const handleGoogle = (response)=>{
         let loginType = window.localStorage.getItem('LOGIN_TYPE')
-        console.log(loginType)
-        console.log(response)
-        if(!response?.credential) return console.log(`MISSING GOOGLE'S RESPONSE `)
+        // console.log(loginType)
+        // console.log(response)
+        // if(!response?.credential) return console.log(`MISSING GOOGLE'S RESPONSE `)
         switch(loginType){
             case 'signin': return handleGoogleSignin(response);
             case 'register': return handleGoogleRegister(response);
             case 'delete': return handleGoogleDelete(response);
-            default: return console.log(`NOT MATCHED TYPE `)
+            // default: return console.log(`NOT MATCHED TYPE `)
         }
     }
     useEffect(() => {
@@ -49,13 +49,13 @@ const useGoogle = (loginType) => {
             if(!response?.success){
                 logout()
                 setMessage({message: response.message, loggedThrough: response?.loggedThrough})
-                return console.log(response?.message)
+                // return console.log(response?.message)
             }
-            console.log(response)
+            // console.log(response)
             setCookie("accessToken", response?.data?.accessToken, {path: '/'}, {maxAge : "1200"} );
                 localStorage.setItem('LOGIN_TYPE', 'signin')
                 localStorage.setItem('LOGGED_THROUGH', 'Google')
-                console.log(`GETTING GOOGLE USER `)
+                // console.log(`GETTING GOOGLE USER `)
         } catch (error) {
             return setMessage({message: error})
 
@@ -73,7 +73,7 @@ const useGoogle = (loginType) => {
                return setMessage({message:response.message, loggedThrough: response?.loggedThrough})
 
             }
-            console.log(`google response: ${response}`)
+            // console.log(`google response: ${response}`)
             let dbResponse = response?.data
             
                 
@@ -92,23 +92,23 @@ const useGoogle = (loginType) => {
 
     const handleGoogleDelete = async(googleResponse) =>{
         try {
-            console.log(`DELETING USER GOOGLE`)
+            // console.log(`DELETING USER GOOGLE`)
             setLoading(true)
 
             let response = await APIFetch({url:`${url}google/signin`, method:'POST',body: {credential: googleResponse?.credential, loggedThrough: 'Google'} })
     
-            console.log(data)
+            // console.log(data)
             if(!response?.success && response?.message){
-                console.log(response)
+                // console.log(response)
                 setMessage({message:response.message, loggedThrough: response?.loggedThrough})
             }
     
             let dbResponse = response.data
             // if(!dbResponse?.accessToken)return setMessage({message:``})
             let deleteUser = await handleDelete({accessToken: dbResponse?.accessToken, user: User, deletedThrough:'Google'})
-            console.log(deleteUser)
+            // console.log(deleteUser)
             if(!deleteUser?.success){
-                return console.log('USER IS NOT DELETED')
+                // return console.log('USER IS NOT DELETED')
             }
             logout('/auth/signin')
             // setCookie("accessToken", dbResponse?.accessToken,  {path: '/'}, {maxAge : "1200"});

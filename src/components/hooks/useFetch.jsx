@@ -17,8 +17,8 @@ const useFetch = () => {
         const isValidInput =await validateInput(
           {firstRef:emailRef , secondRef:fullNameRef , thirdRef:passwordRef}
           );
-        console.log(isValidInput)
-        console.log(`email: `, emailRef.current.value)
+        // console.log(isValidInput)
+        // console.log(`email: `, emailRef.current.value)
         if(!isValidInput?.success) return setMessage({success:false,message: isValidInput?.message})
         setLoading(true)
         
@@ -35,7 +35,7 @@ const useFetch = () => {
        
     
 
-      console.log(response)
+      // console.log(response)
 
       if(!response.success ) {
         logout()
@@ -59,7 +59,7 @@ const useFetch = () => {
       const isValidInput = await validateInput({firstRef:emailRef , 
         secondRef:undefined, thirdRef:passwordRef , setMessage});
         
-        console.log(isValidInput)
+        // console.log(isValidInput)
         if(!isValidInput?.success){
           return setMessage({message: isValidInput?.message})
         }
@@ -110,7 +110,7 @@ const useFetch = () => {
           return setMessage({message:response.message, loggedThrough:response?.loggedThrough})
            
         }
-        console.log(response)
+        // console.log(response)
         if(response?.data.user){
 
             const user = {
@@ -123,7 +123,7 @@ const useFetch = () => {
             }
 
             localStorage.setItem('LOGGED_THROUGH', response?.data?.loggedThrough)
-            console.log(`GETTING USER `)
+            // console.log(`GETTING USER `)
 
             setCookie('user',user ,{path: '/', maxAge: 2000})
             if(response?.data.accessToken){
@@ -173,11 +173,11 @@ const useFetch = () => {
 
       let email = data?.get('email')
       let password = data?.get('password')
-      console.log(email);
-      console.log(password);
-      console.log(`token DELETING:`, accessToken)
+      // console.log(email);
+      // console.log(password);
+      // console.log(`token DELETING:`, accessToken)
       try {
-        console.log(`handleDelete IS WORKING`)
+        // console.log(`handleDelete IS WORKING`)
         if(email && password){
           let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email,updatedParams:{password}, accessToken}})
 
@@ -185,11 +185,11 @@ const useFetch = () => {
           return dbDelete
         } else
         if(accessToken !=='undefined' || accessToken !== undefined && !password ){
-          console.log(`DELETING THROUGH ACCESS-TOKEN`)
+          // console.log(`DELETING THROUGH ACCESS-TOKEN`)
           
           let dbDelete = await APIFetch({url: `${url}change/delete`, method:'delete', body: {userEmail: user?.email, accessToken, deletedThrough}})
 
-          console.log(dbDelete)
+          // console.log(dbDelete)
           if(!dbDelete?.success) 
           {
             return {success:false, message:dbDelete?.message}
@@ -208,7 +208,7 @@ const useFetch = () => {
 
    const handleChangeFetch = async ({data,user, accessToken}) => {
     // change users information.
-    // console.log(user);
+    console.log(user);
     let email = data?.get('email')
     let fullName = data?.get('name')
     let bio = data?.get('bio')
@@ -216,47 +216,47 @@ const useFetch = () => {
     let password = data?.get('password')
     let picture = data?.get('picture')
     let changesArr={}
-    console.log(`data: `, data)
+    // console.log(`data: `, data)
     try {
      setLoading(true)
       //add updatedParams if they have been added by user
      if(picture){
       let uri = await convertBase64(picture);
-      console.log(`uri: `,uri);
+      // console.log(`uri: `,uri);
        changesArr.picture = uri
-       console.log(`picture is added`);
+      //  console.log(`picture is added`);
      }
       if(email) 
       {
-        console.log(`email is added`);
+        // console.log(`email is added`);
         changesArr.email = email
       }
       if(fullName)
       {
-        console.log(`fullName is added`);
+        // console.log(`fullName is added`);
         changesArr.fullName = fullName
       }
      
       if(bio) 
       {
-        console.log(`bio is added`);
+        // console.log(`bio is added`);
         changesArr.bio = bio
       }
       if(phone) 
       {
-        console.log(`phone is added`);
+        // console.log(`phone is added`);
         changesArr.phone = phone
       }
       if(password)
       {
-        console.log(`password is added`);
+        // console.log(`password is added`);
         changesArr.password = password
       }
       // send request to change user's information
 
-      console.log(`is going to send response`)
+      // console.log(`is going to send response`)
       let response = await APIFetch({url: `${url}change`, method:'post', body: {updatedParams: changesArr, userEmail: user?.email, accessToken}});
-      console.log(response);
+      // console.log(response);
       if(!response?.success) {
 
         return setMessage({message: response?.message})

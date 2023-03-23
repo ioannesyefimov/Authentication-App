@@ -35,7 +35,7 @@ const router = createBrowserRouter([
             children : [
               {
                 element: <PersonalInfo/>,
-                path: '/profile/personal-info',
+                path: '/profile',
                 
               },
               {
@@ -82,7 +82,7 @@ const App = ({}) => {
         await addPolicyScript3()
         
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
       addPolicy()
     }
@@ -94,7 +94,7 @@ const App = ({}) => {
     ()=>{
       const isLoggedUser = cookies.user
        if(isLoggedUser?.fullName ){
-        console.log(`isLoggedUser: `, isLoggedUser)
+        // console.log(`isLoggedUser: `, isLoggedUser)
          setUser(isLoggedUser)
          return setIsLogged(true)
        } 
@@ -103,17 +103,11 @@ const App = ({}) => {
        const accessToken = cookies?.accessToken
  
        if(!isLogged && !Message?.message){
-         const checkAccessToken = async({accessToken})=>{
-           if(accessToken == 'undefined' || accessToken == undefined ) return console.log('TOKEN IS ', accessToken)
-           
-           try {
-             setLoading(true)
-     
-             console.log(`token loading started`);
-             console.log(`logintype:`, LOGIN_TYPE)
-             console.log(`loggedThrough:`, LOGGED_THROUGH)
-             console.log("token: ",accessToken);
-             if(LOGGED_THROUGH ){
+         if(LOGGED_THROUGH ){
+           if(accessToken == 'undefined' || accessToken == undefined ) return  
+          const checkAccessToken = async({accessToken})=>{
+             try {
+                 setLoading(true)
                switch(LOGGED_THROUGH){
                  // check whether user is trying to register github account or signin
                  case 'Github': 
@@ -123,7 +117,6 @@ const App = ({}) => {
                    return accessToken.includes('gho_') ?
                     await getUserDataGH(accessToken) : await getUserData(accessToken, LOGGED_THROUGH)
                  } 
-                     ;
                  case 'Google':   
                    return await getUserData(accessToken, LOGGED_THROUGH)
                    
@@ -133,22 +126,19 @@ const App = ({}) => {
                    return await getUserData(accessToken, LOGGED_THROUGH)
                  case 'Twitter': 
                    return  await getUserData(accessToken, LOGGED_THROUGH)
-                 default: 
-                   console.log('not found')
+                 default: return
+                  //  console.log('not found')
                }
-               } else {
-                 return console.log(`LOGGED THROUGH NOT_FOUND`)
-               }
+              
            } catch (error) {
              return setMessage({message:error})
            } finally{
              setLoading(false)
            }
-           }
-         checkAccessToken({ accessToken, user: User})
-           return console.log(`CHECKING TOKEN`);
-       }
- 
+          }
+          return checkAccessToken({ accessToken, user: User}) 
+      }
+  }
        else if(LOGIN_TYPE == 'delete'){
            let checkDelete =  async()=>{
              switch(LOGGED_THROUGH){
@@ -161,12 +151,11 @@ const App = ({}) => {
                case 'Twitter': 
                return await handleDelete({accessToken,user:User})
                default: 
-                 return console.log('not found')
+                 return 
              }
  
            }
-           checkDelete()
-           return console.log(`CHECKING delete`);
+          return checkDelete()
        }
 
     }, [cookies?.user, cookies?.accessToken]
@@ -178,7 +167,6 @@ const App = ({}) => {
           <RouterProvider router={router} />
             )
           }
-         {Message?.message ? (<AlertDiv message={Message} />): null}
        
           <Footer />
     </div>
