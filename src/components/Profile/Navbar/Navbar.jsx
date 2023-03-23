@@ -28,7 +28,7 @@ const Navbar = () => {
             
                 <div style={isDropped ? 
                     {transform: "translate(0%, 0%)"}
-                    : {visibility: 'hidden'}} 
+                    : {opacity: '0'}} 
                     className='drop-menu box-shadow' 
                 >
                     <div  className="wrapper">
