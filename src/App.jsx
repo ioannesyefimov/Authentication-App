@@ -9,6 +9,7 @@ import { Fallback } from './components/ErrorBoundary/ErrorBoundary'
 import AlertDiv from './components/AlertDiv/AlertDiv'
 import useGithub from './components/hooks/useGithub/useGithub'
 import './App.scss'
+import Footer from './components/Profile/Footer/Footer'
 
 const NotFound = () =>{
   return (
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
             children : [
               {
                 element: <PersonalInfo/>,
-                path: '/profile',
+                path: '/profile/personal-info',
                 
               },
               {
@@ -177,9 +178,9 @@ const App = ({}) => {
           <RouterProvider router={router} />
             )
           }
-         
+         {Message?.message ? (<AlertDiv message={Message} />): null}
        
-
+          <Footer />
     </div>
   )
 }
