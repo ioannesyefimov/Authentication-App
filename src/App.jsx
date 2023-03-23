@@ -117,7 +117,7 @@ const App = ({}) => {
              setLoading(false)
            }
           }
-          return checkAccessToken({ accessToken, user: User}) 
+          checkAccessToken({ accessToken, user: User}) 
       }
   }
        else if(LOGIN_TYPE == 'delete'){
@@ -136,7 +136,7 @@ const App = ({}) => {
              }
  
            }
-          return checkDelete()
+           checkDelete()
        }
 
     }, [cookies?.user, cookies?.accessToken]

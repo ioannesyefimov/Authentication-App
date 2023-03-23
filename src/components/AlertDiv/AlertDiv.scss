@@ -1,26 +1,26 @@
+@use '../utils/utils.scss' as *;
 
-.authentication-component {
-    // position: absolute;
-}
 
-.App:has(.alert-div-component){
-    // position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100dvh;
-}
 .alert-div-component {
-    // position: absolute;
+    position: absolute;
+    @include respond-to(small){
+        width: 100%;
+        // position: absolute;\
+    }
     display: flex;
     align-items: center;
+    margin: 0 auto;
     inset: 0;
+    width: 45%;
+    width: 450px;
+    
     z-index: 5;
-    width: 50%;
-    aspect-ratio: 9/9;
-    max-width: 500px;
+    // width: 100%;
     
     .alert-div-inner{
+        @include respond-to(small){
+            height: 100%;
+        }
         box-shadow: 0 0 5px 1px  red;
         padding: 1.5rem;
         display: flex;
@@ -29,14 +29,14 @@
         align-items: center;
         gap:1.5rem;
         width: 100%;
-        min-height: 370px;
+        // min-height: 370px;
+        
         // margin: auto;
         inset: 0;
         border-radius: 12px;
         .alert-btn {
-            font-size: 1rem;
+            font-size: .8rem;
             background-color: rgb(246, 182, 224);
-            
         }
     
         .errors-wrapper{
@@ -51,7 +51,7 @@
         }
         .alert-type{
             text-align: center;
-            font-size: 1.3rem;
+            font-size: 1.15rem;
             font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             font-weight: 600;
             color:rgb(255, 255, 255);
@@ -66,13 +66,13 @@
             gap:.5rem;
             button {
             transition: 300ms all ease-in-out;
-                padding: .4em;
+                padding: .2em;
     
             // border-radius: 20%;
                 flex:100%;
             }
             & > button:hover {
-                background-color: rgba(193, 12, 233, 0.509);
+                background-color: rgba(201, 101, 224, 0.25);
                 color:rgb(0, 0, 54);
                 font-weight: 600;
             }     

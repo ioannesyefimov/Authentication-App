@@ -23,10 +23,16 @@ export const AuthenticationProvider = ({children}) => {
     useEffect(
       ()=>{
         // add sscripts
-  
-        addPolicyScript3();
-        addPolicyScript2();
-        addPolicyScript();
+        const addScript = async(callback)=>{
+          try {
+            return await callback()
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        addScript(addPolicyScript3)
+        addScript(addPolicyScript2)
+        addScript(addPolicyScript)
       },[]
     )
   
