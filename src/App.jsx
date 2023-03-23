@@ -4,7 +4,6 @@ import { useAuthentication } from './components/Authentication/Authentication'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import {ProtectedRoute, SingIn, Register, ChangeInfo, PersonalInfo, useFetch} from './components/index'
 import  {  Authentication } from './components/Authentication/Authentication'
-import { addPolicyScript, addPolicyScript2, addPolicyScript3 } from './components/scripts/scripts'
 import { Fallback } from './components/ErrorBoundary/ErrorBoundary'
 import AlertDiv from './components/AlertDiv/AlertDiv'
 import useGithub from './components/hooks/useGithub/useGithub'
@@ -70,24 +69,6 @@ const App = ({}) => {
   const {cookies,isLogged, setLoading, User, Message,setMessage, Loading,setIsLogged,setUser} = useAuthentication()
   const { getUserData, handleDelete} = useFetch()
   const {handleGithubDelete, getUserDataGH,handleGithubRegister} = useGithub()
-  useEffect(
-    ()=>{
-      // add sscripts
-
-
-    const addPolicy = async()=>{
-      try {
-        await addPolicyScript()
-        await addPolicyScript2()
-        await addPolicyScript3()
-        
-      } catch (error) {
-        // console.log(error)
-      }
-      addPolicy()
-    }
-    },[]
-  )
 
 
   useEffect(

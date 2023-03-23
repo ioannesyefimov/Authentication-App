@@ -1,13 +1,10 @@
 import React, {useState, useEffect,useLayoutEffect ,useMemo, Suspense} from 'react'
-import useFetch from '../hooks/useFetch'
-import useGithub from '../hooks/useGithub/useGithub'
 import {Navigate,Outlet, useLocation, useNavigate} from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import './Authentication.scss'
+import { addPolicyScript, addPolicyScript2, addPolicyScript3 } from '../scripts/scripts'
 
 import { Fallback } from '../ErrorBoundary/ErrorBoundary'
-import { Errors } from '../utils/utils'
-import AlertDiv from '../AlertDiv/AlertDiv'
   
 export const AuthContext = React.createContext()
 
@@ -23,7 +20,16 @@ export const AuthenticationProvider = ({children}) => {
     const [Message, setMessage] = useState('')
   
     
-    
+    useEffect(
+      ()=>{
+        // add sscripts
+  
+        addPolicyScript3();
+        addPolicyScript2();
+        addPolicyScript();
+      },[]
+    )
+  
 
 
 
